@@ -5,4 +5,12 @@
     <string name="select_date_and_time_title"><![CDATA[Select Date\n& Time]]></string>
     <string name="date_hint">Feb 12, 2024</string>
     <string name="time_hint">10:29</string>
+    <string name="images_title">Images</string>
+    <string name="save_entry">Save Entry</string>
+    <string name="fats">Fats (g)</string>
+    <string name="carbs">Carbs (g)</string>
+    <string name="protein">Protein (g)</string>
+    <string name="macros">Macros (gm)</string>
+    <string name="view_seletced_images">View seletced images</string>
+    <string name="pick_images">Pick Images</string>
 </resources>

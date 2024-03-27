@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:background="@color/light_gray"
     tools:context=".MainActivity">
 
@@ -45,7 +46,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp"
+                android:gravity="center_vertical"
                 android:hint="@string/enter_food_name_hint"
+                android:backgroundTint="@color/light_gray"
                 android:inputType="textPersonName"
                 android:autofillHints="name">
             </EditText>
@@ -113,5 +116,166 @@
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/images_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/food_details_card_view"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="18sp"
+        android:text="@string/images_title">
+    </TextView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/images_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/images_title"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+
+        app:contentPaddingLeft="15dp"
+        app:contentPaddingRight="15dp"
+        app:contentPaddingTop="5dp"
+        app:contentPaddingBottom="5dp"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:id="@+id/images_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/pick_images_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="0dp"
+                android:backgroundTint="@color/white"
+                android:text="@string/pick_images"
+                android:textColor="@color/red"
+                android:textSize="18sp"
+                android:textStyle="normal">
+            </Button>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_below="@+id/pick_images_button"
+                android:layout_height="1dp"
+                android:background="@color/mid_gray">
+            </View>
+
+            <Button
+                android:id="@+id/selected_images_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pick_images_button"
+                android:gravity="center_vertical"
+                android:padding="0dp"
+                android:backgroundTint="@color/white"
+                android:text="@string/view_seletced_images"
+                android:textColor="@color/light_red"
+                android:textSize="18sp"
+                android:textStyle="normal">
+            </Button>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/macros_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/images_card_view"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="18sp"
+        android:text="@string/macros">
+    </TextView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/macros_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/macros_title"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+
+        app:contentPaddingLeft="15dp"
+        app:contentPaddingRight="15dp"
+        app:contentPaddingTop="10dp"
+        app:contentPaddingBottom="5dp"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:id="@+id/macros_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/protein_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:gravity="center_vertical"
+                android:hint="@string/protein"
+                android:backgroundTint="@color/light_gray"
+                android:inputType="numberDecimal"
+                android:importantForAutofill="no">
+            </EditText>
+
+            <EditText
+                android:id="@+id/carbs_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/protein_text_edit"
+                android:paddingBottom="20dp"
+                android:gravity="center_vertical"
+                android:hint="@string/carbs"
+                android:backgroundTint="@color/light_gray"
+                android:inputType="numberDecimal"
+                android:importantForAutofill="no">
+            </EditText>
+
+            <EditText
+                android:id="@+id/fats_text_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/carbs_text_edit"
+                android:paddingBottom="20dp"
+                android:gravity="center_vertical"
+                android:hint="@string/fats"
+                android:backgroundTint="@color/light_gray"
+                android:inputType="numberDecimal"
+                android:importantForAutofill="no">
+            </EditText>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/save_entry_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/macros_card_view"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:backgroundTint="@color/red"
+        android:text="@string/save_entry"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        app:cornerRadius="10dp">
+    </Button>
 
 </RelativeLayout>
