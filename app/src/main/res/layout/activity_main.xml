@@ -54,7 +54,7 @@
             </EditText>
 
             <LinearLayout
-                android:id="@+id/food_date_layout"
+                android:id="@+id/food_date_time_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/food_name_text_edit"
@@ -74,19 +74,25 @@
                 </TextView>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/food_date_layout"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:hint="@string/date_hint"
 
                     app:boxBackgroundColor="@color/mid_gray">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/food_date_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:focusable="false"
+                        android:cursorVisible="false"
+                        android:focusableInTouchMode="false"
+                        android:clickable="false"
+                        android:inputType="date"
                         android:padding="10dp"
                         android:textSize="16sp">
                     </com.google.android.material.textfield.TextInputEditText>
@@ -94,17 +100,23 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/food_time_layout"
                     android:layout_weight="3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/time_hint"
 
                     app:boxBackgroundColor="@color/mid_gray">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/food_time_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:focusable="false"
+                        android:cursorVisible="false"
+                        android:focusableInTouchMode="false"
+                        android:clickable="false"
+                        android:inputType="time"
                         android:padding="10dp"
                         android:textSize="16sp">
                     </com.google.android.material.textfield.TextInputEditText>

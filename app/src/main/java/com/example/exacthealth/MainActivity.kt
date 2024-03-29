@@ -1,7 +1,14 @@
 package com.example.exacthealth
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class MainActivity : AppCompatActivity()
 {
@@ -9,5 +16,57 @@ class MainActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val foodDateLayout = findViewById<TextInputLayout>(R.id.food_date_layout)
+        val foodDateInput = findViewById<TextInputEditText>(R.id.food_date_input)
+
+        val foodTimeLayout = findViewById<TextInputLayout>(R.id.food_time_layout)
+        val foodTimeInput = findViewById<TextInputEditText>(R.id.food_time_input)
+
+        setDefaultDateTime(foodDateInput, foodTimeInput)
+
+        foodDateInput.setOnClickListener {
+            setDate(foodDateInput)
+        }
+
+        foodTimeInput.setOnClickListener {
+            setTime(foodTimeInput)
+        }
+    }
+
+    private fun setDefaultDateTime(foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText)
+    {
+        val currentTime = Calendar.getInstance()
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+
+        foodTimeInput.setText(timeFormat.format(currentTime.time))
+        foodDateInput.setText(dateFormat.format(currentTime.time))
+    }
+    private fun setDate(input: TextInputEditText)
+    {
+        val calendar = Calendar.getInstance()
+        val y = calendar.get(Calendar.YEAR)
+        val m = calendar.get(Calendar.MONTH)
+        val d = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(this, R.style.DialogTheme, { _, year, monthOfYear, dayOfMonth ->
+            calendar.set(year, monthOfYear, dayOfMonth)
+            val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+            val selectedDate = dateFormat.format(calendar.time)
+            input.setText(selectedDate)}, y, m, d)
+        datePickerDialog.show()
+    }
+
+    private fun setTime(input: TextInputEditText)
+    {
+        val calendar = Calendar.getInstance()
+        val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val timePickerDialog = TimePickerDialog(this, R.style.DialogTheme, { _, selectedHourOfDay, selectedMinute ->
+            val timeFormat = String.format("%02d:%02d", selectedHourOfDay, selectedMinute)
+            input.setText(timeFormat)}, hourOfDay, minute, true)
+        timePickerDialog.show()
     }
 }
