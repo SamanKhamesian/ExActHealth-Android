@@ -10,14 +10,90 @@
     android:background="@color/light_gray"
     tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_alignStart="@+id/food_details_text_view"
+        android:layout_alignEnd="@+id/food_details_text_view">
+
+        <RelativeLayout
+            android:id="@+id/back_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/back_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back_button">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/back_to_calendar_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/back_image"
+                android:layout_alignBottom="@+id/back_image"
+                android:layout_alignTop="@+id/back_image"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:text="Calender"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                android:textSize="16sp">
+            </TextView>
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/forward_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/add_from_favorites_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
+                android:text="Add from Favorites"
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/forward_image"
+                app:layout_constraintEnd_toStartOf="@+id/forward_image"
+                app:layout_constraintTop_toTopOf="@+id/forward_image">
+            </TextView>
+
+            <ImageView
+                android:id="@+id/forward_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/forward_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            </ImageView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/food_details_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/toolbar_layout"
+        android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:text="@string/food_details_title">
     </TextView>
 
@@ -30,11 +106,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
 
-        app:contentPaddingLeft="15dp"
-        app:contentPaddingRight="15dp"
-        app:contentPaddingTop="10dp"
-        app:contentPaddingBottom="5dp"
-        app:cardCornerRadius="10dp">
+        app:contentPaddingLeft="10dp"
+        app:contentPaddingRight="10dp"
+        app:cardCornerRadius="5dp">
 
         <RelativeLayout
             android:id="@+id/food_layout"
@@ -48,6 +122,7 @@
                 android:paddingBottom="20dp"
                 android:gravity="center_vertical"
                 android:hint="@string/enter_food_name_hint"
+                android:textSize="14sp"
                 android:backgroundTint="@color/light_gray"
                 android:inputType="textPersonName"
                 android:autofillHints="name">
@@ -59,25 +134,26 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/food_name_text_edit"
                 android:orientation="horizontal"
-                android:paddingTop="10dp"
+                android:paddingStart="5dp"
                 android:paddingBottom="15dp"
                 android:gravity="center_horizontal"
                 android:weightSum="12">
 
                 <TextView
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
                     android:text="@string/select_date_and_time_title"
-                    android:textSize="16sp">
+                    android:textSize="14sp">
                 </TextView>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/food_date_layout"
-                    android:layout_weight="5"
+                    android:layout_weight="4"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
 
@@ -94,7 +170,7 @@
                         android:clickable="false"
                         android:inputType="date"
                         android:padding="10dp"
-                        android:textSize="16sp">
+                        android:textSize="14sp">
                     </com.google.android.material.textfield.TextInputEditText>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -103,7 +179,7 @@
                     android:id="@+id/food_time_layout"
                     android:layout_weight="3"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
 
                     app:boxBackgroundColor="@color/mid_gray">
 
@@ -118,7 +194,7 @@
                         android:clickable="false"
                         android:inputType="time"
                         android:padding="10dp"
-                        android:textSize="16sp">
+                        android:textSize="14sp">
                     </com.google.android.material.textfield.TextInputEditText>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -137,7 +213,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:text="@string/images_title">
     </TextView>
 
@@ -150,11 +226,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
 
-        app:contentPaddingLeft="15dp"
-        app:contentPaddingRight="15dp"
-        app:contentPaddingTop="5dp"
-        app:contentPaddingBottom="5dp"
-        app:cardCornerRadius="10dp">
+        app:contentPaddingLeft="10dp"
+        app:contentPaddingRight="10dp"
+        app:cardCornerRadius="5dp">
 
         <RelativeLayout
             android:id="@+id/images_layout"
@@ -170,7 +244,7 @@
                 android:backgroundTint="@color/white"
                 android:text="@string/pick_images"
                 android:textColor="@color/red"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textStyle="normal">
             </Button>
 
@@ -189,9 +263,9 @@
                 android:gravity="center_vertical"
                 android:padding="0dp"
                 android:backgroundTint="@color/white"
-                android:text="@string/view_seletced_images"
+                android:text="@string/view_selected_images"
                 android:textColor="@color/light_red"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textStyle="normal">
             </Button>
 
@@ -207,7 +281,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:text="@string/macros">
     </TextView>
 
@@ -220,11 +294,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
 
-        app:contentPaddingLeft="15dp"
-        app:contentPaddingRight="15dp"
-        app:contentPaddingTop="10dp"
-        app:contentPaddingBottom="5dp"
-        app:cardCornerRadius="10dp">
+        app:contentPaddingLeft="10dp"
+        app:contentPaddingRight="10dp"
+        app:cardCornerRadius="5dp">
 
         <RelativeLayout
             android:id="@+id/macros_layout"
@@ -235,9 +307,10 @@
                 android:id="@+id/protein_text_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
+                android:paddingBottom="16dp"
                 android:gravity="center_vertical"
                 android:hint="@string/protein"
+                android:textSize="14sp"
                 android:backgroundTint="@color/light_gray"
                 android:inputType="numberDecimal"
                 android:importantForAutofill="no">
@@ -248,9 +321,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/protein_text_edit"
-                android:paddingBottom="20dp"
+                android:paddingBottom="16dp"
                 android:gravity="center_vertical"
                 android:hint="@string/carbs"
+                android:textSize="14sp"
                 android:backgroundTint="@color/light_gray"
                 android:inputType="numberDecimal"
                 android:importantForAutofill="no">
@@ -261,9 +335,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/carbs_text_edit"
-                android:paddingBottom="20dp"
+                android:paddingBottom="16dp"
                 android:gravity="center_vertical"
                 android:hint="@string/fats"
+                android:textSize="14sp"
                 android:backgroundTint="@color/light_gray"
                 android:inputType="numberDecimal"
                 android:importantForAutofill="no">
@@ -280,14 +355,14 @@
         android:layout_below="@+id/macros_card_view"
         android:gravity="center"
         android:layout_margin="20dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:backgroundTint="@color/red"
         android:text="@string/save_entry"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="normal"
-        app:cornerRadius="10dp">
+        app:cornerRadius="5dp">
     </Button>
 
 </RelativeLayout>
