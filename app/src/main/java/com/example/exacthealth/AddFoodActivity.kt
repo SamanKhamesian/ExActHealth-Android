@@ -10,12 +10,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class MainActivity : AppCompatActivity()
+class AddFoodActivity : AppCompatActivity()
 {
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_add_food)
 
         val foodDateLayout = findViewById<TextInputLayout>(R.id.food_date_layout)
         val foodDateInput = findViewById<TextInputEditText>(R.id.food_date_input)

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@color/light_gray"
-    tools:context=".MainActivity">
+    tools:context=".AddFoodActivity">
 
     <RelativeLayout
         android:id="@+id/toolbar_layout"
@@ -140,18 +140,18 @@
                 android:weightSum="12">
 
                 <TextView
-                    android:layout_weight="5"
+                    android:layout_weight="4.5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
                     android:text="@string/select_date_and_time_title"
-                    android:textSize="14sp">
+                    android:textSize="13sp">
                 </TextView>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/food_date_layout"
-                    android:layout_weight="4"
+                    android:layout_weight="4.5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
