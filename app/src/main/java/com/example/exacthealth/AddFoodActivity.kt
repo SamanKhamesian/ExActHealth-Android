@@ -2,8 +2,11 @@ package com.example.exacthealth
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -23,6 +26,9 @@ class AddFoodActivity : AppCompatActivity()
         val foodTimeLayout = findViewById<TextInputLayout>(R.id.food_time_layout)
         val foodTimeInput = findViewById<TextInputEditText>(R.id.food_time_input)
 
+        val calendarButton = findViewById<RelativeLayout>(R.id.back_to_calendar_layout)
+        val favoriteFoodButton = findViewById<ConstraintLayout>(R.id.add_from_favorites_layout)
+
         setDefaultDateTime(foodDateInput, foodTimeInput)
 
         foodDateInput.setOnClickListener {
@@ -31,6 +37,16 @@ class AddFoodActivity : AppCompatActivity()
 
         foodTimeInput.setOnClickListener {
             setTime(foodTimeInput)
+        }
+
+        calendarButton.setOnClickListener {
+            val intent = Intent(this, CalendarActivity::class.java)
+            startActivity(intent)
+        }
+
+        favoriteFoodButton.setOnClickListener {
+            val intent = Intent(this, FavoriteFoodActivity::class.java)
+            startActivity(intent)
         }
     }
 

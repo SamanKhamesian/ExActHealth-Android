@@ -19,7 +19,7 @@
         android:layout_alignEnd="@+id/food_details_text_view">
 
         <RelativeLayout
-            android:id="@+id/back_layout"
+            android:id="@+id/back_to_calendar_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -41,7 +41,7 @@
                 android:layout_alignTop="@+id/back_image"
                 android:layout_marginStart="5dp"
                 android:gravity="center"
-                android:text="Calender"
+                android:text="Calendar"
                 android:textColor="@color/red"
                 android:textStyle="bold"
                 android:textSize="16sp">
@@ -50,7 +50,7 @@
         </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/forward_layout"
+            android:id="@+id/add_from_favorites_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
