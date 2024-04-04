@@ -266,7 +266,8 @@
                 android:text="@string/view_selected_images"
                 android:textColor="@color/light_red"
                 android:textSize="14sp"
-                android:textStyle="normal">
+                android:textStyle="normal"
+                android:enabled="false">
             </Button>
 
         </RelativeLayout>
