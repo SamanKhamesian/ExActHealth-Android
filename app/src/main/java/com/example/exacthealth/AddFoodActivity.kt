@@ -22,6 +22,7 @@ import java.util.Locale
 class AddFoodActivity : AppCompatActivity()
 {
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
+    private lateinit var selectedImagesUriList: ArrayList<Uri>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -58,7 +59,8 @@ class AddFoodActivity : AppCompatActivity()
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
             {
-                val selectedImagesUriList = mutableListOf<Uri>()
+                selectedImagesUriList = ArrayList()
+
                 val intent = result.data
                 intent?.clipData?.let { clipData ->
                     for (i in 0 until clipData.itemCount)
@@ -79,6 +81,12 @@ class AddFoodActivity : AppCompatActivity()
                 selectedImagesButton.isEnabled = true
                 selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
             }
+        }
+
+        selectedImagesButton.setOnClickListener {
+            val intent = Intent(this, SelectedImagesActivity::class.java)
+            intent.putParcelableArrayListExtra("ImagesList", selectedImagesUriList)
+            startActivity(intent)
         }
 
         calendarButton.setOnClickListener {
