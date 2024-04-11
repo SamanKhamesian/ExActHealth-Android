@@ -1,7 +1,6 @@
 package com.example.exacthealth
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -61,9 +60,9 @@ class ImageAdapter(context: Context, private val resource: Int, private val imag
 
     private class ViewHolder(view: View)
     {
-        val imageView1: ImageView = view.findViewById(R.id.image_view1)
-        val imageView2: ImageView = view.findViewById(R.id.image_view2)
-        val imageView3: ImageView = view.findViewById(R.id.image_view3)
+        val imageView1: ImageView = view.findViewById(R.id.favorite_food_image_view1)
+        val imageView2: ImageView = view.findViewById(R.id.favorite_food_image_view2)
+        val imageView3: ImageView = view.findViewById(R.id.favorite_food_image_view3)
     }
 }
 
@@ -73,14 +72,14 @@ class SelectedImagesActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_selected_images)
-        val listViewImages = findViewById<ListView>(R.id.list_view_images)
+        val listViewImages = findViewById<ListView>(R.id.favorite_food_list_view)
         val selectedImagesArray = intent.getParcelableArrayListExtra<Uri>("ImagesList")
 
         // Create and set adapter
         val adapter = ImageAdapter(this, R.layout.list_selected_images, selectedImagesArray.orEmpty())
         listViewImages.adapter = adapter
 
-        val backToFoodDetailsButton = findViewById<RelativeLayout>(R.id.back_to_food_details)
+        val backToFoodDetailsButton = findViewById<RelativeLayout>(R.id.back_to_food_details_layout)
 
         backToFoodDetailsButton.setOnClickListener {
             onBackPressed()

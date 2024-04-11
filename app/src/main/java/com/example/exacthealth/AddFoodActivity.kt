@@ -29,14 +29,14 @@ class AddFoodActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
 
-        val foodDateLayout = findViewById<TextInputLayout>(R.id.food_date_layout)
-        val foodDateInput = findViewById<TextInputEditText>(R.id.food_date_input)
+        val foodDateLayout = findViewById<TextInputLayout>(R.id.food_details_date_layout)
+        val foodDateInput = findViewById<TextInputEditText>(R.id.food_details_date_input)
 
-        val foodTimeLayout = findViewById<TextInputLayout>(R.id.food_time_layout)
-        val foodTimeInput = findViewById<TextInputEditText>(R.id.food_time_input)
+        val foodTimeLayout = findViewById<TextInputLayout>(R.id.food_details_time_layout)
+        val foodTimeInput = findViewById<TextInputEditText>(R.id.food_details_time_input)
 
-        val pickImagesButton = findViewById<Button>(R.id.pick_images_button)
-        val selectedImagesButton = findViewById<Button>(R.id.selected_images_button)
+        val pickImagesButton = findViewById<Button>(R.id.food_details_pick_images_button)
+        val selectedImagesButton = findViewById<Button>(R.id.food_details_selected_images_button)
 
         val calendarButton = findViewById<RelativeLayout>(R.id.back_to_calendar_layout)
         val favoriteFoodButton = findViewById<ConstraintLayout>(R.id.add_from_favorites_layout)

@@ -8,7 +8,7 @@
     android:paddingBottom="5dp">
 
     <ImageView
-        android:id="@+id/image_view1"
+        android:id="@+id/favorite_food_image_view1"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_weight="1"
@@ -16,7 +16,7 @@
         android:scaleType="centerCrop" />
 
     <ImageView
-        android:id="@+id/image_view2"
+        android:id="@+id/favorite_food_image_view2"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_weight="1"
@@ -24,7 +24,7 @@
         android:scaleType="centerCrop" />
 
     <ImageView
-        android:id="@+id/image_view3"
+        android:id="@+id/favorite_food_image_view3"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_weight="1"

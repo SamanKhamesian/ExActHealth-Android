@@ -11,12 +11,12 @@
     tools:context=".AddFoodActivity">
 
     <RelativeLayout
-        android:id="@+id/toolbar_layout"
+        android:id="@+id/food_details_toolbar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_alignStart="@+id/food_details_text_view"
-        android:layout_alignEnd="@+id/food_details_text_view">
+        android:layout_alignStart="@+id/food_details_title"
+        android:layout_alignEnd="@+id/food_details_title">
 
         <RelativeLayout
             android:id="@+id/back_to_calendar_layout"
@@ -26,7 +26,7 @@
             android:focusable="true">
 
             <ImageView
-                android:id="@+id/back_image"
+                android:id="@+id/back_to_calendar_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/back_button">
@@ -36,9 +36,9 @@
                 android:id="@+id/back_to_calendar_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/back_image"
-                android:layout_alignBottom="@+id/back_image"
-                android:layout_alignTop="@+id/back_image"
+                android:layout_toEndOf="@+id/back_to_calendar_icon"
+                android:layout_alignBottom="@+id/back_to_calendar_icon"
+                android:layout_alignTop="@+id/back_to_calendar_icon"
                 android:layout_marginStart="5dp"
                 android:gravity="center"
                 android:text="Calendar"
@@ -58,7 +58,7 @@
             android:focusable="true">
 
             <TextView
-                android:id="@+id/add_from_favorites_view"
+                android:id="@+id/add_from_favorites_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
@@ -67,13 +67,13 @@
                 android:textColor="@color/red"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/forward_image"
-                app:layout_constraintEnd_toStartOf="@+id/forward_image"
-                app:layout_constraintTop_toTopOf="@+id/forward_image">
+                app:layout_constraintBottom_toBottomOf="@+id/add_from_favorites_icon"
+                app:layout_constraintEnd_toStartOf="@+id/add_from_favorites_icon"
+                app:layout_constraintTop_toTopOf="@+id/add_from_favorites_icon">
             </TextView>
 
             <ImageView
-                android:id="@+id/forward_image"
+                android:id="@+id/add_from_favorites_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/forward_button"
@@ -86,10 +86,10 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/food_details_text_view"
+        android:id="@+id/food_details_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar_layout"
+        android:layout_below="@+id/food_details_toolbar_layout"
         android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -101,7 +101,7 @@
         android:id="@+id/food_details_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/food_details_text_view"
+        android:layout_below="@+id/food_details_title"
         android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -111,7 +111,7 @@
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
-            android:id="@+id/food_layout"
+            android:id="@+id/food_details_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -129,7 +129,7 @@
             </EditText>
 
             <LinearLayout
-                android:id="@+id/food_date_time_layout"
+                android:id="@+id/food_details_date_time_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/food_name_text_edit"
@@ -140,6 +140,7 @@
                 android:weightSum="12">
 
                 <TextView
+                    android:id="@+id/food_details_date_time_text"
                     android:layout_weight="4.5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -150,7 +151,7 @@
                 </TextView>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/food_date_layout"
+                    android:id="@+id/food_details_date_layout"
                     android:layout_weight="4.5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -160,7 +161,7 @@
                     app:boxBackgroundColor="@color/mid_gray">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/food_date_input"
+                        android:id="@+id/food_details_date_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -176,7 +177,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/food_time_layout"
+                    android:id="@+id/food_details_time_layout"
                     android:layout_weight="3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -184,7 +185,7 @@
                     app:boxBackgroundColor="@color/mid_gray">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/food_time_input"
+                        android:id="@+id/food_details_time_input"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -206,7 +207,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/images_title"
+        android:id="@+id/food_details_images_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/food_details_card_view"
@@ -218,10 +219,10 @@
     </TextView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/images_card_view"
+        android:id="@+id/food_details_images_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/images_title"
+        android:layout_below="@+id/food_details_images_title"
         android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -231,12 +232,12 @@
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
-            android:id="@+id/images_layout"
+            android:id="@+id/food_details_images_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/pick_images_button"
+                android:id="@+id/food_details_pick_images_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -250,16 +251,16 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_below="@+id/pick_images_button"
+                android:layout_below="@+id/food_details_pick_images_button"
                 android:layout_height="1dp"
                 android:background="@color/mid_gray">
             </View>
 
             <Button
-                android:id="@+id/selected_images_button"
+                android:id="@+id/food_details_selected_images_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/pick_images_button"
+                android:layout_below="@+id/food_details_pick_images_button"
                 android:gravity="center_vertical"
                 android:padding="0dp"
                 android:backgroundTint="@color/white"
@@ -275,10 +276,10 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/macros_title"
+        android:id="@+id/food_details_macros_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/images_card_view"
+        android:layout_below="@+id/food_details_images_card_view"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -290,7 +291,7 @@
         android:id="@+id/macros_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/macros_title"
+        android:layout_below="@+id/food_details_macros_title"
         android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -300,7 +301,7 @@
         app:cardCornerRadius="5dp">
 
         <RelativeLayout
-            android:id="@+id/macros_layout"
+            android:id="@+id/food_details_macros_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -350,7 +351,7 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/save_entry_button"
+        android:id="@+id/food_details_save_entry_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/macros_card_view"

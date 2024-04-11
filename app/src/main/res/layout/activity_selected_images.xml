@@ -7,7 +7,7 @@
     android:background="@color/light_gray">
 
     <RelativeLayout
-        android:id="@+id/toolbar_layout_2"
+        android:id="@+id/favorite_food_toolbar_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -17,14 +17,14 @@
         android:layout_alignParentStart="true">
 
         <RelativeLayout
-            android:id="@+id/back_to_food_details"
+            android:id="@+id/back_to_food_details_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true">
 
             <ImageView
-                android:id="@+id/back_image_2"
+                android:id="@+id/back_to_food_details_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/back_button">
@@ -34,9 +34,9 @@
                 android:id="@+id/back_to_food_details_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/back_image_2"
-                android:layout_alignBottom="@+id/back_image_2"
-                android:layout_alignTop="@+id/back_image_2"
+                android:layout_toEndOf="@+id/back_to_food_details_icon"
+                android:layout_alignBottom="@+id/back_to_food_details_icon"
+                android:layout_alignTop="@+id/back_to_food_details_icon"
                 android:layout_marginStart="5dp"
                 android:gravity="center"
                 android:text="Back"
@@ -48,7 +48,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/selected_images_text_view"
+            android:id="@+id/selected_images_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -60,11 +60,11 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/list_view_images"
+        android:id="@+id/favorite_food_list_view"
         android:background="@color/light_gray"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_layout_2"
+        android:layout_below="@id/favorite_food_toolbar_layout"
         android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"

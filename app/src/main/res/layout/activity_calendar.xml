@@ -1,10 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarActivity">
+    android:background="@color/light_gray">
+
+    <RelativeLayout
+        android:id="@+id/calendar_toolbar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/add_food_details_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:text="+"
+            android:textColor="@color/red"
+            android:textSize="32sp"
+            android:clickable="true"
+            android:focusable="true">
+        </TextView>
+
+        <TextView
+            android:id="@+id/calendar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Calendar"
+            android:textStyle="bold"
+            android:textSize="16sp">
+        </TextView>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/calendar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendar_toolbar_layout"
+        android:layout_marginTop="30dp"
+        android:background="@color/light_gray"
+        android:orientation="vertical"
+        android:layout_weight="2"
+        tools:context=".CalendarActivity">
+
+        <CalendarView
+            android:id="@+id/calendar_widget"
+            android:theme="@style/DialogTheme"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        </CalendarView>
+    </LinearLayout>
 
 </RelativeLayout>
