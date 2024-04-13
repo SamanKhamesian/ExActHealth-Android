@@ -7,7 +7,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
+import android.widget.EditText
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +23,7 @@ import java.util.Locale
 
 class AddFoodActivity : AppCompatActivity()
 {
+    private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedImagesUriList: ArrayList<Uri>
 
@@ -28,6 +31,10 @@ class AddFoodActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
+
+        foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
+
+        val foodName = findViewById<EditText>(R.id.food_name_text_edit)
 
         val foodDateLayout = findViewById<TextInputLayout>(R.id.food_details_date_layout)
         val foodDateInput = findViewById<TextInputEditText>(R.id.food_details_date_input)
@@ -38,8 +45,14 @@ class AddFoodActivity : AppCompatActivity()
         val pickImagesButton = findViewById<Button>(R.id.food_details_pick_images_button)
         val selectedImagesButton = findViewById<Button>(R.id.food_details_selected_images_button)
 
+        val foodProtein = findViewById<EditText>(R.id.protein_text_edit)
+        val foodCarb = findViewById<EditText>(R.id.carbs_text_edit)
+        val foodFat = findViewById<EditText>(R.id.fats_text_edit)
+
         val calendarButton = findViewById<RelativeLayout>(R.id.back_to_calendar_layout)
         val favoriteFoodButton = findViewById<ConstraintLayout>(R.id.add_from_favorites_layout)
+
+        val saveEntryButton = findViewById<Button>(R.id.food_details_save_entry_button)
 
         setDefaultDateTime(foodDateInput, foodTimeInput)
 
@@ -97,6 +110,68 @@ class AddFoodActivity : AppCompatActivity()
         favoriteFoodButton.setOnClickListener {
             val intent = Intent(this, FavoriteFoodActivity::class.java)
             startActivity(intent)
+        }
+
+        saveEntryButton.setOnClickListener {
+
+            if (foodName.text.isNullOrEmpty())
+            {
+                Toast.makeText(this, "Food name cannot be empty!", Toast.LENGTH_LONG).show()
+            }
+            else
+            {
+                val foodDetails: Food
+
+                if (selectedImagesUriList.isEmpty() && foodProtein.text.isNullOrEmpty())
+                {
+                    foodDetails =
+                        Food(foodName.text.toString(), foodDateInput.text.toString(), foodTimeInput.text.toString())
+                }
+                else if (selectedImagesUriList.isNotEmpty() && foodProtein.text.isNullOrEmpty())
+                {
+                    foodDetails = Food(foodName.text.toString(),
+                                       foodDateInput.text.toString(),
+                                       foodTimeInput.text.toString(),
+                                       selectedImagesUriList)
+                }
+                else if (selectedImagesUriList.isEmpty() && foodProtein.text.isNotEmpty())
+                {
+                    foodDetails = Food(foodName.text.toString(),
+                                       foodDateInput.text.toString(),
+                                       foodTimeInput.text.toString(),
+                                       foodProtein.text.toString().toDouble(),
+                                       foodCarb.text.toString().toDouble(),
+                                       foodFat.text.toString().toDouble())
+                }
+                else if (selectedImagesUriList.isNotEmpty() && foodProtein.text.isNotEmpty())
+                {
+                    foodDetails = Food(foodName.text.toString(),
+                                       foodDateInput.text.toString(),
+                                       foodTimeInput.text.toString(),
+                                       selectedImagesUriList,
+                                       foodProtein.text.toString().toDouble(),
+                                       foodCarb.text.toString().toDouble(),
+                                       foodFat.text.toString().toDouble())
+                }
+                else
+                {
+                    // Handle unexpected case
+                    return@setOnClickListener
+                }
+
+                foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
+
+                // Optionally, you can also clear the form fields here if needed
+                // Clear the form fields after saving the entry
+                foodName.text.clear()
+                foodProtein.text.clear()
+                foodCarb.text.clear()
+                foodFat.text.clear()
+                selectedImagesUriList.clear()
+                setDefaultDateTime(foodDateInput, foodTimeInput)
+                selectedImagesButton.isEnabled = false
+                selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+            }
         }
     }
 
