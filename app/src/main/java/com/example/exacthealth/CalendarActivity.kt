@@ -2,7 +2,9 @@ package com.example.exacthealth
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.CalendarView
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import java.util.Locale
 class CalendarActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
+    private lateinit var foodListView: ListView
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -21,25 +24,29 @@ class CalendarActivity : AppCompatActivity()
 
         // Initialize FoodSharedPreferencesManager
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
+        foodListView = findViewById<ListView>(R.id.calendar_food_list)
 
         val calendarView = findViewById<CalendarView>(R.id.calendar_widget)
         val addFoodDetailsButton = findViewById<TextView>(R.id.add_food_details_icon)
 
         // Set initial date to current date
         val currentDate = Calendar.getInstance()
+        calendarView.date = currentDate.timeInMillis
+
         val currentYear = currentDate.get(Calendar.YEAR)
         val currentMonth = currentDate.get(Calendar.MONTH)
         val currentDayOfMonth = currentDate.get(Calendar.DAY_OF_MONTH)
-        calendarView.date = currentDate.timeInMillis
+
+        val selectedDateFormat = formatDate(currentYear, currentMonth, currentDayOfMonth)
+        val foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
+        updateListView(foodList)
 
         // Listen for date change events
         calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             // Handle date change
-            val selectedDate = Calendar.getInstance()
-            selectedDate.set(year, month, dayOfMonth)
-
             val selectedDateFormat = formatDate(year, month, dayOfMonth)
             val foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
+            updateListView(foodList)
             showFoodListToast(selectedDateFormat, foodList)
         }
 
@@ -57,33 +64,27 @@ class CalendarActivity : AppCompatActivity()
         return dateFormat.format(calendar.time)
     }
 
-    private fun showFoodListToast(date: String, foodList: MutableList<Food>?)
+    private fun updateListView(foodList: MutableList<FoodDetails>)
     {
-        val message = if (!foodList.isNullOrEmpty())
+        if (foodList.isNotEmpty())
         {
-            val foodIntakeInfo = StringBuilder()
+            foodListView.visibility = View.VISIBLE
 
-            // Extract food intake information
-            for ((index, food) in foodList.withIndex())
-            {
-                foodIntakeInfo.append("Food ${index + 1}:\n")
-                foodIntakeInfo.append("Name: ${food.name}\n")
-                foodIntakeInfo.append("Protein: ${food.protein}\n")
-                foodIntakeInfo.append("Carbs: ${food.carb}\n")
-                foodIntakeInfo.append("Fat: ${food.fat}\n")
-                foodIntakeInfo.append("\n")
-            }
-
-            // Create the message
-            val messageHeader = "Food list for $date:\n"
-            val fullMessage = messageHeader + foodIntakeInfo.toString()
-            fullMessage
+            val adapter = FoodListAdapter(this, foodList)
+            foodListView.adapter = adapter
         }
         else
         {
-            "No food entries for $date"
+            foodListView.visibility = View.INVISIBLE
         }
+    }
 
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    private fun showFoodListToast(date: String, foodList: MutableList<FoodDetails>?)
+    {
+        if (foodList.isNullOrEmpty())
+        {
+            val message = "No food entries for $date"
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }
     }
 }

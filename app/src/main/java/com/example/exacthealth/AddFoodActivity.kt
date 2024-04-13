@@ -116,42 +116,42 @@ class AddFoodActivity : AppCompatActivity()
 
             if (foodName.text.isNullOrEmpty())
             {
-                Toast.makeText(this, "Food name cannot be empty!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "FoodDetails name cannot be empty!", Toast.LENGTH_LONG).show()
             }
             else
             {
-                val foodDetails: Food
+                val foodDetails: FoodDetails
 
                 if (selectedImagesUriList.isEmpty() && foodProtein.text.isNullOrEmpty())
                 {
                     foodDetails =
-                        Food(foodName.text.toString(), foodDateInput.text.toString(), foodTimeInput.text.toString())
+                        FoodDetails(foodName.text.toString(), foodDateInput.text.toString(), foodTimeInput.text.toString())
                 }
                 else if (selectedImagesUriList.isNotEmpty() && foodProtein.text.isNullOrEmpty())
                 {
-                    foodDetails = Food(foodName.text.toString(),
-                                       foodDateInput.text.toString(),
-                                       foodTimeInput.text.toString(),
-                                       selectedImagesUriList)
+                    foodDetails = FoodDetails(foodName.text.toString(),
+                                              foodDateInput.text.toString(),
+                                              foodTimeInput.text.toString(),
+                                              selectedImagesUriList)
                 }
                 else if (selectedImagesUriList.isEmpty() && foodProtein.text.isNotEmpty())
                 {
-                    foodDetails = Food(foodName.text.toString(),
-                                       foodDateInput.text.toString(),
-                                       foodTimeInput.text.toString(),
-                                       foodProtein.text.toString().toDouble(),
-                                       foodCarb.text.toString().toDouble(),
-                                       foodFat.text.toString().toDouble())
+                    foodDetails = FoodDetails(foodName.text.toString(),
+                                              foodDateInput.text.toString(),
+                                              foodTimeInput.text.toString(),
+                                              foodProtein.text.toString().toDouble(),
+                                              foodCarb.text.toString().toDouble(),
+                                              foodFat.text.toString().toDouble())
                 }
                 else if (selectedImagesUriList.isNotEmpty() && foodProtein.text.isNotEmpty())
                 {
-                    foodDetails = Food(foodName.text.toString(),
-                                       foodDateInput.text.toString(),
-                                       foodTimeInput.text.toString(),
-                                       selectedImagesUriList,
-                                       foodProtein.text.toString().toDouble(),
-                                       foodCarb.text.toString().toDouble(),
-                                       foodFat.text.toString().toDouble())
+                    foodDetails = FoodDetails(foodName.text.toString(),
+                                              foodDateInput.text.toString(),
+                                              foodTimeInput.text.toString(),
+                                              selectedImagesUriList,
+                                              foodProtein.text.toString().toDouble(),
+                                              foodCarb.text.toString().toDouble(),
+                                              foodFat.text.toString().toDouble())
                 }
                 else
                 {

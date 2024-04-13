@@ -44,24 +44,27 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/calendar_layout"
+    <CalendarView
+        android:id="@+id/calendar_widget"
+        android:theme="@style/DialogTheme"
+        android:background="@color/light_gray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/calendar_toolbar_layout"
-        android:layout_marginTop="30dp"
-        android:background="@color/light_gray"
-        android:orientation="vertical"
-        android:layout_weight="2"
-        tools:context=".CalendarActivity">
+        android:layout_marginTop="30dp">
+    </CalendarView>
 
-        <CalendarView
-            android:id="@+id/calendar_widget"
-            android:theme="@style/DialogTheme"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-        </CalendarView>
-    </LinearLayout>
+    <ListView
+        android:id="@+id/calendar_food_list"
+        android:background="@color/light_gray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendar_widget"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:dividerHeight="10dp"
+        android:divider="@color/light_gray"
+        android:visibility="invisible" />
 
 </RelativeLayout>

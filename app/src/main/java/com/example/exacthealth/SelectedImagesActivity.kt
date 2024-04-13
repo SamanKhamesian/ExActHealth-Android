@@ -12,59 +12,6 @@ import android.widget.ListView
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 
-class ImageAdapter(context: Context, private val resource: Int, private val images: List<Uri>) : ArrayAdapter<Uri>(
-    context,
-    resource,
-    images)
-{
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        val viewHolder: ViewHolder
-
-        if (itemView == null) {
-            itemView = LayoutInflater.from(context).inflate(resource, parent, false)
-            viewHolder = ViewHolder(itemView)
-            itemView.tag = viewHolder
-        } else {
-            viewHolder = itemView.tag as ViewHolder
-        }
-
-        val startIndex = position * 3
-        val endIndex = minOf(startIndex + 3, images.size) // Ensure endIndex doesn't exceed the size of the images list
-
-        // Hide all image views initially
-        viewHolder.imageView1.visibility = View.INVISIBLE
-        viewHolder.imageView2.visibility = View.INVISIBLE
-        viewHolder.imageView3.visibility = View.INVISIBLE
-
-        // Display images
-        for ((index, i) in (startIndex until endIndex).withIndex()) {
-            when (index) {
-                0 -> {
-                    viewHolder.imageView1.setImageURI(images[i])
-                    viewHolder.imageView1.visibility = View.VISIBLE
-                }
-                1 -> {
-                    viewHolder.imageView2.setImageURI(images[i])
-                    viewHolder.imageView2.visibility = View.VISIBLE
-                }
-                2 -> {
-                    viewHolder.imageView3.setImageURI(images[i])
-                    viewHolder.imageView3.visibility = View.VISIBLE
-                }
-            }
-        }
-
-        return itemView!!
-    }
-
-    private class ViewHolder(view: View)
-    {
-        val imageView1: ImageView = view.findViewById(R.id.favorite_food_image_view1)
-        val imageView2: ImageView = view.findViewById(R.id.favorite_food_image_view2)
-        val imageView3: ImageView = view.findViewById(R.id.favorite_food_image_view3)
-    }
-}
 
 class SelectedImagesActivity : AppCompatActivity()
 {
@@ -84,6 +31,71 @@ class SelectedImagesActivity : AppCompatActivity()
         backToFoodDetailsButton.setOnClickListener {
             onBackPressed()
         }
+    }
+}
+
+class ImageAdapter(context: Context, private val resource: Int, private val images: List<Uri>) : ArrayAdapter<Uri>(
+    context,
+    resource,
+    images)
+{
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
+    {
+        var itemView = convertView
+        val viewHolder: ViewHolder
+
+        if (itemView == null)
+        {
+            itemView = LayoutInflater.from(context).inflate(resource, parent, false)
+            viewHolder = ViewHolder(itemView)
+            itemView.tag = viewHolder
+        }
+        else
+        {
+            viewHolder = itemView.tag as ViewHolder
+        }
+
+        val startIndex = position * 3
+        val endIndex = minOf(startIndex + 3, images.size) // Ensure endIndex doesn't exceed the size of the images list
+
+        // Hide all image views initially
+        viewHolder.imageView1.visibility = View.INVISIBLE
+        viewHolder.imageView2.visibility = View.INVISIBLE
+        viewHolder.imageView3.visibility = View.INVISIBLE
+
+        // Display images
+        for ((index, i) in (startIndex until endIndex).withIndex())
+        {
+            when (index)
+            {
+                0 ->
+                {
+                    viewHolder.imageView1.setImageURI(images[i])
+                    viewHolder.imageView1.visibility = View.VISIBLE
+                }
+
+                1 ->
+                {
+                    viewHolder.imageView2.setImageURI(images[i])
+                    viewHolder.imageView2.visibility = View.VISIBLE
+                }
+
+                2 ->
+                {
+                    viewHolder.imageView3.setImageURI(images[i])
+                    viewHolder.imageView3.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        return itemView!!
+    }
+
+    private class ViewHolder(view: View)
+    {
+        val imageView1: ImageView = view.findViewById(R.id.favorite_food_image_view1)
+        val imageView2: ImageView = view.findViewById(R.id.favorite_food_image_view2)
+        val imageView3: ImageView = view.findViewById(R.id.favorite_food_image_view3)
     }
 }
 
