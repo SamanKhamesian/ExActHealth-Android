@@ -314,7 +314,7 @@
                 android:hint="@string/protein"
                 android:textSize="14sp"
                 android:backgroundTint="@color/light_gray"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:importantForAutofill="no">
             </EditText>
 
@@ -328,7 +328,7 @@
                 android:hint="@string/carbs"
                 android:textSize="14sp"
                 android:backgroundTint="@color/light_gray"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:importantForAutofill="no">
             </EditText>
 
@@ -342,7 +342,7 @@
                 android:hint="@string/fats"
                 android:textSize="14sp"
                 android:backgroundTint="@color/light_gray"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:importantForAutofill="no">
             </EditText>
 

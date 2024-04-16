@@ -17,12 +17,13 @@ class FoodDetails
     var name: String = ""
     var date: String = ""
     var time: String = ""
-    var images: ArrayList<Uri>? = null
-    var protein: Double? = null
-    var carb: Double? = null
-    var fat: Double? = null
+    var images: ArrayList<Uri>? = ArrayList()
+    var protein: Int? = null
+    var carbs: Int? = null
+    var fats: Int? = null
 
     // Constructor with required attributes
+    // Primary constructor with required parameters
     constructor(name: String, date: String, time: String)
     {
         this.name = name
@@ -30,42 +31,19 @@ class FoodDetails
         this.time = time
     }
 
-    // Constructor with optional images attribute
-    constructor(name: String, date: String, time: String, images: ArrayList<Uri>)
-    {
-        this.name = name
-        this.date = convertDateFormat(date)
-        this.time = time
-        this.images = images
-    }
-
-    // Constructor with optional nutrition attributes
-    constructor(name: String, date: String, time: String, protein: Double?, carb: Double?, fat: Double?)
-    {
-        this.name = name
-        this.date = convertDateFormat(date)
-        this.time = time
-        this.protein = protein
-        this.carb = carb
-        this.fat = fat
-    }
-
-    // Constructor with optional nutrition attributes
+    // Secondary constructor with optional parameters
     constructor(name: String,
                 date: String,
                 time: String,
-                images: ArrayList<Uri>,
-                protein: Double?,
-                carb: Double?,
-                fat: Double?)
+                images: ArrayList<Uri>? = ArrayList(),
+                protein: Int? = null,
+                carbs: Int? = null,
+                fats: Int? = null) : this(name, date, time)
     {
-        this.name = name
-        this.date = convertDateFormat(date)
-        this.time = time
         this.images = images
         this.protein = protein
-        this.carb = carb
-        this.fat = fat
+        this.carbs = carbs
+        this.fats = fats
     }
 
     private fun convertDateFormat(inputDate: String): String
@@ -126,10 +104,10 @@ class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDe
         val carbsTextView: TextView = itemView.findViewById(R.id.carbsTextView)
         val fatTextView: TextView = itemView.findViewById(R.id.fatTextView)
 
-        nameTextView.text = "Name: ${food.name}"
-        proteinTextView.text = "Protein: ${food.protein}"
-        carbsTextView.text = "Carbs: ${food.carb}"
-        fatTextView.text = "Fat: ${food.fat}"
+        nameTextView.text = food.name
+        proteinTextView.text = "Protein (g): ${food.protein ?: "N/A"}"
+        carbsTextView.text = "Carbs (g): ${food.carbs ?: "N/A"}"
+        fatTextView.text = "Fats (g): ${food.fats ?: "N/A"}"
 
         return itemView
     }
