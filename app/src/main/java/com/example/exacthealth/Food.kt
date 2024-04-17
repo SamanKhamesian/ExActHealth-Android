@@ -6,6 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.TextView
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -85,30 +89,5 @@ class FoodSharedPreferencesManager(private val context: Context)
         val foodList = loadFoodList(date)
         foodList.add(foodItem)
         saveFoodList(date, foodList)
-    }
-}
-
-class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDetails>) : ArrayAdapter<FoodDetails>(
-    context,
-    0,
-    foodList)
-{
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
-    {
-        val itemView = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_saved_food, parent, false)
-
-        val food = foodList[position]
-
-        val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
-        val proteinTextView: TextView = itemView.findViewById(R.id.proteinTextView)
-        val carbsTextView: TextView = itemView.findViewById(R.id.carbsTextView)
-        val fatTextView: TextView = itemView.findViewById(R.id.fatTextView)
-
-        nameTextView.text = food.name
-        proteinTextView.text = "Protein (g): ${food.protein ?: "N/A"}"
-        carbsTextView.text = "Carbs (g): ${food.carbs ?: "N/A"}"
-        fatTextView.text = "Fats (g): ${food.fats ?: "N/A"}"
-
-        return itemView
     }
 }

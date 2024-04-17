@@ -19,7 +19,7 @@ class SelectedImagesActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_selected_images)
-        val listViewImages = findViewById<ListView>(R.id.favorite_food_list_view)
+        val listViewImages = findViewById<ListView>(R.id.selected_images_list_view)
         val selectedImagesArray = intent.getParcelableArrayListExtra<Uri>("ImagesList")
 
         // Create and set adapter
