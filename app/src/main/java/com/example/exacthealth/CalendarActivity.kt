@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
 import android.widget.CalendarView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -28,6 +27,8 @@ class CalendarActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var foodListView: ListView
+    private val PERMISSION_CODE = 1001
+    var foodList: MutableList<FoodDetails> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -49,22 +50,74 @@ class CalendarActivity : AppCompatActivity()
         val currentMonth = currentDate.get(Calendar.MONTH)
         val currentDayOfMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
-        val selectedDateFormat = formatDate(currentYear, currentMonth, currentDayOfMonth)
-        val foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
-        updateListView(foodList)
+        var selectedDateFormat = formatDate(currentYear, currentMonth, currentDayOfMonth)
+        foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
+
+        // Check if permission is granted before loading images
+        if (checkPermission())
+        {
+            // Permission is already granted, load the images
+            updateListView(foodList)
+        }
+        else
+        {
+            // Request permission from the user
+            requestPermission()
+        }
 
         // Listen for date change events
         calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             // Handle date change
-            val selectedDateFormat = formatDate(year, month, dayOfMonth)
-            val foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
-            updateListView(foodList)
+            selectedDateFormat = formatDate(year, month, dayOfMonth)
+            foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
+            // Check if permission is granted before loading images
+            if (checkPermission())
+            {
+                // Permission is already granted, load the images
+                updateListView(foodList)
+            }
+            else
+            {
+                // Request permission from the user
+                requestPermission()
+            }
             showFoodListToast(selectedDateFormat, foodList)
         }
 
         addFoodDetailsButton.setOnClickListener {
             val intent = Intent(this, AddFoodActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun checkPermission(): Boolean
+    {
+        // Check if permission is granted
+        return ContextCompat.checkSelfPermission(this,
+                                                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermission()
+    {
+        // Request permission from the user
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_CODE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_CODE)
+        {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                // Permission granted, load the images
+                updateListView(foodList)
+            }
+            else
+            {
+                // Permission denied, handle accordingly
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -127,9 +180,9 @@ class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDe
         val listView: ListView = itemView.findViewById(R.id.food_images_list_view)
         imagesLayout.visibility = View.INVISIBLE
 
-        if (!food.images.isNullOrEmpty())
+        if (!food.paths.isNullOrEmpty())
         {
-            val adapter = FoodImageAdapter(context, R.layout.list_saved_food_images, food.images!!)
+            val adapter = FoodImageAdapter(context, R.layout.list_saved_food_images, food.paths!!)
             listView.adapter = adapter
             imagesLayout.visibility = View.VISIBLE
         }
@@ -142,17 +195,15 @@ class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDe
     }
 }
 
-class FoodImageAdapter(private val context: Context, private val resource: Int, private val images: ArrayList<Uri>) : ArrayAdapter<Uri>(
-    context,
-    resource,
-    images)
+class FoodImageAdapter(private val context: Context, private val resource: Int, private val images: ArrayList<String>) :
+        ArrayAdapter<String>(context, resource, images)
 {
     override fun getCount(): Int
     {
         return images.size
     }
 
-    override fun getItem(position: Int): Uri
+    override fun getItem(position: Int): String
     {
         return images[position]
     }
@@ -164,11 +215,11 @@ class FoodImageAdapter(private val context: Context, private val resource: Int, 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
-        val view: View =
-            convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
+        val view: View = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
         val imageView: ImageView = view.findViewById(R.id.saved_food_image_view)
-        val imageUri = images[position]
-        imageView.setImageURI(imageUri)
+        val imagePath = images[position]
+        val fileUri = Uri.parse("file://$imagePath")
+        imageView.setImageURI(fileUri)
         return view
     }
 }

@@ -26,6 +26,7 @@ class AddFoodActivity : AppCompatActivity()
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
     private var selectedImagesUriList: ArrayList<Uri> = ArrayList()
+    private var selectedImagesPathList: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -73,17 +74,22 @@ class AddFoodActivity : AppCompatActivity()
             if (result.resultCode == RESULT_OK)
             {
                 selectedImagesUriList = ArrayList()
+                selectedImagesPathList = ArrayList()
 
                 val intent = result.data
                 intent?.clipData?.let { clipData ->
                     for (i in 0 until clipData.itemCount)
                     {
                         val uri = clipData.getItemAt(i).uri
+                        val path = getPathFromUri(uri)
+                        path?.let { selectedImagesPathList.add(it) }
                         selectedImagesUriList.add(uri)
                     }
                 } ?: run {
                     val uri = intent?.data
                     uri?.let {
+                        val path = getPathFromUri(uri)
+                        path?.let { selectedImagesPathList.add(it) }
                         selectedImagesUriList.add(uri)
                     }
                 }
@@ -124,6 +130,7 @@ class AddFoodActivity : AppCompatActivity()
                                               foodDateInput.text.toString(),
                                               foodTimeInput.text.toString(),
                                               selectedImagesUriList,
+                                              selectedImagesPathList,
                                               foodProtein.text.toString().toIntOrNull(),
                                               foodCarbs.text.toString().toIntOrNull(),
                                               foodFats.text.toString().toIntOrNull())
@@ -159,6 +166,19 @@ class AddFoodActivity : AppCompatActivity()
 
         foodTimeInput.setText(timeFormat.format(currentTime.time))
         foodDateInput.setText(dateFormat.format(currentTime.time))
+    }
+
+    // Function to get the path from URI
+    private fun getPathFromUri(uri: Uri): String?
+    {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+        cursor?.use {
+            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            it.moveToFirst()
+            return it.getString(columnIndex)
+        }
+        return null
     }
 
     private fun setDate(input: TextInputEditText)

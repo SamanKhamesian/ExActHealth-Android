@@ -2,15 +2,6 @@ package com.example.exacthealth
 
 import android.content.Context
 import android.net.Uri
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.TextView
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
@@ -22,6 +13,7 @@ class FoodDetails
     var date: String = ""
     var time: String = ""
     var images: ArrayList<Uri>? = ArrayList()
+    var paths: ArrayList<String>? = ArrayList()
     var protein: Int? = null
     var carbs: Int? = null
     var fats: Int? = null
@@ -40,11 +32,13 @@ class FoodDetails
                 date: String,
                 time: String,
                 images: ArrayList<Uri>? = ArrayList(),
+                paths: ArrayList<String>? = ArrayList(),
                 protein: Int? = null,
                 carbs: Int? = null,
                 fats: Int? = null) : this(name, date, time)
     {
         this.images = images
+        this.paths = paths
         this.protein = protein
         this.carbs = carbs
         this.fats = fats
