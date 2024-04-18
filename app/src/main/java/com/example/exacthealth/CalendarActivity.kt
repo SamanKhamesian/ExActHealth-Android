@@ -12,13 +12,14 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CalendarView
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -176,14 +177,16 @@ class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDe
         fatTextView.text = "Fats (g): ${food.fats ?: "N/A"}"
 
         // Inside your activity or fragment
-        val imagesLayout: LinearLayout = itemView.findViewById(R.id.food_images_layout)
-        val listView: ListView = itemView.findViewById(R.id.food_images_list_view)
+        val imagesLayout: RecyclerView = itemView.findViewById(R.id.food_images_list_view)
+        imagesLayout.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         imagesLayout.visibility = View.INVISIBLE
 
         if (!food.paths.isNullOrEmpty())
         {
-            val adapter = FoodImageAdapter(context, R.layout.list_saved_food_images, food.paths!!)
-            listView.adapter = adapter
+            // Sample list of image URLs
+            val imageUrls = food.paths
+            val adapter = imageUrls?.let { FoodImageAdapter(it) }
+            imagesLayout.adapter = adapter
             imagesLayout.visibility = View.VISIBLE
         }
         else
@@ -195,31 +198,29 @@ class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDe
     }
 }
 
-class FoodImageAdapter(private val context: Context, private val resource: Int, private val images: ArrayList<String>) :
-        ArrayAdapter<String>(context, resource, images)
+class FoodImageAdapter(private val images: ArrayList<String>) : RecyclerView.Adapter<FoodImageAdapter.ImageViewHolder>()
 {
-    override fun getCount(): Int
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder
+    {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_saved_food_images, parent, false)
+        return ImageViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ImageViewHolder, position: Int)
+    {
+        val imagePath = images[position]
+        val fileUri = Uri.parse("file://$imagePath")
+        holder.imageView.setImageURI(fileUri)
+    }
+
+    override fun getItemCount(): Int
     {
         return images.size
     }
 
-    override fun getItem(position: Int): String
+    class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     {
-        return images[position]
-    }
-
-    override fun getItemId(position: Int): Long
-    {
-        return position.toLong()
-    }
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
-    {
-        val view: View = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
-        val imageView: ImageView = view.findViewById(R.id.saved_food_image_view)
-        val imagePath = images[position]
-        val fileUri = Uri.parse("file://$imagePath")
-        imageView.setImageURI(fileUri)
-        return view
+        val imageView: ImageView = itemView.findViewById(R.id.saved_food_image_view)
     }
 }
