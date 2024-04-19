@@ -1,4 +1,4 @@
-package com.example.exacthealth
+package com.example.exacthealth.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -15,6 +15,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.example.exacthealth.R
+import com.example.exacthealth.classes.FoodDetails
+import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat

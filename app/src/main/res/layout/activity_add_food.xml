@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@color/light_gray"
-    tools:context=".AddFoodActivity">
+    tools:context=".activities.AddFoodActivity">
 
     <RelativeLayout
         android:id="@+id/food_details_toolbar_layout"

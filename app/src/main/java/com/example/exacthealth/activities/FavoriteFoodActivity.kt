@@ -1,8 +1,8 @@
-package com.example.exacthealth
+package com.example.exacthealth.activities
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.exacthealth.R
 
 class FavoriteFoodActivity : AppCompatActivity()
 {

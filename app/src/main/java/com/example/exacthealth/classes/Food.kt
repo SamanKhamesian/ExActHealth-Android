@@ -1,4 +1,4 @@
-package com.example.exacthealth
+package com.example.exacthealth.classes
 
 import android.content.Context
 import android.net.Uri
@@ -12,8 +12,8 @@ class FoodDetails
     var name: String = ""
     var date: String = ""
     var time: String = ""
-    var images: ArrayList<Uri>? = ArrayList()
-    var paths: ArrayList<String>? = ArrayList()
+    var images: ArrayList<Uri> = ArrayList()
+    var paths: ArrayList<String> = ArrayList()
     var protein: Int? = null
     var carbs: Int? = null
     var fats: Int? = null
@@ -31,8 +31,8 @@ class FoodDetails
     constructor(name: String,
                 date: String,
                 time: String,
-                images: ArrayList<Uri>? = ArrayList(),
-                paths: ArrayList<String>? = ArrayList(),
+                images: ArrayList<Uri> = ArrayList(),
+                paths: ArrayList<String> = ArrayList(),
                 protein: Int? = null,
                 carbs: Int? = null,
                 fats: Int? = null) : this(name, date, time)
@@ -48,7 +48,6 @@ class FoodDetails
     {
         val inputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
         val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-
         val newDate = inputFormat.parse(inputDate)
         return outputFormat.format(newDate!!)
     }

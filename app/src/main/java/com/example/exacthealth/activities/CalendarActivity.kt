@@ -1,25 +1,21 @@
-package com.example.exacthealth
+package com.example.exacthealth.activities
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.CalendarView
-import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.exacthealth.R
+import com.example.exacthealth.classes.FoodDetails
+import com.example.exacthealth.classes.FoodListAdapter
+import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -152,75 +148,5 @@ class CalendarActivity : AppCompatActivity()
             val message = "No food entries for $date"
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         }
-    }
-}
-
-class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDetails>) : ArrayAdapter<FoodDetails>(
-    context,
-    0,
-    foodList)
-{
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
-    {
-        val itemView = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_saved_food, parent, false)
-
-        val food = foodList[position]
-
-        val nameTextView: TextView = itemView.findViewById(R.id.saved_food_name_text_view)
-        val proteinTextView: TextView = itemView.findViewById(R.id.saved_food_protein_text_view)
-        val carbsTextView: TextView = itemView.findViewById(R.id.saved_food_carbs_text_view)
-        val fatTextView: TextView = itemView.findViewById(R.id.saved_fat_text_view)
-
-        nameTextView.text = food.name
-        proteinTextView.text = "Protein (g): ${food.protein ?: "N/A"}"
-        carbsTextView.text = "Carbs (g): ${food.carbs ?: "N/A"}"
-        fatTextView.text = "Fats (g): ${food.fats ?: "N/A"}"
-
-        // Inside your activity or fragment
-        val imagesLayout: RecyclerView = itemView.findViewById(R.id.food_images_list_view)
-        imagesLayout.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        imagesLayout.visibility = View.INVISIBLE
-
-        if (!food.paths.isNullOrEmpty())
-        {
-            // Sample list of image URLs
-            val imageUrls = food.paths
-            val adapter = imageUrls?.let { FoodImageAdapter(it) }
-            imagesLayout.adapter = adapter
-            imagesLayout.visibility = View.VISIBLE
-        }
-        else
-        {
-            imagesLayout.visibility = View.INVISIBLE
-        }
-
-        return itemView
-    }
-}
-
-class FoodImageAdapter(private val images: ArrayList<String>) : RecyclerView.Adapter<FoodImageAdapter.ImageViewHolder>()
-{
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder
-    {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_saved_food_images, parent, false)
-        return ImageViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ImageViewHolder, position: Int)
-    {
-        val imagePath = images[position]
-        val fileUri = Uri.parse("file://$imagePath")
-        holder.imageView.setImageURI(fileUri)
-    }
-
-    override fun getItemCount(): Int
-    {
-        return images.size
-    }
-
-    class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    {
-        val imageView: ImageView = itemView.findViewById(R.id.saved_food_image_view)
     }
 }

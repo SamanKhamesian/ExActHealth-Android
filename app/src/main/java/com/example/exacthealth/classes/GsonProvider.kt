@@ -1,4 +1,4 @@
-package com.example.exacthealth
+package com.example.exacthealth.classes
 
 import android.net.Uri
 import com.google.gson.Gson
