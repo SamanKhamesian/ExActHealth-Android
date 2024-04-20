@@ -5,6 +5,69 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     tools:context=".activities.FavoriteFoodActivity">
+
+    <RelativeLayout
+        android:id="@+id/favorite_foods_toolbar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="30dp">
+
+        <RelativeLayout
+            android:id="@+id/back_to_food_details_layout_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/back_to_food_details_icon_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back_button">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/back_to_food_details_text_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/back_to_food_details_icon_2"
+                android:layout_alignBottom="@+id/back_to_food_details_icon_2"
+                android:layout_alignTop="@+id/back_to_food_details_icon_2"
+                android:layout_marginStart="5dp"
+                android:gravity="center"
+                android:text="Back"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                android:textSize="16sp">
+            </TextView>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/choose_favorite_food_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Choose a Favorite"
+            android:textSize="16sp"
+            android:textStyle="bold">
+        </TextView>
+
+        <ImageView
+            android:id="@+id/add_new_favorite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/plus_button"
+            android:gravity="center">
+        </ImageView>
+
+    </RelativeLayout>
 
 </RelativeLayout>

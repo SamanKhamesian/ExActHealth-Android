@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.CalendarView
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -37,7 +38,7 @@ class CalendarActivity : AppCompatActivity()
         foodListView = findViewById<ListView>(R.id.calendar_food_list)
 
         val calendarView = findViewById<CalendarView>(R.id.calendar_widget)
-        val addFoodDetailsButton = findViewById<TextView>(R.id.add_food_details_icon)
+        val addFoodDetailsButton = findViewById<ImageView>(R.id.add_food_details_icon)
 
         // Set initial date to current date
         val currentDate = Calendar.getInstance()
