@@ -130,7 +130,7 @@ class AddFoodActivity : AppCompatActivity()
             else
             {
                 val foodDetails = FoodDetails(foodName.text.toString(),
-                                              foodDateInput.text.toString(),
+                                              convertDateFormat(foodDateInput.text.toString()),
                                               foodTimeInput.text.toString(),
                                               selectedImagesUriList,
                                               selectedImagesPathList,
@@ -169,6 +169,14 @@ class AddFoodActivity : AppCompatActivity()
 
         foodTimeInput.setText(timeFormat.format(currentTime.time))
         foodDateInput.setText(dateFormat.format(currentTime.time))
+    }
+
+    private fun convertDateFormat(inputDate: String): String
+    {
+        val inputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
+        val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val newDate = inputFormat.parse(inputDate)
+        return outputFormat.format(newDate!!)
     }
 
     // Function to get the path from URI

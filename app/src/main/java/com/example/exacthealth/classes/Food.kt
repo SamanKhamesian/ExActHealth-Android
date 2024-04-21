@@ -23,7 +23,7 @@ class FoodDetails
     constructor(name: String, date: String, time: String)
     {
         this.name = name
-        this.date = convertDateFormat(date)
+        this.date = date
         this.time = time
     }
 
@@ -42,14 +42,6 @@ class FoodDetails
         this.protein = protein
         this.carbs = carbs
         this.fats = fats
-    }
-
-    private fun convertDateFormat(inputDate: String): String
-    {
-        val inputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
-        val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val newDate = inputFormat.parse(inputDate)
-        return outputFormat.format(newDate!!)
     }
 }
 

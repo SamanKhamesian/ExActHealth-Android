@@ -15,6 +15,9 @@ import androidx.core.content.ContextCompat
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class AddFavoriteFoodActivity : AppCompatActivity()
 {
@@ -96,9 +99,16 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                 }
                 else
                 {
+                    val calendarInstance = Calendar.getInstance()
+
+                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val currentDate = dateFormat.format(calendarInstance.time)
+                    val currentTime = timeFormat.format(calendarInstance.time)
+
                     val foodDetails = FoodDetails(foodName.text.toString(),
-                                                  "",
-                                                  "",
+                                                  currentDate,
+                                                  currentTime,
                                                   selectedImagesUriList,
                                                   selectedImagesPathList,
                                                   foodProtein.text.toString().toIntOrNull(),
