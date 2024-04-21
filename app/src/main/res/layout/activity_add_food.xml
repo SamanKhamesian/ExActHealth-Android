@@ -117,6 +117,7 @@
 
             <EditText
                 android:id="@+id/food_name_text_edit"
+                android:theme="@style/DialogTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp"
@@ -307,6 +308,7 @@
 
             <EditText
                 android:id="@+id/protein_text_edit"
+                android:theme="@style/DialogTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="16dp"
@@ -320,6 +322,7 @@
 
             <EditText
                 android:id="@+id/carbs_text_edit"
+                android:theme="@style/DialogTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/protein_text_edit"
@@ -334,6 +337,7 @@
 
             <EditText
                 android:id="@+id/fats_text_edit"
+                android:theme="@style/DialogTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/carbs_text_edit"

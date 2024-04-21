@@ -53,7 +53,7 @@ class AddFoodActivity : AppCompatActivity()
         val foodCarbs = findViewById<EditText>(R.id.carbs_text_edit)
         val foodFats = findViewById<EditText>(R.id.fats_text_edit)
 
-        val calendarButton = findViewById<RelativeLayout>(R.id.back_to_calendar_layout)
+        val backToCalendarButton = findViewById<RelativeLayout>(R.id.back_to_calendar_layout)
         val favoriteFoodButton = findViewById<ConstraintLayout>(R.id.add_from_favorites_layout)
 
         val saveEntryButton = findViewById<Button>(R.id.food_details_save_entry_button)
@@ -111,7 +111,7 @@ class AddFoodActivity : AppCompatActivity()
             startActivity(intent)
         }
 
-        calendarButton.setOnClickListener {
+        backToCalendarButton.setOnClickListener {
             val intent = Intent(this, CalendarActivity::class.java)
             startActivity(intent)
         }
