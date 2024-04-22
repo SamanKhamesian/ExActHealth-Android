@@ -14,7 +14,7 @@ import com.example.exacthealth.R
 
 class SelectedImageAdapter(context: Context,
                            private val resource: Int,
-                           private val images: List<Uri>) : ArrayAdapter<Uri>(context, resource, images)
+                           private val images: List<String>) : ArrayAdapter<String>(context, resource, images)
 {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
@@ -47,19 +47,25 @@ class SelectedImageAdapter(context: Context,
             {
                 0 ->
                 {
-                    viewHolder.imageView1.setImageURI(images[i])
+                    val imagePath = images[i]
+                    val fileUri = Uri.parse("file://$imagePath")
+                    viewHolder.imageView1.setImageURI(fileUri)
                     viewHolder.imageView1.visibility = View.VISIBLE
                 }
 
                 1 ->
                 {
-                    viewHolder.imageView2.setImageURI(images[i])
+                    val imagePath = images[i]
+                    val fileUri = Uri.parse("file://$imagePath")
+                    viewHolder.imageView2.setImageURI(fileUri)
                     viewHolder.imageView2.visibility = View.VISIBLE
                 }
 
                 2 ->
                 {
-                    viewHolder.imageView3.setImageURI(images[i])
+                    val imagePath = images[i]
+                    val fileUri = Uri.parse("file://$imagePath")
+                    viewHolder.imageView3.setImageURI(fileUri)
                     viewHolder.imageView3.visibility = View.VISIBLE
                 }
             }
@@ -103,8 +109,8 @@ open class FoodListAdapter(context: Context,
         if (food.paths.isNotEmpty())
         {
             // Sample list of image URLs
-            val imageUrls = food.paths
-            val adapter = FoodImageAdapter(imageUrls)
+            val imagesPathList = food.paths
+            val adapter = FoodImageAdapter(imagesPathList)
             imagesLayout.adapter = adapter
             imagesLayout.visibility = View.VISIBLE
         }

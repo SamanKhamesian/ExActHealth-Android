@@ -12,7 +12,6 @@ class FoodDetails
     var name: String = ""
     var date: String = ""
     var time: String = ""
-    var images: ArrayList<Uri> = ArrayList()
     var paths: ArrayList<String> = ArrayList()
     var protein: Int? = null
     var carbs: Int? = null
@@ -31,13 +30,11 @@ class FoodDetails
     constructor(name: String,
                 date: String,
                 time: String,
-                images: ArrayList<Uri> = ArrayList(),
                 paths: ArrayList<String> = ArrayList(),
                 protein: Int? = null,
                 carbs: Int? = null,
                 fats: Int? = null) : this(name, date, time)
     {
-        this.images = images
         this.paths = paths
         this.protein = protein
         this.carbs = carbs

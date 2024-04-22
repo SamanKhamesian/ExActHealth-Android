@@ -28,7 +28,6 @@ class AddFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
-    private var selectedImagesUriList: ArrayList<Uri> = ArrayList()
     private var selectedImagesPathList: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -76,7 +75,6 @@ class AddFoodActivity : AppCompatActivity()
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
             {
-                selectedImagesUriList = ArrayList()
                 selectedImagesPathList = ArrayList()
 
                 val intent = result.data
@@ -86,19 +84,17 @@ class AddFoodActivity : AppCompatActivity()
                         val uri = clipData.getItemAt(i).uri
                         val path = getPathFromUri(uri)
                         path?.let { selectedImagesPathList.add(it) }
-                        selectedImagesUriList.add(uri)
                     }
                 } ?: run {
                     val uri = intent?.data
                     uri?.let {
                         val path = getPathFromUri(uri)
                         path?.let { selectedImagesPathList.add(it) }
-                        selectedImagesUriList.add(uri)
                     }
                 }
 
                 // Do something with the list of selected image URIs
-                println("Selected ${selectedImagesUriList.size} images")
+                println("Selected : ${selectedImagesPathList}")
                 // Enable the button
                 selectedImagesButton.isEnabled = true
                 selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
@@ -107,7 +103,7 @@ class AddFoodActivity : AppCompatActivity()
 
         selectedImagesButton.setOnClickListener {
             val intent = Intent(this, SelectedImagesActivity::class.java)
-            intent.putParcelableArrayListExtra("ImagesList", selectedImagesUriList)
+            intent.putExtra("imagesPathList", selectedImagesPathList)
             startActivity(intent)
         }
 
@@ -132,7 +128,6 @@ class AddFoodActivity : AppCompatActivity()
                 val foodDetails = FoodDetails(foodName.text.toString(),
                                               convertDateFormat(foodDateInput.text.toString()),
                                               foodTimeInput.text.toString(),
-                                              selectedImagesUriList,
                                               selectedImagesPathList,
                                               foodProtein.text.toString().toIntOrNull(),
                                               foodCarbs.text.toString().toIntOrNull(),
@@ -146,7 +141,6 @@ class AddFoodActivity : AppCompatActivity()
                 foodProtein.text.clear()
                 foodCarbs.text.clear()
                 foodFats.text.clear()
-                selectedImagesUriList.clear()
                 setDefaultDateTime(foodDateInput, foodTimeInput)
                 selectedImagesButton.isEnabled = false
                 selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
