@@ -76,10 +76,8 @@ class SelectedImageAdapter(context: Context,
     }
 }
 
-class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDetails>) : ArrayAdapter<FoodDetails>(
-    context,
-    0,
-    foodList)
+open class FoodListAdapter(context: Context,
+                           val foodList: MutableList<FoodDetails>) : ArrayAdapter<FoodDetails>(context, 0, foodList)
 {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
@@ -113,6 +111,25 @@ class FoodListAdapter(context: Context, private val foodList: MutableList<FoodDe
         else
         {
             imagesLayout.visibility = View.INVISIBLE
+        }
+
+        return itemView
+    }
+}
+
+class FavoriteFoodListAdapter(context: Context,
+                              foodList: MutableList<FoodDetails>,
+                              private val itemClickListener: (FoodDetails) -> Unit) : FoodListAdapter(context, foodList)
+{
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
+    {
+        // Use the parent class's getView method to set up the view
+        val itemView = super.getView(position, convertView, parent)
+
+        // Customize the click listener for this adapter
+        itemView.setOnClickListener {
+            val item = foodList[position]
+            itemClickListener(item)
         }
 
         return itemView

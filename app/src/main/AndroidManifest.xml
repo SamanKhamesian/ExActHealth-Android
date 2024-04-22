@@ -42,6 +42,11 @@
             android:exported="false"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".activities.AddFoodFromFavoriteActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

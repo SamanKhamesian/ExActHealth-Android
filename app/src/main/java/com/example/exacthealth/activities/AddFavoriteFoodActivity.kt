@@ -60,6 +60,46 @@ class AddFavoriteFoodActivity : AppCompatActivity()
             startActivity(intent)
         }
 
+        saveEntryButton.setOnClickListener {
+
+            if (foodName.text.isNullOrEmpty())
+            {
+                Toast.makeText(this, "Food name cannot be empty!", Toast.LENGTH_LONG).show()
+            }
+            else
+            {
+                val calendarInstance = Calendar.getInstance()
+
+                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val currentDate = dateFormat.format(calendarInstance.time)
+                val currentTime = timeFormat.format(calendarInstance.time)
+
+                val foodDetails = FoodDetails(foodName.text.toString(),
+                                              currentDate,
+                                              currentTime,
+                                              selectedImagesUriList,
+                                              selectedImagesPathList,
+                                              foodProtein.text.toString().toIntOrNull(),
+                                              foodCarbs.text.toString().toIntOrNull(),
+                                              foodFats.text.toString().toIntOrNull())
+
+                println("SAMAN: " + foodDetails.name)
+
+                foodSharedPreferencesManager.addFoodItem("none", foodDetails)
+
+                // Optionally, you can also clear the form fields here if needed
+                // Clear the form fields after saving the entry
+                foodName.text.clear()
+                foodProtein.text.clear()
+                foodCarbs.text.clear()
+                foodFats.text.clear()
+                selectedImagesUriList.clear()
+                selectedImagesButton.isEnabled = false
+                selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+            }
+        }
+
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
             {
@@ -89,44 +129,6 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                 // Enable the button
                 selectedImagesButton.isEnabled = true
                 selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
-            }
-
-            saveEntryButton.setOnClickListener {
-
-                if (foodName.text.isNullOrEmpty())
-                {
-                    Toast.makeText(this, "Food name cannot be empty!", Toast.LENGTH_LONG).show()
-                }
-                else
-                {
-                    val calendarInstance = Calendar.getInstance()
-
-                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val currentDate = dateFormat.format(calendarInstance.time)
-                    val currentTime = timeFormat.format(calendarInstance.time)
-
-                    val foodDetails = FoodDetails(foodName.text.toString(),
-                                                  currentDate,
-                                                  currentTime,
-                                                  selectedImagesUriList,
-                                                  selectedImagesPathList,
-                                                  foodProtein.text.toString().toIntOrNull(),
-                                                  foodCarbs.text.toString().toIntOrNull(),
-                                                  foodFats.text.toString().toIntOrNull())
-
-                    foodSharedPreferencesManager.addFoodItem("none", foodDetails)
-
-                    // Optionally, you can also clear the form fields here if needed
-                    // Clear the form fields after saving the entry
-                    foodName.text.clear()
-                    foodProtein.text.clear()
-                    foodCarbs.text.clear()
-                    foodFats.text.clear()
-                    selectedImagesUriList.clear()
-                    selectedImagesButton.isEnabled = false
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
-                }
             }
         }
     }

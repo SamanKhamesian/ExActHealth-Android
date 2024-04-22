@@ -8,8 +8,8 @@ import android.widget.ListView
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exacthealth.R
+import com.example.exacthealth.classes.FavoriteFoodListAdapter
 import com.example.exacthealth.classes.FoodDetails
-import com.example.exacthealth.classes.FoodListAdapter
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
 
 class FavoriteFoodActivity : AppCompatActivity()
@@ -48,7 +48,17 @@ class FavoriteFoodActivity : AppCompatActivity()
         {
             foodListView.visibility = View.VISIBLE
 
-            val adapter = FoodListAdapter(this, foodList)
+            val adapter = FavoriteFoodListAdapter(this, foodList) { item ->
+                val intent = Intent(this, AddFoodFromFavoriteActivity::class.java)
+                intent.putExtra("foodName", item.name)
+                intent.putParcelableArrayListExtra("foodImagesUri", item.images)
+                intent.putExtra("foodImagesPaths", item.paths)
+                intent.putExtra("foodProtein", item.protein)
+                intent.putExtra("foodCarbs", item.carbs)
+                intent.putExtra("foodFats", item.fats)
+                startActivity(intent)
+            }
+
             foodListView.adapter = adapter
         }
         else
