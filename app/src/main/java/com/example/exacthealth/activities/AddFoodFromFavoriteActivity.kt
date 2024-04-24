@@ -1,5 +1,7 @@
 package com.example.exacthealth.activities
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -66,6 +68,14 @@ class AddFoodFromFavoriteActivity : AppCompatActivity()
         {
             selectedImagesButton.isEnabled = true
             selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+        }
+
+        foodDateInput.setOnClickListener {
+            setDate(foodDateInput)
+        }
+
+        foodTimeInput.setOnClickListener {
+            setTime(foodTimeInput)
         }
 
         selectedImagesButton.setOnClickListener {
@@ -174,6 +184,35 @@ class AddFoodFromFavoriteActivity : AppCompatActivity()
         val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val newDate = inputFormat.parse(inputDate)
         return outputFormat.format(newDate!!)
+    }
+
+    private fun setDate(input: TextInputEditText)
+    {
+        val calendar = Calendar.getInstance()
+        val y = calendar.get(Calendar.YEAR)
+        val m = calendar.get(Calendar.MONTH)
+        val d = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(this, R.style.DialogTheme, { _, year, monthOfYear, dayOfMonth ->
+            calendar.set(year, monthOfYear, dayOfMonth)
+            val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+            val selectedDate = dateFormat.format(calendar.time)
+            input.setText(selectedDate)
+        }, y, m, d)
+        datePickerDialog.show()
+    }
+
+    private fun setTime(input: TextInputEditText)
+    {
+        val calendar = Calendar.getInstance()
+        val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val timePickerDialog = TimePickerDialog(this, R.style.DialogTheme, { _, selectedHourOfDay, selectedMinute ->
+            val timeFormat = String.format("%02d:%02d", selectedHourOfDay, selectedMinute)
+            input.setText(timeFormat)
+        }, hourOfDay, minute, true)
+        timePickerDialog.show()
     }
 
     // Function to get the path from URI
