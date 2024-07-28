@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -100,6 +101,31 @@ open class FoodListAdapter(context: Context,
         "Protein (g): ${food.protein ?: "N/A"}".also { proteinTextView.text = it }
         "Carbs (g): ${food.carbs ?: "N/A"}".also { carbsTextView.text = it }
         "Fats (g): ${food.fats ?: "N/A"}".also { fatTextView.text = it }
+
+        val optionsMenu: ImageView = itemView.findViewById(R.id.saved_food_options_menu)
+        optionsMenu.setOnClickListener {
+            val popupMenu = PopupMenu(context, optionsMenu)
+            popupMenu.menuInflater.inflate(R.menu.menu_card_view, popupMenu.menu)
+            popupMenu.show()
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_edit -> {
+                        // Handle edit action
+                        true
+                    }
+                    R.id.menu_delete -> {
+                        // Handle delete action
+                        true
+                    }
+                    R.id.menu_close -> {
+                        popupMenu.dismiss()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
 
         // Inside your activity or fragment
         val imagesLayout: RecyclerView = itemView.findViewById(R.id.food_images_list_view)
