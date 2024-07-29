@@ -37,8 +37,7 @@ class FavoriteFoodActivity : AppCompatActivity()
         }
 
         backToAddFoodActivityButton.setOnClickListener {
-            val intent = Intent(this, AddFoodActivity::class.java)
-            startActivity(intent)
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 

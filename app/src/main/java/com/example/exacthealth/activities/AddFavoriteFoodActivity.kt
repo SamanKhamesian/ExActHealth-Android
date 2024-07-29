@@ -15,9 +15,7 @@ import androidx.core.content.ContextCompat
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+
 
 class AddFavoriteFoodActivity : AppCompatActivity()
 {
@@ -49,8 +47,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         }
 
         backToFavoriteFoodsButton.setOnClickListener {
-            val intent = Intent(this, FavoriteFoodActivity::class.java)
-            startActivity(intent)
+            onBackPressedDispatcher.onBackPressed()
         }
 
         selectedImagesButton.setOnClickListener {
@@ -67,12 +64,8 @@ class AddFavoriteFoodActivity : AppCompatActivity()
             }
             else
             {
-                val calendarInstance = Calendar.getInstance()
-
-                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val currentDate = dateFormat.format(calendarInstance.time)
-                val currentTime = timeFormat.format(calendarInstance.time)
+                val currentDate = "none"
+                val currentTime = "none"
 
                 val foodDetails = FoodDetails(foodName.text.toString(),
                                               currentDate,
@@ -83,15 +76,8 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                                               foodFats.text.toString().toIntOrNull())
 
                 foodSharedPreferencesManager.addFoodItem("none", foodDetails)
-
-                // Optionally, you can also clear the form fields here if needed
-                // Clear the form fields after saving the entry
-                foodName.text.clear()
-                foodProtein.text.clear()
-                foodCarbs.text.clear()
-                foodFats.text.clear()
-                selectedImagesButton.isEnabled = false
-                selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+                val intent = Intent(this, FavoriteFoodActivity::class.java)
+                startActivity(intent)
             }
         }
 
