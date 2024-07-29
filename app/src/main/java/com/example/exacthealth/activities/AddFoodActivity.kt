@@ -2,6 +2,7 @@ package com.example.exacthealth.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -135,8 +136,8 @@ class AddFoodActivity : AppCompatActivity()
 
                 foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
 
-                // Optionally, you can also clear the form fields here if needed
-                // Clear the form fields after saving the entry
+                showDeletedFoodToast(this)
+
                 foodName.text.clear()
                 foodProtein.text.clear()
                 foodCarbs.text.clear()
@@ -213,5 +214,11 @@ class AddFoodActivity : AppCompatActivity()
             input.setText(timeFormat)
         }, hourOfDay, minute, true)
         timePickerDialog.show()
+    }
+
+    private fun showDeletedFoodToast(context: Context)
+    {
+        val message = "Item is added successfully"
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 }

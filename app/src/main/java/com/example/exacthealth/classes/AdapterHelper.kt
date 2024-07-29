@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exacthealth.R
@@ -88,6 +89,7 @@ open class FoodListAdapter(context: Context,
 {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
+        val foodSharedPreferencesManager = FoodSharedPreferencesManager(context)
         val itemView = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_saved_food, parent, false)
 
         val food = foodList[position]
@@ -103,29 +105,6 @@ open class FoodListAdapter(context: Context,
         "Fats (g): ${food.fats ?: "N/A"}".also { fatTextView.text = it }
 
         val optionsMenu: ImageView = itemView.findViewById(R.id.saved_food_options_menu)
-        optionsMenu.setOnClickListener {
-            val popupMenu = PopupMenu(context, optionsMenu)
-            popupMenu.menuInflater.inflate(R.menu.menu_card_view, popupMenu.menu)
-            popupMenu.show()
-
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.menu_edit -> {
-                        // Handle edit action
-                        true
-                    }
-                    R.id.menu_delete -> {
-                        // Handle delete action
-                        true
-                    }
-                    R.id.menu_close -> {
-                        popupMenu.dismiss()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }
 
         // Inside your activity or fragment
         val imagesLayout: RecyclerView = itemView.findViewById(R.id.food_images_list_view)
@@ -143,6 +122,33 @@ open class FoodListAdapter(context: Context,
         else
         {
             imagesLayout.visibility = View.INVISIBLE
+        }
+
+        optionsMenu.setOnClickListener {
+            val popupMenu = PopupMenu(context, optionsMenu)
+            popupMenu.menuInflater.inflate(R.menu.menu_card_view, popupMenu.menu)
+            popupMenu.show()
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_edit -> {
+                        // Handle edit action
+                        true
+                    }
+                    R.id.menu_delete -> {
+                        foodList.removeAt(position)
+                        foodSharedPreferencesManager.saveFoodList(food.date, foodList)
+                        notifyDataSetChanged()
+                        showDeletedFoodToast(context)
+                        true
+                    }
+                    R.id.menu_close -> {
+                        popupMenu.dismiss()
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
 
         return itemView
@@ -192,4 +198,10 @@ class FoodImageAdapter(private val images: ArrayList<String>) : RecyclerView.Ada
     {
         val imageView: ImageView = itemView.findViewById(R.id.saved_food_image_view)
     }
+}
+
+private fun showDeletedFoodToast(context: Context)
+{
+    val message = "Item is deleted successfully"
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }

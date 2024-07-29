@@ -46,7 +46,7 @@ class FoodSharedPreferencesManager(private val context: Context)
 {
     private val sharedPreferences = context.getSharedPreferences("food_data", Context.MODE_PRIVATE)
 
-    private fun saveFoodList(date: String, foodList: List<FoodDetails>)
+    fun saveFoodList(date: String, foodList: List<FoodDetails>)
     {
         val editor = sharedPreferences.edit()
         val json = GsonProvider.gson.toJson(foodList)
@@ -70,6 +70,13 @@ class FoodSharedPreferencesManager(private val context: Context)
     {
         val foodList = loadFoodList(date)
         foodList.add(foodItem)
+        saveFoodList(date, foodList)
+    }
+
+    fun deleteFoodItem(date: String, position: Int)
+    {
+        val foodList = loadFoodList(date)
+        foodList.removeAt(position)
         saveFoodList(date, foodList)
     }
 }
