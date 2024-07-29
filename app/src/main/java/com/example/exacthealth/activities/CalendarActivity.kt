@@ -24,64 +24,47 @@ class CalendarActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var foodListView: ListView
+    private lateinit var foodList: MutableList<FoodDetails>
+
     private val PERMISSION_CODE = 1001
-    var foodList: MutableList<FoodDetails> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
 
-        // Initialize FoodSharedPreferencesManager
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
-        foodListView = findViewById<ListView>(R.id.calendar_food_list)
+        foodListView = findViewById(R.id.calendar_food_list)
+        foodList = ArrayList()
 
         val calendarView = findViewById<CalendarView>(R.id.calendar_widget)
-        val addFoodDetailsButton = findViewById<ImageView>(R.id.add_food_details_icon)
+        val addNewFood = findViewById<ImageView>(R.id.add_food_details_icon)
 
-        // Set initial date to current date
         val currentDate = Calendar.getInstance()
-        calendarView.date = currentDate.timeInMillis
 
         val currentYear = currentDate.get(Calendar.YEAR)
         val currentMonth = currentDate.get(Calendar.MONTH)
         val currentDayOfMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
         var selectedDateFormat = formatDate(currentYear, currentMonth, currentDayOfMonth)
+
+        calendarView.date = currentDate.timeInMillis
         foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
 
-        // Check if permission is granted before loading images
-        if (checkPermission())
-        {
-            // Permission is already granted, load the images
-            updateListView(foodList)
-        }
-        else
-        {
-            // Request permission from the user
-            requestPermission()
-        }
+        if (checkPermission()) updateListView(foodList)
+        else requestPermission()
 
-        // Listen for date change events
-        calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            // Handle date change
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDateFormat = formatDate(year, month, dayOfMonth)
             foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
-            // Check if permission is granted before loading images
-            if (checkPermission())
-            {
-                // Permission is already granted, load the images
-                updateListView(foodList)
-            }
-            else
-            {
-                // Request permission from the user
-                requestPermission()
-            }
-            showFoodListToast(selectedDateFormat, foodList)
+
+            if (checkPermission()) updateListView(foodList)
+            else requestPermission()
+
+            if (foodList.isEmpty()) showFoodListToast(selectedDateFormat)
         }
 
-        addFoodDetailsButton.setOnClickListener {
+        addNewFood.setOnClickListener {
             val intent = Intent(this, AddFoodActivity::class.java)
             intent.putExtra("from", "calendar")
             startActivity(intent)
@@ -90,14 +73,12 @@ class CalendarActivity : AppCompatActivity()
 
     private fun checkPermission(): Boolean
     {
-        // Check if permission is granted
         return ContextCompat.checkSelfPermission(this,
                                                  Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission()
     {
-        // Request permission from the user
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_CODE)
     }
 
@@ -106,16 +87,9 @@ class CalendarActivity : AppCompatActivity()
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_CODE)
         {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                // Permission granted, load the images
-                updateListView(foodList)
-            }
-            else
-            {
-                // Permission denied, handle accordingly
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-            }
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) updateListView(
+                foodList)
+            else showPermissionDeniedToast()
         }
     }
 
@@ -142,12 +116,15 @@ class CalendarActivity : AppCompatActivity()
         }
     }
 
-    private fun showFoodListToast(date: String, foodList: MutableList<FoodDetails>?)
+    private fun showFoodListToast(date: String)
     {
-        if (foodList.isNullOrEmpty())
-        {
-            val message = "No food entries for $date"
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        }
+        val message = "No food entries for $date"
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showPermissionDeniedToast()
+    {
+        val message = "Permission denied"
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

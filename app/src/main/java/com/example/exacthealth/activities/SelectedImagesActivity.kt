@@ -1,6 +1,5 @@
 package com.example.exacthealth.activities
 
-import android.net.Uri
 import android.os.Bundle
 import android.widget.ListView
 import android.widget.RelativeLayout
@@ -15,6 +14,7 @@ class SelectedImagesActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_selected_images)
+
         val listViewImages = findViewById<ListView>(R.id.selected_images_list_view)
         val selectedImagesArray = intent.getStringArrayListExtra("imagesPathList")
 

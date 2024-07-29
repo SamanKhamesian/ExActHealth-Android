@@ -21,7 +21,6 @@ class AddFavoriteFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
-    private var selectedImagesPathList: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -42,6 +41,8 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         val backToFavoriteFoodsButton = findViewById<RelativeLayout>(R.id.back_to_favorite_food_layout)
         val saveEntryButton = findViewById<Button>(R.id.favorite_food_save_entry_button)
 
+        var selectedImagesPathList: ArrayList<String> = ArrayList()
+
         pickImagesButton.setOnClickListener {
             openGalleryForMultipleImages()
         }
@@ -60,7 +61,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
 
             if (foodName.text.isNullOrEmpty())
             {
-                Toast.makeText(this, "Food name cannot be empty!", Toast.LENGTH_LONG).show()
+                showFoodNameErrorToast()
             }
             else
             {
@@ -76,6 +77,8 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                                               foodFats.text.toString().toIntOrNull())
 
                 foodSharedPreferencesManager.addFoodItem("none", foodDetails)
+
+                showSaveFavoriteFoodToast()
                 val intent = Intent(this, FavoriteFoodActivity::class.java)
                 startActivity(intent)
             }
@@ -102,9 +105,6 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                     }
                 }
 
-                // Do something with the list of selected image URIs
-                println("Selected ${selectedImagesPathList.size} images")
-                // Enable the button
                 selectedImagesButton.isEnabled = true
                 selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
             }
@@ -129,5 +129,17 @@ class AddFavoriteFoodActivity : AppCompatActivity()
             return it.getString(columnIndex)
         }
         return null
+    }
+
+    private fun showSaveFavoriteFoodToast()
+    {
+        val message = "Item is saved successfully"
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showFoodNameErrorToast()
+    {
+        val message = "Food name cannot be empty!"
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

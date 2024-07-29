@@ -15,7 +15,6 @@ import com.example.exacthealth.classes.FoodSharedPreferencesManager
 class FavoriteFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
-    var foodList: MutableList<FoodDetails> = ArrayList()
     private lateinit var foodListView: ListView
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -27,8 +26,9 @@ class FavoriteFoodActivity : AppCompatActivity()
         val backToAddFoodActivityButton = findViewById<RelativeLayout>(R.id.back_to_food_details_layout_2)
 
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
-        foodListView = findViewById<ListView>(R.id.favorite_foods_list_view)
-        foodList = foodSharedPreferencesManager.loadFoodList("none")
+        foodListView = findViewById(R.id.favorite_foods_list_view)
+        val foodList = foodSharedPreferencesManager.loadFoodList("none")
+
         updateListView(foodList)
 
         addNewFavoriteFoodButton.setOnClickListener {

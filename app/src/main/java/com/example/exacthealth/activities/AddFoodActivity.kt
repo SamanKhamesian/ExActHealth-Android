@@ -129,7 +129,7 @@ class AddFoodActivity : AppCompatActivity()
 
             if (foodName.text.isNullOrEmpty())
             {
-                Toast.makeText(this, "Food name cannot be empty!", Toast.LENGTH_LONG).show()
+                showFoodNameErrorToast()
             }
             else
             {
@@ -143,7 +143,7 @@ class AddFoodActivity : AppCompatActivity()
 
                 foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
 
-                showDeletedFoodToast(this)
+                showAddFoodToast()
 
                 foodName.text.clear()
                 foodProtein.text.clear()
@@ -193,13 +193,9 @@ class AddFoodActivity : AppCompatActivity()
     private fun setDefaultValue(item: EditText, value: Int)
     {
         if (value != -1)
-        {
             item.setText(value.toString())
-        }
         else
-        {
             item.text = null
-        }
     }
 
     private fun convertDateFormat(inputDate: String): String
@@ -252,9 +248,15 @@ class AddFoodActivity : AppCompatActivity()
         timePickerDialog.show()
     }
 
-    private fun showDeletedFoodToast(context: Context)
+    private fun showAddFoodToast()
     {
         val message = "Item is added successfully"
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showFoodNameErrorToast()
+    {
+        val message = "Food name cannot be empty!"
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
