@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class AddFoodActivity : AppCompatActivity()
@@ -35,6 +36,7 @@ class AddFoodActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
+        val selectedDate = intent.getStringExtra("selectedDate")
 
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
 
@@ -58,7 +60,7 @@ class AddFoodActivity : AppCompatActivity()
 
         val saveEntryButton = findViewById<Button>(R.id.food_details_save_entry_button)
 
-        setDefaultDateTime(foodDateInput, foodTimeInput)
+        setDefaultDateTime(foodDateInput, foodTimeInput, selectedDate)
 
         foodDateInput.setOnClickListener {
             setDate(foodDateInput)
@@ -142,7 +144,7 @@ class AddFoodActivity : AppCompatActivity()
                 foodProtein.text.clear()
                 foodCarbs.text.clear()
                 foodFats.text.clear()
-                setDefaultDateTime(foodDateInput, foodTimeInput)
+                setDefaultDateTime(foodDateInput, foodTimeInput, selectedDate)
                 selectedImagesButton.isEnabled = false
                 selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
             }
@@ -156,14 +158,17 @@ class AddFoodActivity : AppCompatActivity()
         pickImagesLauncher.launch(galleryIntent)
     }
 
-    private fun setDefaultDateTime(foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText)
+    private fun setDefaultDateTime(foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText, selectedDate: String?)
     {
         val currentTime = Calendar.getInstance()
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        val inputDate: Date? = inputFormat.parse(selectedDate!!)
 
         foodTimeInput.setText(timeFormat.format(currentTime.time))
-        foodDateInput.setText(dateFormat.format(currentTime.time))
+        foodDateInput.setText(dateFormat.format(inputDate!!))
     }
 
     private fun convertDateFormat(inputDate: String): String

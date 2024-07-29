@@ -84,6 +84,7 @@ class CalendarActivity : AppCompatActivity()
 
         addFoodDetailsButton.setOnClickListener {
             val intent = Intent(this, AddFoodActivity::class.java)
+            intent.putExtra("selectedDate", selectedDateFormat)
             startActivity(intent)
         }
     }
