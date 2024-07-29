@@ -35,9 +35,10 @@ class AddFoodActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_food)
-        val selectedDate = intent.getStringExtra("selectedDate")
 
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
+
+        val from = intent.getStringExtra("from").toString()
 
         val foodName = findViewById<EditText>(R.id.food_name_text_edit)
 
@@ -59,26 +60,19 @@ class AddFoodActivity : AppCompatActivity()
 
         val saveEntryButton = findViewById<Button>(R.id.food_details_save_entry_button)
 
+        setDefaultInformation(from, foodName, foodProtein, foodCarbs, foodFats)
         setDefaultDateTime(foodDateInput, foodTimeInput)
 
-        foodDateInput.setOnClickListener {
-            setDate(foodDateInput)
-        }
-
-        foodTimeInput.setOnClickListener {
-            setTime(foodTimeInput)
-        }
-
-        pickImagesButton.setOnClickListener {
-            openGalleryForMultipleImages()
+        if (selectedImagesPathList.isNotEmpty())
+        {
+            selectedImagesButton.isEnabled = true
+            selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
         }
 
         // Set up the ActivityResultLauncher
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
             {
-                selectedImagesPathList = ArrayList()
-
                 val intent = result.data
                 intent?.clipData?.let { clipData ->
                     for (i in 0 until clipData.itemCount)
@@ -95,12 +89,24 @@ class AddFoodActivity : AppCompatActivity()
                     }
                 }
 
-                // Do something with the list of selected image URIs
-                println("Selected : ${selectedImagesPathList}")
-                // Enable the button
-                selectedImagesButton.isEnabled = true
-                selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                if (selectedImagesPathList.isNotEmpty())
+                {
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
             }
+        }
+
+        foodDateInput.setOnClickListener {
+            setDate(foodDateInput)
+        }
+
+        foodTimeInput.setOnClickListener {
+            setTime(foodTimeInput)
+        }
+
+        pickImagesButton.setOnClickListener {
+            openGalleryForMultipleImages()
         }
 
         selectedImagesButton.setOnClickListener {
@@ -166,6 +172,34 @@ class AddFoodActivity : AppCompatActivity()
 
         foodTimeInput.setText(timeFormat.format(currentTime.time))
         foodDateInput.setText(dateFormat.format(currentTime.time))
+    }
+
+    private fun setDefaultInformation(from: String?,
+                                      foodName: EditText,
+                                      foodProtein: EditText,
+                                      foodCarbs: EditText,
+                                      foodFats: EditText)
+    {
+        if (from == "favorite_food")
+        {
+            foodName.setText(intent.getStringExtra("foodName"))
+            setDefaultValue(foodProtein, intent.getIntExtra("foodProtein", -1))
+            setDefaultValue(foodCarbs, intent.getIntExtra("foodCarbs", -1))
+            setDefaultValue(foodFats, intent.getIntExtra("foodFats", -1))
+            selectedImagesPathList = intent.getStringArrayListExtra("foodImagesPathList")!!
+        }
+    }
+
+    private fun setDefaultValue(item: EditText, value: Int)
+    {
+        if (value != -1)
+        {
+            item.setText(value.toString())
+        }
+        else
+        {
+            item.text = null
+        }
     }
 
     private fun convertDateFormat(inputDate: String): String

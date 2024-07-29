@@ -48,7 +48,8 @@ class FavoriteFoodActivity : AppCompatActivity()
             foodListView.visibility = View.VISIBLE
 
             val adapter = FavoriteFoodListAdapter(this, foodList) { item ->
-                val intent = Intent(this, AddFoodFromFavoriteActivity::class.java)
+                val intent = Intent(this, AddFoodActivity::class.java)
+                intent.putExtra("from", "favorite_food")
                 intent.putExtra("foodName", item.name)
                 intent.putExtra("foodImagesPathList", item.paths)
                 intent.putExtra("foodProtein", item.protein)

@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.CalendarView
 import android.widget.ImageView
 import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -84,7 +83,7 @@ class CalendarActivity : AppCompatActivity()
 
         addFoodDetailsButton.setOnClickListener {
             val intent = Intent(this, AddFoodActivity::class.java)
-            intent.putExtra("selectedDate", selectedDateFormat)
+            intent.putExtra("from", "calendar")
             startActivity(intent)
         }
     }
