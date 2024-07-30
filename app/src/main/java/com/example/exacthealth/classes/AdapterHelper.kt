@@ -1,6 +1,7 @@
 package com.example.exacthealth.classes
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +11,12 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exacthealth.R
+import com.example.exacthealth.activities.AddFavoriteFoodActivity
+import com.example.exacthealth.activities.AddFoodActivity
 
 class SelectedImageAdapter(context: Context,
                            private val resource: Int,
@@ -133,7 +137,35 @@ open class FoodListAdapter(context: Context,
                 {
                     R.id.menu_edit   ->
                     {
-                        // Handle edit action
+                        if (food.date == "none")
+                        {
+                            val intent = Intent(context, AddFavoriteFoodActivity::class.java).apply {
+                                putExtra("from", "edit")
+                                putExtra("foodName", food.name)
+                                putExtra("foodImagesPathList", food.paths)
+                                putExtra("foodProtein", food.protein)
+                                putExtra("foodCarbs", food.carbs)
+                                putExtra("foodFats", food.fats)
+                                putExtra("foodPosition", position)
+                            }
+                            context.startActivity(intent)
+                        }
+
+                        else
+                        {
+                            val intent = Intent(context, AddFoodActivity::class.java).apply {
+                                putExtra("from", "edit")
+                                putExtra("foodName", food.name)
+                                putExtra("foodDate", food.date)
+                                putExtra("foodTime", food.time)
+                                putExtra("foodImagesPathList", food.paths)
+                                putExtra("foodProtein", food.protein)
+                                putExtra("foodCarbs", food.carbs)
+                                putExtra("foodFats", food.fats)
+                                putExtra("foodPosition", position)
+                            }
+                            context.startActivity(intent)
+                        }
                         true
                     }
 

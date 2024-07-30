@@ -21,6 +21,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
+    private var selectedImagesPathList: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -28,6 +29,8 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         setContentView(R.layout.activity_add_favorite_food)
 
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
+
+        val from = intent.getStringExtra("from").toString()
 
         val foodName = findViewById<EditText>(R.id.favorite_food_name_text_edit)
 
@@ -41,7 +44,13 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         val backToFavoriteFoodsButton = findViewById<RelativeLayout>(R.id.back_to_favorite_food_layout)
         val saveEntryButton = findViewById<Button>(R.id.favorite_food_save_entry_button)
 
-        var selectedImagesPathList: ArrayList<String> = ArrayList()
+        setDefaultInformation(from, foodName, foodProtein, foodCarbs, foodFats)
+
+        if (selectedImagesPathList.isNotEmpty())
+        {
+            selectedImagesButton.isEnabled = true
+            selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+        }
 
         pickImagesButton.setOnClickListener {
             openGalleryForMultipleImages()
@@ -76,7 +85,19 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                                               foodCarbs.text.toString().toIntOrNull(),
                                               foodFats.text.toString().toIntOrNull())
 
-                foodSharedPreferencesManager.addFoodItem("none", foodDetails)
+                if (from == "edit")
+                {
+                    val foodList = foodSharedPreferencesManager.loadFoodList("none")
+                    val foodPosition = intent.getIntExtra("foodPosition", 0)
+                    foodList.removeAt(foodPosition)
+                    foodList.add(foodPosition, foodDetails)
+                    foodSharedPreferencesManager.saveFoodList(currentDate, foodList)
+                }
+
+                else
+                {
+                    foodSharedPreferencesManager.addFoodItem(currentDate, foodDetails)
+                }
 
                 showSaveFavoriteFoodToast()
                 val intent = Intent(this, FavoriteFoodActivity::class.java)
@@ -105,8 +126,11 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                     }
                 }
 
-                selectedImagesButton.isEnabled = true
-                selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                if (selectedImagesPathList.isNotEmpty())
+                {
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
             }
         }
     }
@@ -129,6 +153,28 @@ class AddFavoriteFoodActivity : AppCompatActivity()
             return it.getString(columnIndex)
         }
         return null
+    }
+
+    private fun setDefaultInformation(from: String?,
+                                      foodName: EditText,
+                                      foodProtein: EditText,
+                                      foodCarbs: EditText,
+                                      foodFats: EditText)
+    {
+        if (from == "edit")
+        {
+            foodName.setText(intent.getStringExtra("foodName"))
+            setDefaultValue(foodProtein, intent.getIntExtra("foodProtein", -1))
+            setDefaultValue(foodCarbs, intent.getIntExtra("foodCarbs", -1))
+            setDefaultValue(foodFats, intent.getIntExtra("foodFats", -1))
+            selectedImagesPathList = intent.getStringArrayListExtra("foodImagesPathList")!!
+        }
+    }
+
+    private fun setDefaultValue(item: EditText, value: Int)
+    {
+        if (value != -1) item.setText(value.toString())
+        else item.text = null
     }
 
     private fun showSaveFavoriteFoodToast()

@@ -63,7 +63,12 @@ class AddFoodActivity : AppCompatActivity()
         val saveEntryButton = findViewById<Button>(R.id.food_details_save_entry_button)
 
         setDefaultInformation(from, foodName, foodProtein, foodCarbs, foodFats)
-        setDefaultDateTime(foodDateInput, foodTimeInput)
+        setDefaultDateTime(from, foodDateInput, foodTimeInput)
+
+        if (from == "edit")
+        {
+            favoriteFoodButton.visibility = ConstraintLayout.INVISIBLE
+        }
 
         if (selectedImagesPathList.isNotEmpty())
         {
@@ -143,17 +148,36 @@ class AddFoodActivity : AppCompatActivity()
                                               foodCarbs.text.toString().toIntOrNull(),
                                               foodFats.text.toString().toIntOrNull())
 
-                foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
+                if (from == "edit")
+                {
+                    val foodDateTemp = intent.getStringExtra("foodDate")
+                    val foodList = foodSharedPreferencesManager.loadFoodList(foodDateTemp!!)
+                    val foodPosition = intent.getIntExtra("foodPosition", 0)
+                    foodList.removeAt(foodPosition)
 
-                showAddFoodToast()
+                    foodSharedPreferencesManager.saveFoodList(foodDateTemp, foodList)
+                    foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
 
-                foodName.text.clear()
-                foodProtein.text.clear()
-                foodCarbs.text.clear()
-                foodFats.text.clear()
-                setDefaultDateTime(foodDateInput, foodTimeInput)
-                selectedImagesButton.isEnabled = false
-                selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+                    showEditFoodToast()
+
+                    val intent = Intent(this, CalendarActivity::class.java)
+                    startActivity(intent)
+                }
+
+                else
+                {
+                    foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
+
+                    showAddFoodToast()
+
+                    foodName.text.clear()
+                    foodProtein.text.clear()
+                    foodCarbs.text.clear()
+                    foodFats.text.clear()
+                    setDefaultDateTime(from, foodDateInput, foodTimeInput)
+                    selectedImagesButton.isEnabled = false
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+                }
             }
         }
     }
@@ -165,21 +189,36 @@ class AddFoodActivity : AppCompatActivity()
         pickImagesLauncher.launch(galleryIntent)
     }
 
-    private fun setDefaultDateTime(foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText)
+    private fun setDefaultDateTime(from: String?, foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText)
     {
         val selectedDate = selectedDatePreferencesManager.getSelectedDate()
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-        val selectedDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val currentTime = Calendar.getInstance()
 
-        foodTimeInput.setText(timeFormat.format(currentTime.time))
+        if (from == "edit")
+        {
+            val foodTimeString = intent.getStringExtra("foodTime")
+            val foodDateString = intent.getStringExtra("foodDate")
 
-        val dateToDisplay = selectedDate?.let {
-            selectedDateFormat.parse(it)
-        } ?: currentTime.time
+            val foodTime = timeFormat.parse(foodTimeString!!)
+            val foodDate = inputFormat.parse(foodDateString!!)
 
-        foodDateInput.setText(dateFormat.format(dateToDisplay))
+            foodTimeInput.setText(timeFormat.format(foodTime!!))
+            foodDateInput.setText(dateFormat.format(foodDate!!))
+        }
+
+        else
+        {
+            foodTimeInput.setText(timeFormat.format(currentTime.time))
+
+            val dateToDisplay = selectedDate?.let {
+                inputFormat.parse(it)
+            } ?: currentTime.time
+
+            foodDateInput.setText(dateFormat.format(dateToDisplay))
+        }
     }
 
     private fun setDefaultInformation(from: String?,
@@ -188,7 +227,7 @@ class AddFoodActivity : AppCompatActivity()
                                       foodCarbs: EditText,
                                       foodFats: EditText)
     {
-        if (from == "favorite_food")
+        if (from == "favorite_food" || from == "edit")
         {
             foodName.setText(intent.getStringExtra("foodName"))
             setDefaultValue(foodProtein, intent.getIntExtra("foodProtein", -1))
@@ -263,6 +302,12 @@ class AddFoodActivity : AppCompatActivity()
     private fun showFoodNameErrorToast()
     {
         val message = "Food name cannot be empty!"
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun showEditFoodToast()
+    {
+        val message = "Item is edited successfully"
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
