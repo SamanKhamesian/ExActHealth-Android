@@ -1,11 +1,8 @@
 package com.example.exacthealth.classes
 
 import android.content.Context
-import android.net.Uri
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class FoodDetails
 {

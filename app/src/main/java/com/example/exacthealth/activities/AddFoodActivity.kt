@@ -2,7 +2,6 @@ package com.example.exacthealth.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
+import com.example.exacthealth.classes.SelectedDatePreferencesManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -28,6 +28,7 @@ import java.util.Locale
 class AddFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
+    private lateinit var selectedDatePreferencesManager: SelectedDatePreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
     private var selectedImagesPathList: ArrayList<String> = ArrayList()
 
@@ -37,6 +38,7 @@ class AddFoodActivity : AppCompatActivity()
         setContentView(R.layout.activity_add_food)
 
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
+        selectedDatePreferencesManager = SelectedDatePreferencesManager(this)
 
         val from = intent.getStringExtra("from").toString()
 
@@ -165,13 +167,19 @@ class AddFoodActivity : AppCompatActivity()
 
     private fun setDefaultDateTime(foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText)
     {
-        val currentTime = Calendar.getInstance()
-
+        val selectedDate = selectedDatePreferencesManager.getSelectedDate()
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        val selectedDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val currentTime = Calendar.getInstance()
 
         foodTimeInput.setText(timeFormat.format(currentTime.time))
-        foodDateInput.setText(dateFormat.format(currentTime.time))
+
+        val dateToDisplay = selectedDate?.let {
+            selectedDateFormat.parse(it)
+        } ?: currentTime.time
+
+        foodDateInput.setText(dateFormat.format(dateToDisplay))
     }
 
     private fun setDefaultInformation(from: String?,
@@ -192,10 +200,8 @@ class AddFoodActivity : AppCompatActivity()
 
     private fun setDefaultValue(item: EditText, value: Int)
     {
-        if (value != -1)
-            item.setText(value.toString())
-        else
-            item.text = null
+        if (value != -1) item.setText(value.toString())
+        else item.text = null
     }
 
     private fun convertDateFormat(inputDate: String): String

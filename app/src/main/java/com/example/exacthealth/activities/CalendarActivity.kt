@@ -16,6 +16,7 @@ import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodListAdapter
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
+import com.example.exacthealth.classes.SelectedDatePreferencesManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -23,6 +24,7 @@ import java.util.Locale
 class CalendarActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
+    private lateinit var selectedDatePreferencesManager: SelectedDatePreferencesManager
     private lateinit var foodListView: ListView
     private lateinit var foodList: MutableList<FoodDetails>
 
@@ -34,6 +36,7 @@ class CalendarActivity : AppCompatActivity()
         setContentView(R.layout.activity_calendar)
 
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
+        selectedDatePreferencesManager = SelectedDatePreferencesManager(this)
         foodListView = findViewById(R.id.calendar_food_list)
         foodList = ArrayList()
 
@@ -47,6 +50,7 @@ class CalendarActivity : AppCompatActivity()
         val currentDayOfMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
         var selectedDateFormat = formatDate(currentYear, currentMonth, currentDayOfMonth)
+        selectedDatePreferencesManager.setSelectedDate(selectedDateFormat)
 
         calendarView.date = currentDate.timeInMillis
         foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
@@ -56,6 +60,7 @@ class CalendarActivity : AppCompatActivity()
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDateFormat = formatDate(year, month, dayOfMonth)
+            selectedDatePreferencesManager.setSelectedDate(selectedDateFormat)
             foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
 
             if (checkPermission()) updateListView(foodList)

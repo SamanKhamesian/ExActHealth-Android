@@ -106,7 +106,6 @@ open class FoodListAdapter(context: Context,
 
         val optionsMenu: ImageView = itemView.findViewById(R.id.saved_food_options_menu)
 
-        // Inside your activity or fragment
         val imagesLayout: RecyclerView = itemView.findViewById(R.id.food_images_list_view)
         imagesLayout.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         imagesLayout.visibility = View.INVISIBLE
@@ -130,23 +129,30 @@ open class FoodListAdapter(context: Context,
             popupMenu.show()
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.menu_edit -> {
+                when (menuItem.itemId)
+                {
+                    R.id.menu_edit   ->
+                    {
                         // Handle edit action
                         true
                     }
-                    R.id.menu_delete -> {
+
+                    R.id.menu_delete ->
+                    {
                         foodList.removeAt(position)
                         foodSharedPreferencesManager.saveFoodList(food.date, foodList)
                         notifyDataSetChanged()
                         showDeletedFoodToast(context)
                         true
                     }
-                    R.id.menu_close -> {
+
+                    R.id.menu_close  ->
+                    {
                         popupMenu.dismiss()
                         true
                     }
-                    else -> false
+
+                    else             -> false
                 }
             }
         }
