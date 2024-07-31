@@ -110,6 +110,12 @@ class CalendarActivity : AppCompatActivity()
     {
         if (foodList.isNotEmpty())
         {
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+            foodList.sortBy { food ->
+                timeFormat.parse(food.time)
+            }
+
             foodListView.visibility = View.VISIBLE
 
             val adapter = FoodListAdapter(this, foodList)

@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exacthealth.R
@@ -101,18 +100,25 @@ open class FoodListAdapter(context: Context,
         val nameTextView: TextView = itemView.findViewById(R.id.saved_food_name_text_view)
         val proteinTextView: TextView = itemView.findViewById(R.id.saved_food_protein_text_view)
         val carbsTextView: TextView = itemView.findViewById(R.id.saved_food_carbs_text_view)
-        val fatTextView: TextView = itemView.findViewById(R.id.saved_fat_text_view)
+        val fatTextView: TextView = itemView.findViewById(R.id.saved_food_fat_text_view)
+        val timeTextView: TextView = itemView.findViewById(R.id.saved_food_time_text_view)
 
         nameTextView.text = food.name
         "Protein (g): ${food.protein ?: "N/A"}".also { proteinTextView.text = it }
         "Carbs (g): ${food.carbs ?: "N/A"}".also { carbsTextView.text = it }
         "Fats (g): ${food.fats ?: "N/A"}".also { fatTextView.text = it }
 
+        if (food.time != "none")
+        {
+            "Time: ${food.time}".also { timeTextView.text = it }
+            timeTextView.visibility = View.VISIBLE
+        }
+
         val optionsMenu: ImageView = itemView.findViewById(R.id.saved_food_options_menu)
 
         val imagesLayout: RecyclerView = itemView.findViewById(R.id.food_images_list_view)
         imagesLayout.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        imagesLayout.visibility = View.INVISIBLE
+        imagesLayout.visibility = View.GONE
 
         if (food.paths.isNotEmpty())
         {
@@ -124,7 +130,7 @@ open class FoodListAdapter(context: Context,
         }
         else
         {
-            imagesLayout.visibility = View.INVISIBLE
+            imagesLayout.visibility = View.GONE
         }
 
         optionsMenu.setOnClickListener {
