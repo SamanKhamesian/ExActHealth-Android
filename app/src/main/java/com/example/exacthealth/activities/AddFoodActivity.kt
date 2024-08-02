@@ -154,9 +154,8 @@ class AddFoodActivity : AppCompatActivity()
                     val foodList = foodSharedPreferencesManager.loadFoodList(foodDateTemp!!)
                     val foodPosition = intent.getIntExtra("foodPosition", 0)
                     foodList.removeAt(foodPosition)
-
+                    foodList.add(foodPosition, foodDetails)
                     foodSharedPreferencesManager.saveFoodList(foodDateTemp, foodList)
-                    foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
 
                     showEditFoodToast()
 

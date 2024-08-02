@@ -3,6 +3,8 @@ package com.example.exacthealth.classes
 import android.content.Context
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class FoodDetails
 {
@@ -43,8 +45,17 @@ class FoodSharedPreferencesManager(private val context: Context)
 {
     private val sharedPreferences = context.getSharedPreferences("food_data", Context.MODE_PRIVATE)
 
-    fun saveFoodList(date: String, foodList: List<FoodDetails>)
+    fun saveFoodList(date: String, foodList: MutableList<FoodDetails>)
     {
+        if (date != "none")
+        {
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+            foodList.sortBy { food: FoodDetails ->
+                timeFormat.parse(food.time)
+            }
+        }
+
         val editor = sharedPreferences.edit()
         val json = GsonProvider.gson.toJson(foodList)
         editor.putString(date, json)
