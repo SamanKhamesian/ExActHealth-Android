@@ -3,12 +3,16 @@ package com.example.exacthealth.activities
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.CalendarView
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -55,16 +59,46 @@ class CalendarActivity : AppCompatActivity()
         calendarView.date = currentDate.timeInMillis
         foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
 
-        if (checkPermission()) updateListView(foodList)
-        else requestPermission()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+        {
+            // Android 12 (API level 31) or lower
+            if (checkPermission())
+            {
+                updateListView(foodList)
+            }
+            else
+            {
+                requestPermission()
+            }
+        }
+        else
+        {
+            // Android 13+ (API level 33 or higher)
+            updateListView(foodList)
+        }
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDateFormat = formatDate(year, month, dayOfMonth)
             selectedDatePreferencesManager.setSelectedDate(selectedDateFormat)
             foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
 
-            if (checkPermission()) updateListView(foodList)
-            else requestPermission()
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+            {
+                // Android 12 (API level 31) or lower
+                if (checkPermission())
+                {
+                    updateListView(foodList)
+                }
+                else
+                {
+                    requestPermission()
+                }
+            }
+            else
+            {
+                // Android 13+ (API level 33 or higher)
+                updateListView(foodList)
+            }
 
             if (foodList.isEmpty()) showFoodListToast(selectedDateFormat)
         }
@@ -90,11 +124,20 @@ class CalendarActivity : AppCompatActivity()
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_CODE)
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) updateListView(
-                foodList)
-            else showPermissionDeniedToast()
+            updateListView(foodList)
+        }
+        else
+        {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))
+            {
+                showPermissionDeniedDialog()
+            }
+            else
+            {
+                showPermissionDeniedToast()
+            }
         }
     }
 
@@ -137,5 +180,20 @@ class CalendarActivity : AppCompatActivity()
     {
         val message = "Permission denied"
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showPermissionDeniedDialog()
+    {
+        AlertDialog.Builder(this)
+            .setTitle("Permission Required")
+            .setMessage("Permission to read external storage is required for this app. Please enable it in the app settings.")
+            .setPositiveButton("Go to Settings") { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", packageName, null)
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
