@@ -59,22 +59,26 @@ class CalendarActivity : AppCompatActivity()
         calendarView.date = currentDate.timeInMillis
         foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
 
+        // Android 12 (API level 31) or lower
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
         {
-            // Android 12 (API level 31) or lower
-            if (checkPermission())
+            if (checkPermissionForStorage())
             {
-                updateListView(foodList)
+                if (checkPermissionForCamera())
+                    updateListView(foodList)
+                else
+                    requestPermissionForCamera()
             }
             else
-            {
-                requestPermission()
-            }
+                requestPermissionForStorage()
         }
+        // Android 13+ (API level 33 or higher)
         else
         {
-            // Android 13+ (API level 33 or higher)
-            updateListView(foodList)
+            if (checkPermissionForCamera())
+                updateListView(foodList)
+            else
+                checkPermissionForCamera()
         }
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
@@ -82,23 +86,7 @@ class CalendarActivity : AppCompatActivity()
             selectedDatePreferencesManager.setSelectedDate(selectedDateFormat)
             foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
-            {
-                // Android 12 (API level 31) or lower
-                if (checkPermission())
-                {
-                    updateListView(foodList)
-                }
-                else
-                {
-                    requestPermission()
-                }
-            }
-            else
-            {
-                // Android 13+ (API level 33 or higher)
-                updateListView(foodList)
-            }
+            updateListView(foodList)
 
             if (foodList.isEmpty()) showFoodListToast(selectedDateFormat)
         }
@@ -110,29 +98,46 @@ class CalendarActivity : AppCompatActivity()
         }
     }
 
-    private fun checkPermission(): Boolean
+    private fun checkPermissionForStorage(): Boolean
     {
-        return ContextCompat.checkSelfPermission(this,
-                                                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestPermission()
+    private fun checkPermissionForCamera(): Boolean
+    {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermissionForStorage()
     {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_CODE)
+    }
+
+    private fun requestPermissionForCamera()
+    {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSION_CODE)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+
+        if (requestCode == PERMISSION_CODE)
         {
-            updateListView(foodList)
-        }
-        else
-        {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))
+            var allPermissionsGranted = true
+
+            for (result in grantResults)
             {
-                showPermissionDeniedDialog()
+                if (result != PackageManager.PERMISSION_GRANTED)
+                {
+                    allPermissionsGranted = false
+                    break
+                }
+            }
+
+            if (allPermissionsGranted)
+            {
+                updateListView(foodList)
             }
             else
             {

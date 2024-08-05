@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
@@ -12,17 +13,21 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.example.exacthealth.classes.SelectedDatePreferencesManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class AddFoodActivity : AppCompatActivity()
@@ -31,6 +36,9 @@ class AddFoodActivity : AppCompatActivity()
     private lateinit var selectedDatePreferencesManager: SelectedDatePreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
     private var selectedImagesPathList: ArrayList<String> = ArrayList()
+    private lateinit var cameraImageUri: Uri
+    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+    private var currentPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -104,6 +112,17 @@ class AddFoodActivity : AppCompatActivity()
             }
         }
 
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK)
+            {
+                currentPhotoPath?.let {
+                    selectedImagesPathList.add(it)
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
+            }
+        }
+
         foodDateInput.setOnClickListener {
             setDate(foodDateInput)
         }
@@ -113,7 +132,7 @@ class AddFoodActivity : AppCompatActivity()
         }
 
         pickImagesButton.setOnClickListener {
-            openGalleryForMultipleImages()
+            showImageSourceOptions()
         }
 
         selectedImagesButton.setOnClickListener {
@@ -162,7 +181,6 @@ class AddFoodActivity : AppCompatActivity()
                     val intent = Intent(this, CalendarActivity::class.java)
                     startActivity(intent)
                 }
-
                 else
                 {
                     foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
@@ -188,6 +206,37 @@ class AddFoodActivity : AppCompatActivity()
         pickImagesLauncher.launch(galleryIntent)
     }
 
+    private fun showImageSourceOptions()
+    {
+        val options = arrayOf("Select from Gallery", "Take a Picture")
+        AlertDialog.Builder(this).setTitle("Choose an Option").setItems(options) { dialog, which ->
+            when (which)
+            {
+                0 -> openGalleryForMultipleImages()
+                1 -> openCamera()
+            }
+        }.show()
+    }
+
+    private fun openCamera()
+    {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val photoFile: File = createImageFile()
+        val photoURI: Uri = FileProvider.getUriForFile(this, "com.example.exacthealth.activities.provider", photoFile)
+        currentPhotoPath = photoFile.absolutePath
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        cameraLauncher.launch(cameraIntent)
+    }
+
+    private fun createImageFile(): File
+    {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
+            currentPhotoPath = absolutePath
+        }
+    }
+
     private fun setDefaultDateTime(from: String?, foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText)
     {
         val selectedDate = selectedDatePreferencesManager.getSelectedDate()
@@ -207,7 +256,6 @@ class AddFoodActivity : AppCompatActivity()
             foodTimeInput.setText(timeFormat.format(foodTime!!))
             foodDateInput.setText(dateFormat.format(foodDate!!))
         }
-
         else
         {
             foodTimeInput.setText(timeFormat.format(currentTime.time))
