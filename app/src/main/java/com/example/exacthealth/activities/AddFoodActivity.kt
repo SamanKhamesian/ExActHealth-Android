@@ -23,7 +23,6 @@ import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.example.exacthealth.classes.SelectedDatePreferencesManager
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,9 +34,9 @@ class AddFoodActivity : AppCompatActivity()
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var selectedDatePreferencesManager: SelectedDatePreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
-    private var selectedImagesPathList: ArrayList<String> = ArrayList()
-    private lateinit var cameraImageUri: Uri
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+
+    private var selectedImagesPathList: ArrayList<String> = ArrayList()
     private var currentPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -52,10 +51,7 @@ class AddFoodActivity : AppCompatActivity()
 
         val foodName = findViewById<EditText>(R.id.food_name_text_edit)
 
-        val foodDateLayout = findViewById<TextInputLayout>(R.id.food_details_date_layout)
         val foodDateInput = findViewById<TextInputEditText>(R.id.food_details_date_input)
-
-        val foodTimeLayout = findViewById<TextInputLayout>(R.id.food_details_time_layout)
         val foodTimeInput = findViewById<TextInputEditText>(R.id.food_details_time_input)
 
         val pickImagesButton = findViewById<Button>(R.id.food_details_pick_images_button)

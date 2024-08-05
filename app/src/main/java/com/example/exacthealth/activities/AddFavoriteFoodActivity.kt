@@ -3,6 +3,7 @@ package com.example.exacthealth.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
@@ -10,18 +11,27 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class AddFavoriteFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
+    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+
     private var selectedImagesPathList: ArrayList<String> = ArrayList()
+    private var currentPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -53,7 +63,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         }
 
         pickImagesButton.setOnClickListener {
-            openGalleryForMultipleImages()
+            showImageSourceOptions()
         }
 
         backToFavoriteFoodsButton.setOnClickListener {
@@ -133,6 +143,29 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                 }
             }
         }
+
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK)
+            {
+                currentPhotoPath?.let {
+                    selectedImagesPathList.add(it)
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
+            }
+        }
+    }
+
+    private fun showImageSourceOptions()
+    {
+        val options = arrayOf("Select from Gallery", "Take a Picture")
+        AlertDialog.Builder(this).setTitle("Choose an Option").setItems(options) { _, which ->
+            when (which)
+            {
+                0 -> openGalleryForMultipleImages()
+                1 -> openCamera()
+            }
+        }.show()
     }
 
     private fun openGalleryForMultipleImages()
@@ -140,6 +173,25 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         pickImagesLauncher.launch(galleryIntent)
+    }
+
+    private fun openCamera()
+    {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val photoFile: File = createImageFile()
+        val photoURI: Uri = FileProvider.getUriForFile(this, "com.example.exacthealth.activities.provider", photoFile)
+        currentPhotoPath = photoFile.absolutePath
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        cameraLauncher.launch(cameraIntent)
+    }
+
+    private fun createImageFile(): File
+    {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
+            currentPhotoPath = absolutePath
+        }
     }
 
     // Function to get the path from URI
