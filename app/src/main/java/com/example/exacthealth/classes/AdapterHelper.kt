@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -19,7 +20,9 @@ import com.example.exacthealth.activities.AddFoodActivity
 
 class SelectedImageAdapter(context: Context,
                            private val resource: Int,
-                           private val images: List<String>) : ArrayAdapter<String>(context, resource, images)
+                           private val images: ArrayList<String>,
+                           private val isEditMode: Boolean,
+                           private val selectedItems: MutableSet<Int>) : ArrayAdapter<String>(context, resource, images)
 {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
@@ -45,34 +48,41 @@ class SelectedImageAdapter(context: Context,
         viewHolder.imageView2.visibility = View.INVISIBLE
         viewHolder.imageView3.visibility = View.INVISIBLE
 
-        // Display images
-        for ((index, i) in (startIndex until endIndex).withIndex())
+        val imageViews = listOf(viewHolder.imageView1, viewHolder.imageView2, viewHolder.imageView3)
+        val checkBoxes = listOf(viewHolder.checkBox1, viewHolder.checkBox2, viewHolder.checkBox3)
+
+        for (i in startIndex until endIndex)
         {
-            when (index)
+            val imagePath = images[i]
+            val fileUri = Uri.parse("file://$imagePath")
+            val imageView = imageViews[i - startIndex]
+            val checkBox = checkBoxes[i - startIndex]
+
+            imageView.setImageURI(fileUri)
+            imageView.visibility = View.VISIBLE
+            checkBox.visibility = View.GONE
+
+            if (isEditMode)
             {
-                0 ->
-                {
-                    val imagePath = images[i]
-                    val fileUri = Uri.parse("file://$imagePath")
-                    viewHolder.imageView1.setImageURI(fileUri)
-                    viewHolder.imageView1.visibility = View.VISIBLE
+                checkBox.visibility = View.VISIBLE
+                checkBox.isChecked = selectedItems.contains(i)
+                checkBox.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked)
+                    {
+                        selectedItems.add(i)
+                        imageView.alpha = 0.5f
+                    }
+                    else
+                    {
+                        selectedItems.remove(i)
+                        imageView.alpha = 1.0f
+                    }
                 }
-
-                1 ->
-                {
-                    val imagePath = images[i]
-                    val fileUri = Uri.parse("file://$imagePath")
-                    viewHolder.imageView2.setImageURI(fileUri)
-                    viewHolder.imageView2.visibility = View.VISIBLE
-                }
-
-                2 ->
-                {
-                    val imagePath = images[i]
-                    val fileUri = Uri.parse("file://$imagePath")
-                    viewHolder.imageView3.setImageURI(fileUri)
-                    viewHolder.imageView3.visibility = View.VISIBLE
-                }
+            }
+            else
+            {
+                checkBox.visibility = View.GONE
+                imageView.alpha = 1.0f
             }
         }
 
@@ -84,6 +94,9 @@ class SelectedImageAdapter(context: Context,
         val imageView1: ImageView = view.findViewById(R.id.favorite_food_image_view1)
         val imageView2: ImageView = view.findViewById(R.id.favorite_food_image_view2)
         val imageView3: ImageView = view.findViewById(R.id.favorite_food_image_view3)
+        val checkBox1: CheckBox = view.findViewById(R.id.favorite_food_checkbox1)
+        val checkBox2: CheckBox = view.findViewById(R.id.favorite_food_checkbox2)
+        val checkBox3: CheckBox = view.findViewById(R.id.favorite_food_checkbox3)
     }
 }
 
@@ -156,7 +169,6 @@ open class FoodListAdapter(context: Context,
                             }
                             context.startActivity(intent)
                         }
-
                         else
                         {
                             val intent = Intent(context, AddFoodActivity::class.java).apply {

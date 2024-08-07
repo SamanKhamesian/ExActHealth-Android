@@ -5,4 +5,8 @@
         <item name="colorOnPrimary">@color/red</item>
         <item name="colorControlActivated">@color/red</item>
     </style>
+
+    <style name="CheckboxStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="buttonTint">@color/red</item>
+    </style>
 </resources>

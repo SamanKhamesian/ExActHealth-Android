@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
     android:background="@color/light_gray">
 
@@ -57,18 +57,67 @@
             android:textSize="16sp">
         </TextView>
 
+        <TextView
+            android:id="@+id/selected_images_edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/back_to_food_details_layout"
+            android:layout_alignTop="@+id/back_to_food_details_layout"
+            android:layout_marginEnd="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/red"
+            android:text="Edit"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/selected_images_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/back_to_food_details_layout"
+            android:layout_alignTop="@+id/back_to_food_details_layout"
+            android:layout_marginEnd="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/red"
+            android:text="Delete"
+            android:visibility="gone"/>
+
     </RelativeLayout>
 
     <ListView
         android:id="@+id/selected_images_list_view"
         android:background="@color/light_gray"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/selected_images_toolbar_layout"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/selected_images_toolbar_layout"
+        android:layout_above="@id/selected_images_done_button"
         android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:divider="@null"
         android:dividerHeight="0dp" />
+
+    <Button
+        android:id="@+id/selected_images_done_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="60dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:backgroundTint="@color/red"
+        android:text="Done"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:cornerRadius="5dp">
+    </Button>
 
 </RelativeLayout>

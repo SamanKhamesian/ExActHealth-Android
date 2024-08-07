@@ -62,15 +62,10 @@ class CalendarActivity : AppCompatActivity()
         // Android 12 (API level 31) or lower
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
         {
-            if (checkPermissionForStorage())
-            {
-                if (checkPermissionForCamera())
-                    updateListView(foodList)
-                else
-                    requestPermissionForCamera()
-            }
+            if (checkPermissions())
+                updateListView(foodList)
             else
-                requestPermissionForStorage()
+                requestPermissions()
         }
         // Android 13+ (API level 33 or higher)
         else
@@ -78,7 +73,7 @@ class CalendarActivity : AppCompatActivity()
             if (checkPermissionForCamera())
                 updateListView(foodList)
             else
-                checkPermissionForCamera()
+                requestPermissionForCamera()
         }
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
@@ -98,9 +93,11 @@ class CalendarActivity : AppCompatActivity()
         }
     }
 
-    private fun checkPermissionForStorage(): Boolean
+    private fun checkPermissions(): Boolean
     {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        return storagePermission && cameraPermission
     }
 
     private fun checkPermissionForCamera(): Boolean
@@ -108,9 +105,20 @@ class CalendarActivity : AppCompatActivity()
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestPermissionForStorage()
-    {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_CODE)
+    private fun requestPermissions() {
+        val permissionsNeeded = mutableListOf<String>()
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.CAMERA)
+        }
+
+        if (permissionsNeeded.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionsNeeded.toTypedArray(), PERMISSION_CODE)
+        }
     }
 
     private fun requestPermissionForCamera()
@@ -124,18 +132,7 @@ class CalendarActivity : AppCompatActivity()
 
         if (requestCode == PERMISSION_CODE)
         {
-            var allPermissionsGranted = true
-
-            for (result in grantResults)
-            {
-                if (result != PackageManager.PERMISSION_GRANTED)
-                {
-                    allPermissionsGranted = false
-                    break
-                }
-            }
-
-            if (allPermissionsGranted)
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED })
             {
                 updateListView(foodList)
             }

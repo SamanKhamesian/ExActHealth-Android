@@ -29,6 +29,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+    private lateinit var selectedImagesActivityLauncher: ActivityResultLauncher<Intent>
 
     private var selectedImagesPathList: ArrayList<String> = ArrayList()
     private var currentPhotoPath: String? = null
@@ -62,6 +63,76 @@ class AddFavoriteFoodActivity : AppCompatActivity()
             selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
         }
 
+        // Set up the ActivityResultLauncher
+        selectedImagesActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK)
+            {
+                val intent = result.data
+                intent?.let {
+                    val updatedSelectedImagesList = it.getStringArrayListExtra("imagesPathList")
+                    updatedSelectedImagesList?.let { array ->
+                        selectedImagesPathList = array
+                    }
+                }
+
+                if (selectedImagesPathList.isNotEmpty())
+                {
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
+
+                else
+                {
+                    selectedImagesButton.isEnabled = false
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+                }
+            }
+        }
+
+        pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK)
+            {
+                val intent = result.data
+                intent?.clipData?.let { clipData ->
+                    for (i in 0 until clipData.itemCount)
+                    {
+                        val uri = clipData.getItemAt(i).uri
+                        val path = getPathFromUri(uri)
+                        path?.let { selectedImagesPathList.add(it) }
+                    }
+                } ?: run {
+                    val uri = intent?.data
+                    uri?.let {
+                        val path = getPathFromUri(uri)
+                        path?.let { selectedImagesPathList.add(it) }
+                    }
+                }
+
+                if (selectedImagesPathList.isNotEmpty())
+                {
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
+
+                else
+                {
+                    selectedImagesButton.isEnabled = false
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+                }
+            }
+        }
+
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK)
+            {
+                currentPhotoPath?.let {
+                    selectedImagesPathList.add(it)
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
+            }
+        }
+
         pickImagesButton.setOnClickListener {
             showImageSourceOptions()
         }
@@ -73,7 +144,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         selectedImagesButton.setOnClickListener {
             val intent = Intent(this, SelectedImagesActivity::class.java)
             intent.putExtra("imagesPathList", selectedImagesPathList)
-            startActivity(intent)
+            selectedImagesActivityLauncher.launch(intent)
         }
 
         saveEntryButton.setOnClickListener {
@@ -112,46 +183,6 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                 showSaveFavoriteFoodToast()
                 val intent = Intent(this, FavoriteFoodActivity::class.java)
                 startActivity(intent)
-            }
-        }
-
-        pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK)
-            {
-                selectedImagesPathList = ArrayList()
-
-                val intent = result.data
-                intent?.clipData?.let { clipData ->
-                    for (i in 0 until clipData.itemCount)
-                    {
-                        val uri = clipData.getItemAt(i).uri
-                        val path = getPathFromUri(uri)
-                        path?.let { selectedImagesPathList.add(it) }
-                    }
-                } ?: run {
-                    val uri = intent?.data
-                    uri?.let {
-                        val path = getPathFromUri(uri)
-                        path?.let { selectedImagesPathList.add(it) }
-                    }
-                }
-
-                if (selectedImagesPathList.isNotEmpty())
-                {
-                    selectedImagesButton.isEnabled = true
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
-                }
-            }
-        }
-
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK)
-            {
-                currentPhotoPath?.let {
-                    selectedImagesPathList.add(it)
-                    selectedImagesButton.isEnabled = true
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
-                }
             }
         }
     }

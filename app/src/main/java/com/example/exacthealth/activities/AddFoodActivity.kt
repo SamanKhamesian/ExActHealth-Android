@@ -35,6 +35,7 @@ class AddFoodActivity : AppCompatActivity()
     private lateinit var selectedDatePreferencesManager: SelectedDatePreferencesManager
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+    private lateinit var selectedImagesActivityLauncher: ActivityResultLauncher<Intent>
 
     private var selectedImagesPathList: ArrayList<String> = ArrayList()
     private var currentPhotoPath: String? = null
@@ -81,6 +82,31 @@ class AddFoodActivity : AppCompatActivity()
         }
 
         // Set up the ActivityResultLauncher
+        selectedImagesActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK)
+            {
+                val intent = result.data
+                intent?.let {
+                    val updatedSelectedImagesList = it.getStringArrayListExtra("imagesPathList")
+                    updatedSelectedImagesList?.let { array ->
+                        selectedImagesPathList = array
+                    }
+                }
+
+                if (selectedImagesPathList.isNotEmpty())
+                {
+                    selectedImagesButton.isEnabled = true
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
+
+                else
+                {
+                    selectedImagesButton.isEnabled = false
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
+                }
+            }
+        }
+
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
             {
@@ -104,6 +130,12 @@ class AddFoodActivity : AppCompatActivity()
                 {
                     selectedImagesButton.isEnabled = true
                     selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                }
+
+                else
+                {
+                    selectedImagesButton.isEnabled = false
+                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
                 }
             }
         }
@@ -134,7 +166,7 @@ class AddFoodActivity : AppCompatActivity()
         selectedImagesButton.setOnClickListener {
             val intent = Intent(this, SelectedImagesActivity::class.java)
             intent.putExtra("imagesPathList", selectedImagesPathList)
-            startActivity(intent)
+            selectedImagesActivityLauncher.launch(intent)
         }
 
         backToCalendarButton.setOnClickListener {
@@ -165,12 +197,15 @@ class AddFoodActivity : AppCompatActivity()
 
                 if (from == "edit")
                 {
-                    val foodDateTemp = intent.getStringExtra("foodDate")
-                    val foodList = foodSharedPreferencesManager.loadFoodList(foodDateTemp!!)
-                    val foodPosition = intent.getIntExtra("foodPosition", 0)
-                    foodList.removeAt(foodPosition)
-                    foodList.add(foodPosition, foodDetails)
-                    foodSharedPreferencesManager.saveFoodList(foodDateTemp, foodList)
+                    val oldFoodDate = intent.getStringExtra("foodDate")
+                    val oldFoodList = foodSharedPreferencesManager.loadFoodList(oldFoodDate!!)
+                    val oldFoodPosition = intent.getIntExtra("foodPosition", 0)
+
+                    oldFoodList.removeAt(oldFoodPosition)
+                    foodSharedPreferencesManager.saveFoodList(oldFoodDate, oldFoodList)
+
+                    val newFoodDate = foodDetails.date
+                    foodSharedPreferencesManager.addFoodItem(newFoodDate, foodDetails)
 
                     showEditFoodToast()
 
@@ -309,14 +344,20 @@ class AddFoodActivity : AppCompatActivity()
 
     private fun setDate(input: TextInputEditText)
     {
+        val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         val calendar = Calendar.getInstance()
+
+        val inputText = input.text.toString()
+
+        val date = dateFormat.parse(inputText)
+        date?.let { calendar.time = it }
+
         val y = calendar.get(Calendar.YEAR)
         val m = calendar.get(Calendar.MONTH)
         val d = calendar.get(Calendar.DAY_OF_MONTH)
 
         val datePickerDialog = DatePickerDialog(this, R.style.DialogTheme, { _, year, monthOfYear, dayOfMonth ->
             calendar.set(year, monthOfYear, dayOfMonth)
-            val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
             val selectedDate = dateFormat.format(calendar.time)
             input.setText(selectedDate)
         }, y, m, d)
