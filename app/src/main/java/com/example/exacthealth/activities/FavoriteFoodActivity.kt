@@ -19,6 +19,7 @@ class FavoriteFoodActivity : AppCompatActivity()
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var foodListView: ListView
     private lateinit var startAddFavoriteFoodActivityLauncher: ActivityResultLauncher<Intent>
+    private lateinit var foodList: MutableList<FoodDetails>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -30,12 +31,16 @@ class FavoriteFoodActivity : AppCompatActivity()
 
         foodSharedPreferencesManager = FoodSharedPreferencesManager(this)
         foodListView = findViewById(R.id.favorite_foods_list_view)
-        val foodList = foodSharedPreferencesManager.loadFoodList("none")
 
-        updateListView(foodList)
+        updateListView()
 
         startAddFavoriteFoodActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-        { result -> }
+        { result ->
+            if (result.resultCode == RESULT_OK)
+            {
+                updateListView()
+            }
+        }
 
         addNewFavoriteFoodButton.setOnClickListener {
             val intent = Intent(this, AddFavoriteFoodActivity::class.java)
@@ -47,8 +52,10 @@ class FavoriteFoodActivity : AppCompatActivity()
         }
     }
 
-    private fun updateListView(foodList: MutableList<FoodDetails>)
+    private fun updateListView()
     {
+        foodList = foodSharedPreferencesManager.loadFoodList("none")
+
         if (foodList.isNotEmpty())
         {
             foodListView.visibility = View.VISIBLE

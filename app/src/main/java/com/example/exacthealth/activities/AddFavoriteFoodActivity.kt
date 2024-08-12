@@ -139,6 +139,8 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         }
 
         backToFavoriteFoodsButton.setOnClickListener {
+            val resultIntent = Intent()
+            setResult(RESULT_OK, resultIntent)
             finish()
         }
 
@@ -182,8 +184,9 @@ class AddFavoriteFoodActivity : AppCompatActivity()
 
                 showSaveFavoriteFoodToast(this)
 
-                val intent = Intent(this, FavoriteFoodActivity::class.java)
-                startActivity(intent)
+                val resultIntent = Intent()
+                setResult(RESULT_OK, resultIntent)
+                finish()
             }
         }
     }
