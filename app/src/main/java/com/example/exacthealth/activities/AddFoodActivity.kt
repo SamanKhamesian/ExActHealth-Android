@@ -41,6 +41,7 @@ class AddFoodActivity : AppCompatActivity()
     private lateinit var pickImagesLauncher: ActivityResultLauncher<Intent>
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
     private lateinit var selectedImagesActivityLauncher: ActivityResultLauncher<Intent>
+    private lateinit var startFavoriteFoodActivityLauncher: ActivityResultLauncher<Intent>
 
     private var selectedImagesPathList: ArrayList<String> = ArrayList()
     private var currentPhotoPath: String? = null
@@ -85,6 +86,9 @@ class AddFoodActivity : AppCompatActivity()
             selectedImagesButton.isEnabled = true
             selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
         }
+
+        startFavoriteFoodActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        { result -> }
 
         // Set up the ActivityResultLauncher
         selectedImagesActivityLauncher =
@@ -180,7 +184,7 @@ class AddFoodActivity : AppCompatActivity()
 
         favoriteFoodButton.setOnClickListener {
             val intent = Intent(this, FavoriteFoodActivity::class.java)
-            startActivity(intent)
+            startFavoriteFoodActivityLauncher.launch(intent)
         }
 
         saveEntryButton.setOnClickListener {

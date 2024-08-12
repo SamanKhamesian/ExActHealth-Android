@@ -139,7 +139,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         }
 
         backToFavoriteFoodsButton.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            finish()
         }
 
         selectedImagesButton.setOnClickListener {

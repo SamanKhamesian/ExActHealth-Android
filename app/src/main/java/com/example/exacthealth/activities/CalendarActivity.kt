@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.CalendarView
 import android.widget.ImageView
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -65,18 +64,14 @@ class CalendarActivity : AppCompatActivity()
         // Android 12 (API level 31) or lower
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
         {
-            if (checkPermissions())
-                updateListView(foodList)
-            else
-                requestPermissions()
+            if (checkPermissions()) updateListView(foodList)
+            else requestPermissions()
         }
         // Android 13+ (API level 33 or higher)
         else
         {
-            if (checkPermissionForCamera())
-                updateListView(foodList)
-            else
-                requestPermissionForCamera()
+            if (checkPermissionForCamera()) updateListView(foodList)
+            else requestPermissionForCamera()
         }
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
@@ -98,8 +93,10 @@ class CalendarActivity : AppCompatActivity()
 
     private fun checkPermissions(): Boolean
     {
-        val storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-        val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        val storagePermission = ContextCompat.checkSelfPermission(this,
+                                                                  Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val cameraPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
         return storagePermission && cameraPermission
     }
 
@@ -108,18 +105,24 @@ class CalendarActivity : AppCompatActivity()
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestPermissions() {
+    private fun requestPermissions()
+    {
         val permissionsNeeded = mutableListOf<String>()
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,
+                                              Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        )
+        {
             permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+        {
             permissionsNeeded.add(Manifest.permission.CAMERA)
         }
 
-        if (permissionsNeeded.isNotEmpty()) {
+        if (permissionsNeeded.isNotEmpty())
+        {
             ActivityCompat.requestPermissions(this, permissionsNeeded.toTypedArray(), PERMISSION_CODE)
         }
     }
@@ -142,8 +145,9 @@ class CalendarActivity : AppCompatActivity()
             else
             {
                 // Permission denied
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                        this, Manifest.permission.READ_EXTERNAL_STORAGE))
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                                                                         Manifest.permission.READ_EXTERNAL_STORAGE)
+                )
                 {
                     // User has denied the permission permanently
                     showPermissionDeniedDialog()

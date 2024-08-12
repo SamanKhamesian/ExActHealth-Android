@@ -39,7 +39,7 @@ class SelectedImagesActivity : AppCompatActivity()
         val backToFoodDetailsButton = findViewById<RelativeLayout>(R.id.back_to_food_details_layout)
 
         backToFoodDetailsButton.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            finish()
         }
 
         doneButton.setOnClickListener {

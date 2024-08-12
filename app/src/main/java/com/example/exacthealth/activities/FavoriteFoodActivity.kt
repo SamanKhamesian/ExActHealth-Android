@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RelativeLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.FavoriteFoodListAdapter
@@ -16,6 +18,7 @@ class FavoriteFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var foodListView: ListView
+    private lateinit var startAddFavoriteFoodActivityLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -31,13 +34,16 @@ class FavoriteFoodActivity : AppCompatActivity()
 
         updateListView(foodList)
 
+        startAddFavoriteFoodActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+        { result -> }
+
         addNewFavoriteFoodButton.setOnClickListener {
             val intent = Intent(this, AddFavoriteFoodActivity::class.java)
-            startActivity(intent)
+            startAddFavoriteFoodActivityLauncher.launch(intent)
         }
 
         backToAddFoodActivityButton.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            finish()
         }
     }
 
