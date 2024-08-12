@@ -13,4 +13,5 @@
     <string name="macros">Macros (gm)</string>
     <string name="view_selected_images">View selected images</string>
     <string name="pick_images">Pick Images</string>
+    <string name="add_to_favorite">Add to Favorites</string>
 </resources>

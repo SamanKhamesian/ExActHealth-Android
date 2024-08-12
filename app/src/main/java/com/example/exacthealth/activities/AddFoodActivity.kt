@@ -23,9 +23,10 @@ import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.example.exacthealth.classes.SelectedDatePreferencesManager
 import com.example.exacthealth.classes.convertDisplayDateToDashFormat
 import com.example.exacthealth.classes.getDefaultValue
-import com.example.exacthealth.classes.showAddFoodToast
+import com.example.exacthealth.classes.showSaveFoodToast
 import com.example.exacthealth.classes.showEditFoodToast
 import com.example.exacthealth.classes.showFoodNameErrorToast
+import com.example.exacthealth.classes.showAddFavoriteFoodToast
 import com.google.android.material.textfield.TextInputEditText
 import java.io.File
 import java.text.SimpleDateFormat
@@ -71,6 +72,7 @@ class AddFoodActivity : AppCompatActivity()
         val backToCalendarButton = findViewById<RelativeLayout>(R.id.back_to_calendar_layout)
         val favoriteFoodButton = findViewById<ConstraintLayout>(R.id.add_from_favorites_layout)
 
+        val addToFavoriteFoodsButton = findViewById<Button>(R.id.food_details_add_to_favorite_button)
         val saveEntryButton = findViewById<Button>(R.id.food_details_save_entry_button)
 
         setDefaultInformation(from, foodName, foodProtein, foodCarbs, foodFats)
@@ -187,6 +189,23 @@ class AddFoodActivity : AppCompatActivity()
             startFavoriteFoodActivityLauncher.launch(intent)
         }
 
+        addToFavoriteFoodsButton.setOnClickListener {
+            val currentDate = "none"
+            val currentTime = "none"
+
+            val foodDetails = FoodDetails(foodName.text.toString(),
+                                          currentDate,
+                                          currentTime,
+                                          selectedImagesPathList,
+                                          foodProtein.text.toString().toIntOrNull(),
+                                          foodCarbs.text.toString().toIntOrNull(),
+                                          foodFats.text.toString().toIntOrNull())
+
+            foodSharedPreferencesManager.addFoodItem(currentDate, foodDetails)
+
+            showAddFavoriteFoodToast(this)
+        }
+
         saveEntryButton.setOnClickListener {
 
             if (foodName.text.isNullOrEmpty())
@@ -224,7 +243,7 @@ class AddFoodActivity : AppCompatActivity()
                 {
                     foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
 
-                    showAddFoodToast(this)
+                    showSaveFoodToast(this)
 
                     foodName.text.clear()
                     foodProtein.text.clear()

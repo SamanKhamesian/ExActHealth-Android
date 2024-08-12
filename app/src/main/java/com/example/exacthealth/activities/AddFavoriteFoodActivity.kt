@@ -19,7 +19,7 @@ import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.example.exacthealth.classes.getDefaultValue
 import com.example.exacthealth.classes.showFoodNameErrorToast
-import com.example.exacthealth.classes.showSaveFavoriteFoodToast
+import com.example.exacthealth.classes.showAddFavoriteFoodToast
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -182,7 +182,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                     foodSharedPreferencesManager.addFoodItem(currentDate, foodDetails)
                 }
 
-                showSaveFavoriteFoodToast(this)
+                showAddFavoriteFoodToast(this)
 
                 val resultIntent = Intent()
                 setResult(RESULT_OK, resultIntent)

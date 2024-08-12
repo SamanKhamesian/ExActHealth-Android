@@ -49,9 +49,9 @@ fun createDashFormatDate(year: Int, month: Int, dayOfMonth: Int): String
     return dateFormat.format(calendar.time)
 }
 
-fun showAddFoodToast(context: Context)
+fun showSaveFoodToast(context: Context)
 {
-    val message = "Item is added successfully"
+    val message = "Item is saved successfully"
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
@@ -67,9 +67,9 @@ fun showEditFoodToast(context: Context)
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
-fun showSaveFavoriteFoodToast(context: Context)
+fun showAddFavoriteFoodToast(context: Context)
 {
-    val message = "Item is saved successfully"
+    val message = "Item is added to the favorite list successfully"
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
