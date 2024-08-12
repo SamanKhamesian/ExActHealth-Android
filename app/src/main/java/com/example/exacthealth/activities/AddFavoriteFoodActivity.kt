@@ -8,7 +8,6 @@ import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +17,9 @@ import androidx.core.content.FileProvider
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
+import com.example.exacthealth.classes.getDefaultValue
+import com.example.exacthealth.classes.showFoodNameErrorToast
+import com.example.exacthealth.classes.showSaveFavoriteFoodToast
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -64,30 +66,30 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         }
 
         // Set up the ActivityResultLauncher
-        selectedImagesActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK)
-            {
-                val intent = result.data
-                intent?.let {
-                    val updatedSelectedImagesList = it.getStringArrayListExtra("imagesPathList")
-                    updatedSelectedImagesList?.let { array ->
-                        selectedImagesPathList = array
+        selectedImagesActivityLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK)
+                {
+                    val intent = result.data
+                    intent?.let {
+                        val updatedSelectedImagesList = it.getStringArrayListExtra("imagesPathList")
+                        updatedSelectedImagesList?.let { array ->
+                            selectedImagesPathList = array
+                        }
+                    }
+
+                    if (selectedImagesPathList.isNotEmpty())
+                    {
+                        selectedImagesButton.isEnabled = true
+                        selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                    }
+                    else
+                    {
+                        selectedImagesButton.isEnabled = false
+                        selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
                     }
                 }
-
-                if (selectedImagesPathList.isNotEmpty())
-                {
-                    selectedImagesButton.isEnabled = true
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
-                }
-
-                else
-                {
-                    selectedImagesButton.isEnabled = false
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
-                }
             }
-        }
 
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
@@ -113,7 +115,6 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                     selectedImagesButton.isEnabled = true
                     selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
                 }
-
                 else
                 {
                     selectedImagesButton.isEnabled = false
@@ -151,7 +152,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
 
             if (foodName.text.isNullOrEmpty())
             {
-                showFoodNameErrorToast()
+                showFoodNameErrorToast(this)
             }
             else
             {
@@ -174,13 +175,13 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                     foodList.add(foodPosition, foodDetails)
                     foodSharedPreferencesManager.saveFoodList(currentDate, foodList)
                 }
-
                 else
                 {
                     foodSharedPreferencesManager.addFoodItem(currentDate, foodDetails)
                 }
 
-                showSaveFavoriteFoodToast()
+                showSaveFavoriteFoodToast(this)
+
                 val intent = Intent(this, FavoriteFoodActivity::class.java)
                 startActivity(intent)
             }
@@ -225,7 +226,6 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         }
     }
 
-    // Function to get the path from URI
     private fun getPathFromUri(uri: Uri): String?
     {
         val projection = arrayOf(MediaStore.Images.Media.DATA)
@@ -247,28 +247,10 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         if (from == "edit")
         {
             foodName.setText(intent.getStringExtra("foodName"))
-            setDefaultValue(foodProtein, intent.getIntExtra("foodProtein", -1))
-            setDefaultValue(foodCarbs, intent.getIntExtra("foodCarbs", -1))
-            setDefaultValue(foodFats, intent.getIntExtra("foodFats", -1))
+            foodProtein.setText(getDefaultValue(intent.getIntExtra("foodProtein", -1)))
+            foodCarbs.setText(getDefaultValue(intent.getIntExtra("foodCarbs", -1)))
+            foodFats.setText(getDefaultValue(intent.getIntExtra("foodFats", -1)))
             selectedImagesPathList = intent.getStringArrayListExtra("foodImagesPathList")!!
         }
-    }
-
-    private fun setDefaultValue(item: EditText, value: Int)
-    {
-        if (value != -1) item.setText(value.toString())
-        else item.text = null
-    }
-
-    private fun showSaveFavoriteFoodToast()
-    {
-        val message = "Item is saved successfully"
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun showFoodNameErrorToast()
-    {
-        val message = "Food name cannot be empty!"
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

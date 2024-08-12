@@ -21,6 +21,9 @@ import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodListAdapter
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.example.exacthealth.classes.SelectedDatePreferencesManager
+import com.example.exacthealth.classes.createDashFormatDate
+import com.example.exacthealth.classes.showEmptyFoodListToast
+import com.example.exacthealth.classes.showPermissionDeniedToast
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -53,7 +56,7 @@ class CalendarActivity : AppCompatActivity()
         val currentMonth = currentDate.get(Calendar.MONTH)
         val currentDayOfMonth = currentDate.get(Calendar.DAY_OF_MONTH)
 
-        var selectedDateFormat = formatDate(currentYear, currentMonth, currentDayOfMonth)
+        var selectedDateFormat = createDashFormatDate(currentYear, currentMonth, currentDayOfMonth)
         selectedDatePreferencesManager.setSelectedDate(selectedDateFormat)
 
         calendarView.date = currentDate.timeInMillis
@@ -77,13 +80,13 @@ class CalendarActivity : AppCompatActivity()
         }
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            selectedDateFormat = formatDate(year, month, dayOfMonth)
+            selectedDateFormat = createDashFormatDate(year, month, dayOfMonth)
             selectedDatePreferencesManager.setSelectedDate(selectedDateFormat)
             foodList = foodSharedPreferencesManager.loadFoodList(selectedDateFormat)
 
             updateListView(foodList)
 
-            if (foodList.isEmpty()) showFoodListToast(selectedDateFormat)
+            if (foodList.isEmpty()) showEmptyFoodListToast(this, selectedDateFormat)
         }
 
         addNewFood.setOnClickListener {
@@ -138,17 +141,20 @@ class CalendarActivity : AppCompatActivity()
             }
             else
             {
-                showPermissionDeniedToast()
+                // Permission denied
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                        this, Manifest.permission.READ_EXTERNAL_STORAGE))
+                {
+                    // User has denied the permission permanently
+                    showPermissionDeniedDialog()
+                }
+                else
+                {
+                    // User has denied the permission but not permanently
+                    showPermissionDeniedToast(this)
+                }
             }
         }
-    }
-
-    private fun formatDate(year: Int, month: Int, dayOfMonth: Int): String
-    {
-        val calendar = Calendar.getInstance()
-        calendar.set(year, month, dayOfMonth)
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        return dateFormat.format(calendar.time)
     }
 
     private fun updateListView(foodList: MutableList<FoodDetails>)
@@ -170,18 +176,6 @@ class CalendarActivity : AppCompatActivity()
         {
             foodListView.visibility = View.INVISIBLE
         }
-    }
-
-    private fun showFoodListToast(date: String)
-    {
-        val message = "No food entries for $date"
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showPermissionDeniedToast()
-    {
-        val message = "Permission denied"
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showPermissionDeniedDialog()

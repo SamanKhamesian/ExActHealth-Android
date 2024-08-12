@@ -10,7 +10,6 @@ import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -22,12 +21,18 @@ import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.example.exacthealth.classes.SelectedDatePreferencesManager
+import com.example.exacthealth.classes.convertDisplayDateToDashFormat
+import com.example.exacthealth.classes.getDefaultValue
+import com.example.exacthealth.classes.showAddFoodToast
+import com.example.exacthealth.classes.showEditFoodToast
+import com.example.exacthealth.classes.showFoodNameErrorToast
 import com.google.android.material.textfield.TextInputEditText
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+
 
 class AddFoodActivity : AppCompatActivity()
 {
@@ -82,30 +87,30 @@ class AddFoodActivity : AppCompatActivity()
         }
 
         // Set up the ActivityResultLauncher
-        selectedImagesActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK)
-            {
-                val intent = result.data
-                intent?.let {
-                    val updatedSelectedImagesList = it.getStringArrayListExtra("imagesPathList")
-                    updatedSelectedImagesList?.let { array ->
-                        selectedImagesPathList = array
+        selectedImagesActivityLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK)
+                {
+                    val intent = result.data
+                    intent?.let {
+                        val updatedSelectedImagesList = it.getStringArrayListExtra("imagesPathList")
+                        updatedSelectedImagesList?.let { array ->
+                            selectedImagesPathList = array
+                        }
+                    }
+
+                    if (selectedImagesPathList.isNotEmpty())
+                    {
+                        selectedImagesButton.isEnabled = true
+                        selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
+                    }
+                    else
+                    {
+                        selectedImagesButton.isEnabled = false
+                        selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
                     }
                 }
-
-                if (selectedImagesPathList.isNotEmpty())
-                {
-                    selectedImagesButton.isEnabled = true
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
-                }
-
-                else
-                {
-                    selectedImagesButton.isEnabled = false
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
-                }
             }
-        }
 
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
@@ -131,7 +136,6 @@ class AddFoodActivity : AppCompatActivity()
                     selectedImagesButton.isEnabled = true
                     selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.red))
                 }
-
                 else
                 {
                     selectedImagesButton.isEnabled = false
@@ -183,12 +187,12 @@ class AddFoodActivity : AppCompatActivity()
 
             if (foodName.text.isNullOrEmpty())
             {
-                showFoodNameErrorToast()
+                showFoodNameErrorToast(this)
             }
             else
             {
                 val foodDetails = FoodDetails(foodName.text.toString(),
-                                              convertDateFormat(foodDateInput.text.toString()),
+                                              convertDisplayDateToDashFormat(foodDateInput.text.toString()),
                                               foodTimeInput.text.toString(),
                                               selectedImagesPathList,
                                               foodProtein.text.toString().toIntOrNull(),
@@ -207,7 +211,7 @@ class AddFoodActivity : AppCompatActivity()
                     val newFoodDate = foodDetails.date
                     foodSharedPreferencesManager.addFoodItem(newFoodDate, foodDetails)
 
-                    showEditFoodToast()
+                    showEditFoodToast(this)
 
                     val intent = Intent(this, CalendarActivity::class.java)
                     startActivity(intent)
@@ -216,7 +220,7 @@ class AddFoodActivity : AppCompatActivity()
                 {
                     foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
 
-                    showAddFoodToast()
+                    showAddFoodToast(this)
 
                     foodName.text.clear()
                     foodProtein.text.clear()
@@ -230,13 +234,6 @@ class AddFoodActivity : AppCompatActivity()
         }
     }
 
-    private fun openGalleryForMultipleImages()
-    {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        pickImagesLauncher.launch(galleryIntent)
-    }
-
     private fun showImageSourceOptions()
     {
         val options = arrayOf("Select from Gallery", "Take a Picture")
@@ -247,6 +244,13 @@ class AddFoodActivity : AppCompatActivity()
                 1 -> openCamera()
             }
         }.show()
+    }
+
+    private fun openGalleryForMultipleImages()
+    {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        pickImagesLauncher.launch(galleryIntent)
     }
 
     private fun openCamera()
@@ -266,6 +270,18 @@ class AddFoodActivity : AppCompatActivity()
         return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
             currentPhotoPath = absolutePath
         }
+    }
+
+    private fun getPathFromUri(uri: Uri): String?
+    {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+        cursor?.use {
+            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            it.moveToFirst()
+            return it.getString(columnIndex)
+        }
+        return null
     }
 
     private fun setDefaultDateTime(from: String?, foodDateInput: TextInputEditText, foodTimeInput: TextInputEditText)
@@ -308,38 +324,11 @@ class AddFoodActivity : AppCompatActivity()
         if (from == "favorite_food" || from == "edit")
         {
             foodName.setText(intent.getStringExtra("foodName"))
-            setDefaultValue(foodProtein, intent.getIntExtra("foodProtein", -1))
-            setDefaultValue(foodCarbs, intent.getIntExtra("foodCarbs", -1))
-            setDefaultValue(foodFats, intent.getIntExtra("foodFats", -1))
+            foodProtein.setText(getDefaultValue(intent.getIntExtra("foodProtein", -1)))
+            foodCarbs.setText(getDefaultValue(intent.getIntExtra("foodCarbs", -1)))
+            foodFats.setText(getDefaultValue(intent.getIntExtra("foodFats", -1)))
             selectedImagesPathList = intent.getStringArrayListExtra("foodImagesPathList")!!
         }
-    }
-
-    private fun setDefaultValue(item: EditText, value: Int)
-    {
-        if (value != -1) item.setText(value.toString())
-        else item.text = null
-    }
-
-    private fun convertDateFormat(inputDate: String): String
-    {
-        val inputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
-        val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val newDate = inputFormat.parse(inputDate)
-        return outputFormat.format(newDate!!)
-    }
-
-    // Function to get the path from URI
-    private fun getPathFromUri(uri: Uri): String?
-    {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(uri, projection, null, null, null)
-        cursor?.use {
-            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            it.moveToFirst()
-            return it.getString(columnIndex)
-        }
-        return null
     }
 
     private fun setDate(input: TextInputEditText)
@@ -375,23 +364,5 @@ class AddFoodActivity : AppCompatActivity()
             input.setText(timeFormat)
         }, hourOfDay, minute, true)
         timePickerDialog.show()
-    }
-
-    private fun showAddFoodToast()
-    {
-        val message = "Item is added successfully"
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun showFoodNameErrorToast()
-    {
-        val message = "Food name cannot be empty!"
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun showEditFoodToast()
-    {
-        val message = "Item is edited successfully"
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
