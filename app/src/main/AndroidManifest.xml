@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
@@ -12,6 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,9 @@
         android:theme="@style/Theme.ExActHealth"
         tools:targetApi="34">
 
+        <activity
+            android:name=".activities.LoadingActivity"
+            android:exported="false" />
         <!-- FileProvider -->
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -42,7 +46,16 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE"/>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS"/>
             </intent-filter>
+
+            <meta-data
+                android:name="health_permissions"
+                android:resource="@array/health_permissions" >
+            </meta-data>
+
         </activity>
         <activity
             android:name=".activities.AddFavoriteFoodActivity"
@@ -69,5 +82,9 @@
             android:screenOrientation="portrait">
         </activity>
     </application>
+
+    <queries>
+        <package android:name="com.google.android.apps.healthdata" />
+    </queries>
 
 </manifest>

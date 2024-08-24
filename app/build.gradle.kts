@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.exacthealth"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -43,7 +43,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.4")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.1")
+    implementation("com.airbnb.android:lottie:6.5.0")
+    implementation("androidx.health.connect:connect-client:1.1.0-alpha07")
+
 }

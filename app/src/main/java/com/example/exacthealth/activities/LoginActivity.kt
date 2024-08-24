@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity()
 
     companion object
     {
-        const val TEST_CONNECTION_URL = "https://mayo.abdullah-mamun.com/t1d/hello/"
+        const val TEST_CONNECTION_URL = "https://mayo.abdullah-mamun.com/t1d/testConnection/"
         const val LOGIN_URL = "https://mayo.abdullah-mamun.com/t1d/login/"
         const val SIGN_UP_URL = "https://mayo.abdullah-mamun.com/t1d/sign-up/"
     }
@@ -157,7 +157,7 @@ class LoginActivity : AppCompatActivity()
         if (responseCode == 200)
         {
             Handler(Looper.getMainLooper()).postDelayed({
-                                                            val intent = Intent(this, CalendarActivity::class.java)
+                                                            val intent = Intent(this, LoadingActivity::class.java)
                                                             intent.putExtra("username", username)
                                                             startActivity(intent)
                                                             finish()
@@ -221,11 +221,10 @@ class LoginActivity : AppCompatActivity()
         if (responseCode == 200)
         {
             Handler(Looper.getMainLooper()).postDelayed({
-                                                            val intent = Intent(this, CalendarActivity::class.java)
-                                                            intent.putExtra("username", username)
-                                                            startActivity(intent)
-                                                            finish()
-                                                        }, 2000)
+                val intent = Intent(this, LoadingActivity::class.java)
+                intent.putExtra("username", username)
+                startActivity(intent)
+                finish() }, 2000)
         }
     }
 
