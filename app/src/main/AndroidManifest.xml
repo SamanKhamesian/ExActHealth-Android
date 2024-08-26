@@ -13,6 +13,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
     <uses-permission android:name="android.permission.health.READ_STEPS" />
+    <uses-permission android:name="android.permission.health.READ_BODY_TEMPERATURE" />
+    <uses-permission android:name="android.permission.health.READ_DISTANCE"/>
+    <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
+    <uses-permission android:name="android.permission.health.READ_SLEEP" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +31,9 @@
 
         <activity
             android:name=".activities.LoadingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
         <!-- FileProvider -->
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -43,6 +49,7 @@
             android:name=".activities.LoginActivity"
             android:exported="true"
             android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

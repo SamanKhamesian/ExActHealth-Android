@@ -8,16 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.exacthealth.R
-import com.example.exacthealth.classes.HealthDataViewModel
-import com.example.exacthealth.classes.HeartRateViewModel
-import com.example.exacthealth.classes.StepCountsViewModel
+import com.example.exacthealth.models.BodyTemperatureViewModel
+import com.example.exacthealth.models.CaloriesBurnedViewModel
+import com.example.exacthealth.models.DistanceViewModel
+import com.example.exacthealth.models.HealthDataViewModel
+import com.example.exacthealth.models.HeartRateViewModel
+import com.example.exacthealth.models.SleepSessionsViewModel
+import com.example.exacthealth.models.StepCountsViewModel
 import kotlinx.coroutines.launch
 
 class LoadingActivity : AppCompatActivity()
 {
-    private lateinit var finalHeartRateRecordList: List<Pair<String, Int>>
-    private lateinit var finalStepCountsRecordList: List<Pair<String, Int>>
-
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -25,11 +26,19 @@ class LoadingActivity : AppCompatActivity()
 
         val heartRateViewModel = HeartRateViewModel(application)
         val stepCountsViewModel = StepCountsViewModel(application)
+        val distanceViewModel = DistanceViewModel(application)
+        val bodyTemperatureViewModel = BodyTemperatureViewModel(application)
+        val caloriesBurnedViewModel = CaloriesBurnedViewModel(application)
+        val sleepSessionsViewModel = SleepSessionsViewModel(application)
 
         if (isHealthConnectAvailable())
         {
-            checkPermissionsAndRun(heartRateViewModel)
-            checkPermissionsAndRun(stepCountsViewModel)
+            checkAllPermissionsAndRun(heartRateViewModel,
+                                      stepCountsViewModel,
+                                      distanceViewModel,
+                                      bodyTemperatureViewModel,
+                                      caloriesBurnedViewModel,
+                                      sleepSessionsViewModel)
         }
         else
         {
@@ -44,6 +53,25 @@ class LoadingActivity : AppCompatActivity()
         stepCountsViewModel.stepCounts.observe(this, Observer { stepCounts ->
             val stepCountsPairs = stepCountsViewModel.formatStepCountsRecords(stepCounts)
             val temp = stepCountsPairs.ifEmpty { listOf("Null" to 0) }
+        })
+
+        distanceViewModel.distanceRecord.observe(this, Observer { distanceRecord ->
+            val distanceRecordPairs = distanceViewModel.formatDistanceRecords(distanceRecord)
+            val temp = distanceRecordPairs.ifEmpty { listOf("Null" to 0) }
+        })
+
+        caloriesBurnedViewModel.caloriesBurnedRecord.observe(this, Observer { caloriesBurnedRecord ->
+            val caloriesBurnedRecordPairs = caloriesBurnedViewModel.formatCaloriesBurnedRecords(caloriesBurnedRecord)
+            val temp = caloriesBurnedRecordPairs.ifEmpty { listOf("Null" to 0) }
+        })
+
+        sleepSessionsViewModel.sleepSessionRecord.observe(this, Observer { sleepSessionRecord ->
+            val sleepSessionRecordPairs = sleepSessionsViewModel.formatSleepSessionRecords(sleepSessionRecord)
+            val temp = sleepSessionRecordPairs.ifEmpty { listOf("Null" to 0) }
+        })
+
+        bodyTemperatureViewModel.bodyTemp.observe(this, Observer { bodyTemp ->
+            val bodyTempPairs = bodyTemp.count()
         })
     }
 
@@ -61,15 +89,49 @@ class LoadingActivity : AppCompatActivity()
         }
     }
 
-    private fun checkPermissionsAndRun(healthDataViewModel: HealthDataViewModel)
+//    private fun checkPermissionsAndRun(healthDataViewModel: HealthDataViewModel)
+//    {
+//        val permissions = healthDataViewModel.permissions
+//
+//        val requestPermissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsResult ->
+//            if (permissionsResult.values.all { it })
+//            {
+//                lifecycleScope.launch {
+//                    healthDataViewModel.readData()
+//                }
+//            }
+//            else
+//            {
+//                Toast.makeText(this, "Permissions not granted", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//
+//        lifecycleScope.launch {
+//            val permissionsGranted = healthDataViewModel.hasAllPermissions()
+//
+//            if (!permissionsGranted)
+//            {
+//                requestPermissionsLauncher.launch(permissions.map { it.toString() }.toTypedArray())
+//            }
+//            else
+//            {
+//                healthDataViewModel.readData()
+//            }
+//        }
+//    }
+
+    private fun checkAllPermissionsAndRun(vararg healthDataViewModels: HealthDataViewModel)
     {
-        val permissions = healthDataViewModel.permissions
+        // Combine permissions from all ViewModels
+        val allPermissions = healthDataViewModels.flatMap { it.permissions }.distinct() // To ensure there are no duplicates
+            .map { it.toString() }.toTypedArray()
 
         val requestPermissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionsResult ->
             if (permissionsResult.values.all { it })
             {
+                // If all permissions are granted, read data from all ViewModels
                 lifecycleScope.launch {
-                    healthDataViewModel.readData()
+                    healthDataViewModels.forEach { it.readData() }
                 }
             }
             else
@@ -79,15 +141,17 @@ class LoadingActivity : AppCompatActivity()
         }
 
         lifecycleScope.launch {
-            val permissionsGranted = healthDataViewModel.hasAllPermissions()
+            val allPermissionsGranted = healthDataViewModels.all { it.hasAllPermissions() }
 
-            if (!permissionsGranted)
+            if (!allPermissionsGranted)
             {
-                requestPermissionsLauncher.launch(permissions.map { it.toString() }.toTypedArray())
+                // Request all permissions at once
+                requestPermissionsLauncher.launch(allPermissions)
             }
             else
             {
-                healthDataViewModel.readData()
+                // Permissions are already granted, read data from all ViewModels
+                healthDataViewModels.forEach { it.readData() }
             }
         }
     }

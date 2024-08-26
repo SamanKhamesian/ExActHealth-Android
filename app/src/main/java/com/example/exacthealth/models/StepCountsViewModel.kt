@@ -1,4 +1,4 @@
-package com.example.exacthealth.classes
+package com.example.exacthealth.models
 
 import android.app.Application
 import android.util.Log
@@ -37,8 +37,15 @@ class StepCountsViewModel(application: Application) : HealthDataViewModel(applic
             try
             {
                 val response = healthConnectClient.readRecords(readRequest)
-                if (response.records.isEmpty()) _stepCounts.postValue(emptyList())
-                else _stepCounts.postValue(response.records)
+
+                if (response.records.isEmpty())
+                {
+                    _stepCounts.postValue(emptyList())
+                }
+                else
+                {
+                    _stepCounts.postValue(response.records)
+                }
             }
             catch (e: Exception)
             {
@@ -51,8 +58,8 @@ class StepCountsViewModel(application: Application) : HealthDataViewModel(applic
     fun formatStepCountsRecords(stepCounts: List<StepsRecord>): List<Pair<String, Int>>
     {
         return stepCounts.map { record ->
-            val endTimeWithOffset = ZonedDateTime.ofInstant(record.endTime, record.endZoneOffset)
-            val formattedTime = endTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
+            val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
             val steps = record.count.toInt()
             formattedTime to steps
         }

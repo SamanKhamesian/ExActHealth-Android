@@ -1,4 +1,4 @@
-package com.example.exacthealth.classes
+package com.example.exacthealth.models
 
 import android.app.Application
 import androidx.health.connect.client.HealthConnectClient

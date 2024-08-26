@@ -1,4 +1,4 @@
-package com.example.exacthealth.classes
+package com.example.exacthealth.models
 
 import android.app.Application
 import android.util.Log
@@ -37,8 +37,15 @@ class HeartRateViewModel(application: Application) : HealthDataViewModel(applica
             try
             {
                 val response = healthConnectClient.readRecords(readRequest)
-                if (response.records.isEmpty()) _heartRates.postValue(emptyList())
-                else _heartRates.postValue(response.records)
+
+                if (response.records.isEmpty())
+                {
+                    _heartRates.postValue(emptyList())
+                }
+                else
+                {
+                    _heartRates.postValue(response.records)
+                }
             }
             catch (e: Exception)
             {
@@ -53,8 +60,8 @@ class HeartRateViewModel(application: Application) : HealthDataViewModel(applica
         return heartRates.mapNotNull { record ->
             val sample = record.samples.lastOrNull() ?: return@mapNotNull null
             val beatsPerMinute = sample.beatsPerMinute
-            val endTimeWithOffset = ZonedDateTime.ofInstant(record.endTime, record.endZoneOffset)
-            val formattedTime = endTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
+            val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
             formattedTime to beatsPerMinute.toInt()
         }
     }
