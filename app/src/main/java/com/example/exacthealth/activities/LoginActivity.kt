@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.isInternetAvailable
 import com.example.exacthealth.classes.showNoInternetDialog
+import com.google.android.material.textfield.TextInputEditText
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -39,8 +40,8 @@ class LoginActivity : AppCompatActivity()
         val loginButton = findViewById<Button>(R.id.login_button)
         val signupButton = findViewById<Button>(R.id.signup_button)
 
-        val usernameEditText = findViewById<EditText>(R.id.login_username)
-        val passwordEditText = findViewById<EditText>(R.id.login_password)
+        val usernameEditText = findViewById<TextInputEditText>(R.id.login_username)
+        val passwordEditText = findViewById<TextInputEditText>(R.id.login_password)
         errorTextView = findViewById<TextView>(R.id.login_error_message)
 
         testConnection()

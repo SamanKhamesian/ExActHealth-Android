@@ -43,21 +43,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/login_username"
+            <com.google.android.material.textfield.TextInputLayout
                 android:theme="@style/DialogTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:gravity="center_vertical"
                 android:hint="Username"
-                android:drawableLeft="@drawable/ic_username"
-                android:drawablePadding="10dp"
-                android:textSize="14sp"
-                android:backgroundTint="@color/light_gray"
-                android:inputType="textPersonName"
-                android:autofillHints="name">
-            </EditText>
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:textColorHint="@color/gray"
+                android:gravity="center_vertical"
+                android:autofillHints="name"
+                app:hintTextColor="@color/gray"
+                app:startIconDrawable="@drawable/ic_username">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/light_gray"
+                    android:textSize="14sp"
+                    android:inputType="textPersonName" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </RelativeLayout>
 
@@ -81,21 +88,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/login_password"
+            <com.google.android.material.textfield.TextInputLayout
                 android:theme="@style/DialogTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:hint="Password"
-                android:drawableLeft="@drawable/ic_password"
-                android:drawablePadding="10dp"
-                android:textSize="14sp"
-                android:backgroundTint="@color/light_gray"
-                android:inputType="textPassword"
-                android:autofillHints="name">
-            </EditText>
+                android:textColorHint="@color/gray"
+                android:gravity="center_vertical"
+                android:autofillHints="name"
+                app:passwordToggleEnabled="true"
+                app:hintTextColor="@color/gray"
+                app:startIconDrawable="@drawable/ic_password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/light_gray"
+                    android:textSize="14sp"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </RelativeLayout>
 
