@@ -47,22 +47,8 @@
 
         <activity
             android:name=".activities.LoginActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE"/>
-                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>
-                <category android:name="android.intent.category.HEALTH_PERMISSIONS"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="health_permissions"
-                android:resource="@array/health_permissions" >
-            </meta-data>
-
         </activity>
         <activity
             android:name=".activities.AddFavoriteFoodActivity"
@@ -80,8 +66,22 @@
         </activity>
         <activity
             android:name=".activities.CalendarActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+<!--                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE"/>-->
+<!--                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>-->
+<!--                <category android:name="android.intent.category.HEALTH_PERMISSIONS"/>-->
+            </intent-filter>
+
+<!--            <meta-data-->
+<!--                android:name="health_permissions"-->
+<!--                android:resource="@array/health_permissions" >-->
+<!--            </meta-data>-->
+
         </activity>
         <activity
             android:name=".activities.AddFoodActivity"

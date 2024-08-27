@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.exacthealth.R
 import com.example.exacthealth.activities.AddFavoriteFoodActivity
 import com.example.exacthealth.activities.AddFoodActivity
+import com.example.exacthealth.activities.FavoriteFoodActivity
 
 class SelectedImageAdapter(context: Context,
                            private val resource: Int,
@@ -167,7 +168,7 @@ open class FoodListAdapter(context: Context,
                                 putExtra("foodFats", food.fats)
                                 putExtra("foodPosition", position)
                             }
-                            context.startActivity(intent)
+                            (context as? FavoriteFoodActivity)?.startAddFavoriteFoodActivityLauncher?.launch(intent)
                         }
                         else
                         {

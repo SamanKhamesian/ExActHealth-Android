@@ -18,7 +18,7 @@ class FavoriteFoodActivity : AppCompatActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var foodListView: ListView
-    private lateinit var startAddFavoriteFoodActivityLauncher: ActivityResultLauncher<Intent>
+    lateinit var startAddFavoriteFoodActivityLauncher: ActivityResultLauncher<Intent>
     private lateinit var foodList: MutableList<FoodDetails>
 
     override fun onCreate(savedInstanceState: Bundle?)
