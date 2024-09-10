@@ -380,13 +380,22 @@ class AddFoodActivity : AppCompatActivity()
 
     private fun setTime(input: TextInputEditText)
     {
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val calendar = Calendar.getInstance()
+
+        val inputText = input.text.toString()
+
+        val time = timeFormat.parse(inputText)
+        time?.let { calendar.time = it }
+
         val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
         val timePickerDialog = TimePickerDialog(this, R.style.DialogTheme, { _, selectedHourOfDay, selectedMinute ->
-            val timeFormat = String.format("%02d:%02d", selectedHourOfDay, selectedMinute)
-            input.setText(timeFormat)
+            calendar.set(Calendar.HOUR_OF_DAY, selectedHourOfDay)
+            calendar.set(Calendar.MINUTE, selectedMinute)
+            val selectedTime = timeFormat.format(calendar.time)
+            input.setText(selectedTime)
         }, hourOfDay, minute, true)
         timePickerDialog.show()
     }
