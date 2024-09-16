@@ -44,7 +44,7 @@ class FoodDetails
 class FoodSharedPreferencesManager(private val context: Context)
 {
     private val sharedPreferences = context.getSharedPreferences("food_data", Context.MODE_PRIVATE)
-    private val serverRequestHandler: ServerRequestHandler = ServerRequestHandler()
+    private val serverRequestHandler: ServerRequestHandler = ServerRequestHandler(context)
 
     fun saveFoodList(date: String, foodList: MutableList<FoodDetails>)
     {

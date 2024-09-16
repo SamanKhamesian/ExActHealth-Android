@@ -140,6 +140,17 @@ class LoginActivity : AppCompatActivity()
         }
     }
 
+    private fun saveLoginState(username: String, token: String, cookie: String)
+    {
+        val sharedPreferences = getSharedPreferences("user_session", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("USERNAME", username)
+        editor.putString("CSRF_TOKEN", token)
+        editor.putString("SAVED_COOKIE", cookie)
+        editor.putBoolean("IS_LOGGED_IN", true)
+        editor.apply()
+    }
+
     private fun loginConnection(username: String, password: String)
     {
         val url = URL(LOGIN_URL)
@@ -157,12 +168,13 @@ class LoginActivity : AppCompatActivity()
 
         if (responseCode == 200)
         {
+            // Save the login state
+            saveLoginState(username, CSRF_TOKEN, SAVED_COOKIE ?: "")
+
             Handler(Looper.getMainLooper()).postDelayed({
-                                                            val intent = Intent(this, LoadingActivity::class.java)
-                                                            intent.putExtra("username", username)
-                                                            startActivity(intent)
-                                                            finish()
-                                                        }, 2000)
+                val intent = Intent(this, CalendarActivity::class.java)
+                startActivity(intent)
+                finish() }, 2000)
         }
     }
 
