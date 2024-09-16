@@ -44,6 +44,7 @@ class FoodDetails
 class FoodSharedPreferencesManager(private val context: Context)
 {
     private val sharedPreferences = context.getSharedPreferences("food_data", Context.MODE_PRIVATE)
+    private val serverRequestHandler: ServerRequestHandler = ServerRequestHandler()
 
     fun saveFoodList(date: String, foodList: MutableList<FoodDetails>)
     {
@@ -60,6 +61,10 @@ class FoodSharedPreferencesManager(private val context: Context)
         val json = GsonProvider.gson.toJson(foodList)
         editor.putString(date, json)
         editor.apply()
+
+        val updatedList = sharedPreferences.getString(date, "")!!
+
+        serverRequestHandler.sendUpdatedList(date=date, jsonFoodList=updatedList, isInFavoriteList= date != "none")
     }
 
     fun loadFoodList(date: String): MutableList<FoodDetails>

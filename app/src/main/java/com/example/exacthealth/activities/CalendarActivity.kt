@@ -93,12 +93,25 @@ class CalendarActivity : AppCompatActivity()
 
     private fun checkPermissions(): Boolean
     {
-        val storagePermission = ContextCompat.checkSelfPermission(this,
-                                                                  Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-        val cameraPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-        return storagePermission && cameraPermission
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        {
+            // For Android 13+ (API level 33+), check READ_MEDIA_IMAGES permission
+            val mediaPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+            val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+
+            mediaPermission && cameraPermission
+
+        }
+        else
+        {
+            // For Android 10 to 12 (API levels 29 to 32), check READ_EXTERNAL_STORAGE permission
+            val storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            val cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+
+            storagePermission && cameraPermission
+        }
     }
+
 
     private fun checkPermissionForCamera(): Boolean
     {
@@ -109,13 +122,25 @@ class CalendarActivity : AppCompatActivity()
     {
         val permissionsNeeded = mutableListOf<String>()
 
-        if (ContextCompat.checkSelfPermission(this,
-                                              Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         {
-            permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            // Android 13+ (API level 33): Request READ_MEDIA_IMAGES
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED)
+            {
+                permissionsNeeded.add(Manifest.permission.READ_MEDIA_IMAGES)
+            }
+
+        }
+        else
+        {
+            // Android 10 to 12 (API level 29 to 32): Request READ_EXTERNAL_STORAGE
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
         }
 
+        // Camera permission (same for all versions)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
         {
             permissionsNeeded.add(Manifest.permission.CAMERA)
@@ -144,17 +169,22 @@ class CalendarActivity : AppCompatActivity()
             }
             else
             {
-                // Permission denied
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                                                                         Manifest.permission.READ_EXTERNAL_STORAGE)
-                )
+                // Handle permission denial
+                val deniedPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 {
-                    // User has denied the permission permanently
+                    Manifest.permission.READ_MEDIA_IMAGES
+                }
+                else
+                {
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
+
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, deniedPermission))
+                {
                     showPermissionDeniedDialog()
                 }
                 else
                 {
-                    // User has denied the permission but not permanently
                     showPermissionDeniedToast(this)
                 }
             }
@@ -184,16 +214,13 @@ class CalendarActivity : AppCompatActivity()
 
     private fun showPermissionDeniedDialog()
     {
-        AlertDialog.Builder(this)
-            .setTitle("Permission Required")
+        AlertDialog.Builder(this).setTitle("Permission Required")
             .setMessage("Permission to read external storage is required for this app. Please enable it in the app settings.")
             .setPositiveButton("Go to Settings") { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", packageName, null)
                 }
                 startActivity(intent)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
+            }.setNegativeButton("Cancel", null).show()
     }
 }

@@ -21,6 +21,7 @@ import com.example.exacthealth.classes.getDefaultValue
 import com.example.exacthealth.classes.showFoodNameErrorToast
 import com.example.exacthealth.classes.showAddFavoriteFoodToast
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -91,6 +92,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                 }
             }
 
+        // Launcher to pick images from gallery
         pickImagesLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK)
             {
@@ -99,14 +101,16 @@ class AddFavoriteFoodActivity : AppCompatActivity()
                     for (i in 0 until clipData.itemCount)
                     {
                         val uri = clipData.getItemAt(i).uri
-                        val path = getPathFromUri(uri)
-                        path?.let { selectedImagesPathList.add(it) }
+
+                        // Copy image to internal storage and get the path
+                        val copiedImagePath = copyToInternalStorage(uri)
+                        selectedImagesPathList.add(copiedImagePath)  // Store the absolute path
                     }
                 } ?: run {
                     val uri = intent?.data
                     uri?.let {
-                        val path = getPathFromUri(uri)
-                        path?.let { selectedImagesPathList.add(it) }
+                        val copiedImagePath = copyToInternalStorage(it)
+                        selectedImagesPathList.add(copiedImagePath)
                     }
                 }
 
@@ -229,16 +233,33 @@ class AddFavoriteFoodActivity : AppCompatActivity()
         }
     }
 
-    private fun getPathFromUri(uri: Uri): String?
+    // Copy the image from the original URI to the app's internal storage
+    private fun copyToInternalStorage(uri: Uri): String
     {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(uri, projection, null, null, null)
-        cursor?.use {
-            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            it.moveToFirst()
-            return it.getString(columnIndex)
+        try
+        {
+            // Open the input stream from the original URI
+            val inputStream = contentResolver.openInputStream(uri)
+
+            // Create a new file in the app's internal storage
+            val file = createImageFile()  // Use your createImageFile method
+            val outputStream = FileOutputStream(file)
+
+            // Copy the input stream to the output stream (copy the image)
+            inputStream?.use { input ->
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            // Return the file's absolute path (so you can load it later)
+            return file.absolutePath
         }
-        return null
+        catch (e: Exception)
+        {
+            e.printStackTrace()
+            throw RuntimeException("Failed to copy image to internal storage", e)
+        }
     }
 
     private fun setDefaultInformation(from: String?,

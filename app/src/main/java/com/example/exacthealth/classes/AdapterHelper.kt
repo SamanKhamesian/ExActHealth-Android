@@ -3,6 +3,7 @@ package com.example.exacthealth.classes
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.example.exacthealth.R
 import com.example.exacthealth.activities.AddFavoriteFoodActivity
 import com.example.exacthealth.activities.AddFoodActivity
 import com.example.exacthealth.activities.FavoriteFoodActivity
+import java.io.File
 
 class SelectedImageAdapter(context: Context,
                            private val resource: Int,
@@ -55,7 +57,7 @@ class SelectedImageAdapter(context: Context,
         for (i in startIndex until endIndex)
         {
             val imagePath = images[i]
-            val fileUri = Uri.parse("file://$imagePath")
+            val fileUri = Uri.fromFile(File(imagePath))
             val imageView = imageViews[i - startIndex]
             val checkBox = checkBoxes[i - startIndex]
 
@@ -242,7 +244,7 @@ class FoodImageAdapter(private val images: ArrayList<String>) : RecyclerView.Ada
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int)
     {
         val imagePath = images[position]
-        val fileUri = Uri.parse("file://$imagePath")
+        val fileUri = Uri.fromFile(File(imagePath))
         holder.imageView.setImageURI(fileUri)
     }
 

@@ -27,8 +27,7 @@ class SelectedImagesActivity : AppCompatActivity()
         selectedImagesArray = intent.getStringArrayListExtra("imagesPathList")!!
 
         // Create and set adapter
-        adapter =
-            SelectedImageAdapter(this, R.layout.list_selected_images, selectedImagesArray, isEditMode, selectedItems)
+        adapter = SelectedImageAdapter(this, R.layout.list_selected_images, selectedImagesArray, isEditMode, selectedItems)
 
         listViewImages.adapter = adapter
 
