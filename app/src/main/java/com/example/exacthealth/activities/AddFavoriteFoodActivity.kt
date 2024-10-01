@@ -162,8 +162,8 @@ class AddFavoriteFoodActivity : AppCompatActivity()
             }
             else
             {
-                val currentDate = "none"
-                val currentTime = "none"
+                val currentDate = "None"
+                val currentTime = "None"
 
                 val foodDetails = FoodDetails(foodName.text.toString(),
                                               currentDate,
@@ -175,7 +175,7 @@ class AddFavoriteFoodActivity : AppCompatActivity()
 
                 if (from == "edit")
                 {
-                    val foodList = foodSharedPreferencesManager.loadFoodList("none")
+                    val foodList = foodSharedPreferencesManager.loadFoodList("None")
                     val foodPosition = intent.getIntExtra("foodPosition", 0)
                     foodList.removeAt(foodPosition)
                     foodList.add(foodPosition, foodDetails)

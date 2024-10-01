@@ -54,7 +54,7 @@ class FavoriteFoodActivity : AppCompatActivity()
 
     private fun updateListView()
     {
-        foodList = foodSharedPreferencesManager.loadFoodList("none")
+        foodList = foodSharedPreferencesManager.loadFoodList("None")
 
         if (foodList.isNotEmpty())
         {

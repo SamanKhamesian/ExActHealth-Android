@@ -124,7 +124,7 @@ open class FoodListAdapter(context: Context,
         "Carbs (g): ${food.carbs ?: "N/A"}".also { carbsTextView.text = it }
         "Fats (g): ${food.fats ?: "N/A"}".also { fatTextView.text = it }
 
-        if (food.time != "none")
+        if (food.time != "None")
         {
             "Time: ${food.time}".also { timeTextView.text = it }
             timeTextView.visibility = View.VISIBLE
@@ -159,7 +159,7 @@ open class FoodListAdapter(context: Context,
                 {
                     R.id.menu_edit   ->
                     {
-                        if (food.date == "none")
+                        if (food.date == "None")
                         {
                             val intent = Intent(context, AddFavoriteFoodActivity::class.java).apply {
                                 putExtra("from", "edit")

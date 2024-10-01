@@ -48,7 +48,7 @@ class FoodSharedPreferencesManager(private val context: Context)
 
     fun saveFoodList(date: String, foodList: MutableList<FoodDetails>)
     {
-        if (date != "none")
+        if (date != "None")
         {
             val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
@@ -64,7 +64,7 @@ class FoodSharedPreferencesManager(private val context: Context)
 
         val updatedList = sharedPreferences.getString(date, "")!!
 
-        serverRequestHandler.sendUpdatedList(date=date, jsonFoodList=updatedList, isInFavoriteList= date != "none")
+        serverRequestHandler.sendUpdatedList(date=date, jsonFoodList=updatedList, isInFavoriteList= date != "None")
     }
 
     fun loadFoodList(date: String): MutableList<FoodDetails>

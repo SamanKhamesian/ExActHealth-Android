@@ -196,8 +196,8 @@ class AddFoodActivity : AppCompatActivity()
         }
 
         addToFavoriteFoodsButton.setOnClickListener {
-            val currentDate = "none"
-            val currentTime = "none"
+            val currentDate = "None"
+            val currentTime = "None"
 
             val foodDetails = FoodDetails(foodName.text.toString(),
                                           currentDate,
