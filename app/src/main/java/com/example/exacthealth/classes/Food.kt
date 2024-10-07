@@ -62,14 +62,14 @@ class FoodSharedPreferencesManager(private val context: Context)
         editor.putString(date, json)
         editor.apply()
 
-        val updatedList = sharedPreferences.getString(date, "")!!
-
-        serverRequestHandler.sendUpdatedList(date=date, jsonFoodList=updatedList, isInFavoriteList= date != "None")
+        val updatedList = sharedPreferences.getString(date, "") ?: ""
+        serverRequestHandler.sendUpdatedList(date=date, jsonFoodList=updatedList, context)
     }
 
     fun loadFoodList(date: String): MutableList<FoodDetails>
     {
-        val json = sharedPreferences.getString(date, "") ?: return mutableListOf()
+        val json = serverRequestHandler.getFoodListFromDate(date=date, context)
+
         if (json.isEmpty())
         {
             return mutableListOf()
@@ -83,13 +83,6 @@ class FoodSharedPreferencesManager(private val context: Context)
     {
         val foodList = loadFoodList(date)
         foodList.add(foodItem)
-        saveFoodList(date, foodList)
-    }
-
-    fun deleteFoodItem(date: String, position: Int)
-    {
-        val foodList = loadFoodList(date)
-        foodList.removeAt(position)
         saveFoodList(date, foodList)
     }
 }

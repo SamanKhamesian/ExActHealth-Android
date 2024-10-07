@@ -115,3 +115,21 @@ fun showPermissionDeniedToast(context: Context)
     val message = "Permission denied"
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
+
+fun showDeletedFoodToast(context: Context)
+{
+    val message = "Item is deleted successfully"
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+}
+
+fun showFailedToLoadFoodFromServerToast(context: Context)
+{
+    val message = "Server is not responded. Load data from Local Storage!"
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+fun showFailedToSendFoodListToast(context: Context)
+{
+    val message = "Server is not responded. Save data to Local Storage!"
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}

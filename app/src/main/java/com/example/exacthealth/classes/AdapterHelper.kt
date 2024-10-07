@@ -3,7 +3,6 @@ package com.example.exacthealth.classes
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exacthealth.R
@@ -103,8 +101,7 @@ class SelectedImageAdapter(context: Context,
     }
 }
 
-open class FoodListAdapter(context: Context,
-                           val foodList: MutableList<FoodDetails>) : ArrayAdapter<FoodDetails>(context, 0, foodList)
+open class FoodListAdapter(context: Context, val foodList: MutableList<FoodDetails>) : ArrayAdapter<FoodDetails>(context, 0, foodList)
 {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
@@ -214,9 +211,9 @@ open class FoodListAdapter(context: Context,
     }
 }
 
-class FavoriteFoodListAdapter(context: Context,
-                              foodList: MutableList<FoodDetails>,
-                              private val itemClickListener: (FoodDetails) -> Unit) : FoodListAdapter(context, foodList)
+class FavoriteFoodListAdapter(context: Context, foodList: MutableList<FoodDetails>, private val itemClickListener: (FoodDetails) -> Unit) : FoodListAdapter(
+    context,
+    foodList)
 {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
@@ -257,10 +254,4 @@ class FoodImageAdapter(private val images: ArrayList<String>) : RecyclerView.Ada
     {
         val imageView: ImageView = itemView.findViewById(R.id.saved_food_image_view)
     }
-}
-
-private fun showDeletedFoodToast(context: Context)
-{
-    val message = "Item is deleted successfully"
-    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }

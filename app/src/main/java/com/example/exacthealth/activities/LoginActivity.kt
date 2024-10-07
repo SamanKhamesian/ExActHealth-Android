@@ -61,6 +61,7 @@ class LoginActivity : AppCompatActivity()
     {
         val url = URL(TEST_CONNECTION_URL)
         val (responseCode, responseText) = testRequest(url)
+
         Log.d("Response Code: ", "$responseCode")
         Log.d("Response Text: ", responseText)
 
@@ -168,6 +169,7 @@ class LoginActivity : AppCompatActivity()
 
         if (responseCode == 200)
         {
+            errorTextView.visibility = GONE
             // Save the login state
             saveLoginState(username, CSRF_TOKEN, SAVED_COOKIE ?: "")
 
@@ -175,6 +177,12 @@ class LoginActivity : AppCompatActivity()
                 val intent = Intent(this, CalendarActivity::class.java)
                 startActivity(intent)
                 finish() }, 2000)
+        }
+
+        else
+        {
+            errorTextView.text = responseText
+            errorTextView.visibility = VISIBLE
         }
     }
 
@@ -233,11 +241,20 @@ class LoginActivity : AppCompatActivity()
 
         if (responseCode == 200)
         {
+            errorTextView.visibility = GONE
+            // Save the login state
+            saveLoginState(username, CSRF_TOKEN, SAVED_COOKIE ?: "")
+
             Handler(Looper.getMainLooper()).postDelayed({
-                val intent = Intent(this, LoadingActivity::class.java)
-                intent.putExtra("username", username)
+                val intent = Intent(this, CalendarActivity::class.java)
                 startActivity(intent)
                 finish() }, 2000)
+        }
+
+        else
+        {
+            errorTextView.text = responseText
+            errorTextView.visibility = VISIBLE
         }
     }
 
@@ -274,7 +291,7 @@ class LoginActivity : AppCompatActivity()
         catch (e: Exception)
         {
             e.printStackTrace()
-            Pair(405, "Exception Failed: ${e.message}")
+            Pair(405, "Sign up Failed. Please try again later.")
         }
     }
 }

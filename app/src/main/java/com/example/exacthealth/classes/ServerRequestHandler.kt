@@ -10,6 +10,7 @@ import java.net.URL
 class ServerRequestHandler(context: Context)
 {
     // Retrieve username and token from SharedPreferences
+    private val localFoodDatabase = context.getSharedPreferences("food_data", MODE_PRIVATE)
     private val sharedPreferences = context.getSharedPreferences("user_session", MODE_PRIVATE)
     private val savedUsername = sharedPreferences.getString("USERNAME", "") ?: ""
     private val csrfToken = sharedPreferences.getString("CSRF_TOKEN", "") ?: ""
@@ -17,9 +18,10 @@ class ServerRequestHandler(context: Context)
     private companion object
     {
         const val UPDATE_FOOD_LIST_URL = "https://mayo.abdullah-mamun.com/t1d/update-food-list/"
+        const val GET_FOOD_LIST_FROM_DATE_URL = "https://mayo.abdullah-mamun.com/t1d/get-food-list-from-date/"
     }
 
-    fun sendUpdatedList(date: String, jsonFoodList: String, isInFavoriteList: Boolean)
+    fun sendUpdatedList(date: String, jsonFoodList: String, context: Context)
     {
         // Prepare POST parameters
         val params = ArrayList<Pair<String, String>>()
@@ -29,7 +31,7 @@ class ServerRequestHandler(context: Context)
         params.add(Pair("food_list", jsonFoodList))
 
         // Make the HTTP POST request
-        val (responseCode, responseText) = sendUpdatedListRequest(URL(UPDATE_FOOD_LIST_URL), params)
+        val (responseCode, responseText) = sendRequest(URL(UPDATE_FOOD_LIST_URL), params)
 
         // Handle the server's response
         if (responseCode == 200)
@@ -39,10 +41,37 @@ class ServerRequestHandler(context: Context)
         else
         {
             Log.e("ServerRequestHandler", "Failed to update food list: $responseText")
+            showFailedToSendFoodListToast(context)
         }
     }
 
-    private fun sendUpdatedListRequest(url: URL, params: List<Pair<String, String>>): Pair<Int, String>
+    fun getFoodListFromDate(date: String, context: Context): String
+    {
+        // Prepare POST parameters
+        val params = ArrayList<Pair<String, String>>()
+        params.add(Pair("username", savedUsername))
+        params.add(Pair("csrfmiddlewaretoken", csrfToken))
+        params.add(Pair("food_date", date))
+
+        // Make the HTTP POST request
+        val (responseCode, responseText) = sendRequest(URL(GET_FOOD_LIST_FROM_DATE_URL), params)
+
+        return if (responseCode == 200)
+        {
+            val json = responseText.replace(Regex("Food entries for .+?: "), "")
+            Log.d("ServerRequestHandler", "Food list loaded successfully!")
+            json
+        }
+        else
+        {
+            Log.e("ServerRequestHandler", "Failed to load food list: $responseText")
+            showFailedToLoadFoodFromServerToast(context)
+            val json = localFoodDatabase.getString(date, "") ?:""
+            json
+        }
+    }
+
+    private fun sendRequest(url: URL, params: List<Pair<String, String>>): Pair<Int, String>
     {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
