@@ -1,0 +1,58 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/light_gray">
+
+    <!-- Toolbar specific to CalendarFragment -->
+    <RelativeLayout
+        android:id="@+id/calendar_toolbar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp">
+
+        <ImageView
+            android:id="@+id/add_food_details_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/plus_button"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/calendar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Calendar"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- CalendarView specific to CalendarFragment -->
+    <CalendarView
+        android:id="@+id/calendar_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@color/light_gray"
+        android:theme="@style/DialogTheme" />
+
+    <!-- ListView specific to CalendarFragment -->
+    <ListView
+        android:id="@+id/calendar_food_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@color/light_gray"
+        android:divider="@color/light_gray"
+        android:dividerHeight="10dp"
+        android:visibility="invisible" />
+</LinearLayout>
