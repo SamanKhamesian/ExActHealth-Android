@@ -23,6 +23,7 @@ import com.example.exacthealth.classes.SelectedDatePreferencesManager
 import com.example.exacthealth.classes.createDashFormatDate
 import com.example.exacthealth.classes.showEmptyFoodListToast
 import com.example.exacthealth.classes.showPermissionDeniedToast
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -89,6 +90,28 @@ class CalendarActivity : AppCompatActivity()
             intent.putExtra("from", "calendar")
             startActivity(intent)
         }
+
+        // Set up the bottom navigation directly in CalendarActivity
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.selectedItemId = R.id.calendar
+
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.health -> {
+                    navigateToActivity(CalendarActivity::class.java)
+                    true
+                }
+                R.id.calendar -> {
+                    navigateToActivity(CalendarActivity::class.java)
+                    true
+                }
+                R.id.profile -> {
+                    navigateToActivity(ProfileActivity::class.java)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun checkPermissions(): Boolean
@@ -111,7 +134,6 @@ class CalendarActivity : AppCompatActivity()
             storagePermission && cameraPermission
         }
     }
-
 
     private fun checkPermissionForCamera(): Boolean
     {
@@ -188,6 +210,14 @@ class CalendarActivity : AppCompatActivity()
                     showPermissionDeniedToast(this)
                 }
             }
+        }
+    }
+
+    private fun navigateToActivity(activityClass: Class<out AppCompatActivity>) {
+        if (this::class.java != activityClass) {
+            val intent = Intent(this, activityClass)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 

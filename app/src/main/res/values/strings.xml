@@ -14,4 +14,6 @@
     <string name="view_selected_images">View selected images</string>
     <string name="pick_images">Pick Images</string>
     <string name="add_to_favorite">Add to Favorites</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -35,25 +35,39 @@ class LoginActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
 
-        val loginButton = findViewById<Button>(R.id.login_button)
-        val signupButton = findViewById<Button>(R.id.signup_button)
+        val sharedPreferences = getSharedPreferences("user_session", MODE_PRIVATE)
+        val isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false)
 
-        val usernameEditText = findViewById<TextInputEditText>(R.id.login_username)
-        val passwordEditText = findViewById<TextInputEditText>(R.id.login_password)
-        errorTextView = findViewById<TextView>(R.id.login_error_message)
-
-        testConnection()
-
-        loginButton.setOnClickListener {
-            testConnection()
-            loginConnection(username = usernameEditText.text.toString(), password = passwordEditText.text.toString())
+        if (isLoggedIn)
+        {
+            val intent = Intent(this, CalendarActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
-        signupButton.setOnClickListener {
+        else
+        {
+            setContentView(R.layout.activity_login)
+
+            val loginButton = findViewById<Button>(R.id.login_button)
+            val signupButton = findViewById<Button>(R.id.signup_button)
+
+            val usernameEditText = findViewById<TextInputEditText>(R.id.login_username)
+            val passwordEditText = findViewById<TextInputEditText>(R.id.login_password)
+            errorTextView = findViewById<TextView>(R.id.login_error_message)
+
             testConnection()
-            signUpConnection(username = usernameEditText.text.toString(), password = passwordEditText.text.toString())
+
+            loginButton.setOnClickListener {
+                testConnection()
+                loginConnection(username = usernameEditText.text.toString(), password = passwordEditText.text.toString())
+            }
+
+            signupButton.setOnClickListener {
+                testConnection()
+                signUpConnection(username = usernameEditText.text.toString(), password = passwordEditText.text.toString())
+            }
         }
     }
 
@@ -169,7 +183,6 @@ class LoginActivity : AppCompatActivity()
 
         if (responseCode == 200)
         {
-            errorTextView.visibility = GONE
             // Save the login state
             saveLoginState(username, CSRF_TOKEN, SAVED_COOKIE ?: "")
 
@@ -182,7 +195,6 @@ class LoginActivity : AppCompatActivity()
         else
         {
             errorTextView.text = responseText
-            errorTextView.visibility = VISIBLE
         }
     }
 
@@ -241,7 +253,6 @@ class LoginActivity : AppCompatActivity()
 
         if (responseCode == 200)
         {
-            errorTextView.visibility = GONE
             // Save the login state
             saveLoginState(username, CSRF_TOKEN, SAVED_COOKIE ?: "")
 
@@ -254,7 +265,6 @@ class LoginActivity : AppCompatActivity()
         else
         {
             errorTextView.text = responseText
-            errorTextView.visibility = VISIBLE
         }
     }
 
