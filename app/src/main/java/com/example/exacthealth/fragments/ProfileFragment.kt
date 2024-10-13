@@ -7,37 +7,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.exacthealth.R
 import com.example.exacthealth.activities.LoginActivity
 
 class ProfileFragment : Fragment()
 {
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
+        val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE)
 
-        // Example interaction: Logout button
+        val username = view.findViewById<TextView>(R.id.profile_username_text_view)
+        val password = view.findViewById<TextView>(R.id.profile_password_text_view)
+
+        val savedUsername = sharedPreferences.getString("USERNAME", "") ?: ""
+        val savedPassword = sharedPreferences.getString("PASSWORD", "") ?: ""
+
+        username.text = savedUsername
+        password.text = savedPassword
+
         val logoutButton = view.findViewById<Button>(R.id.logout_button)
+
         logoutButton.setOnClickListener {
-            // Access shared preferences in a fragment
-            val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences("user_session", android.content.Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
-            editor.clear()  // Clear all session data
+            editor.clear()
             editor.apply()
 
-            // Redirect to the login screen
             val intent = Intent(requireActivity(), LoginActivity::class.java)
             startActivity(intent)
 
-            // Finish the current activity (logout the user)
             requireActivity().finish()
         }
     }

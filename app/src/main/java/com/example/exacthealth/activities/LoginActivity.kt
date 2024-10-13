@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity()
 {
     private var CSRF_TOKEN: String = ""
     private var SAVED_COOKIE: String? = ""
-    lateinit var errorTextView: TextView
+    private lateinit var errorTextView: TextView
 
     companion object
     {
@@ -155,11 +155,12 @@ class LoginActivity : AppCompatActivity()
         }
     }
 
-    private fun saveLoginState(username: String, token: String, cookie: String)
+    private fun saveLoginState(username: String, password: String, token: String, cookie: String)
     {
         val sharedPreferences = getSharedPreferences("user_session", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("USERNAME", username)
+        editor.putString("PASSWORD", password)
         editor.putString("CSRF_TOKEN", token)
         editor.putString("SAVED_COOKIE", cookie)
         editor.putBoolean("IS_LOGGED_IN", true)
@@ -184,7 +185,7 @@ class LoginActivity : AppCompatActivity()
         if (responseCode == 200)
         {
             // Save the login state
-            saveLoginState(username, CSRF_TOKEN, SAVED_COOKIE ?: "")
+            saveLoginState(username, password, CSRF_TOKEN, SAVED_COOKIE ?: "")
 
             Handler(Looper.getMainLooper()).postDelayed({
                 val intent = Intent(this, CalendarActivity::class.java)
@@ -240,7 +241,6 @@ class LoginActivity : AppCompatActivity()
         val url = URL(SIGN_UP_URL)
         val params = ArrayList<Pair<String, String>>()
         params.add(Pair("username", username))
-        params.add(Pair("userage", "30"))
         params.add(Pair("password", password))
         params.add(Pair("csrfmiddlewaretoken", CSRF_TOKEN))
         val (responseCode, responseText) = signUpRequest(url, params)
@@ -254,7 +254,7 @@ class LoginActivity : AppCompatActivity()
         if (responseCode == 200)
         {
             // Save the login state
-            saveLoginState(username, CSRF_TOKEN, SAVED_COOKIE ?: "")
+            saveLoginState(username, password, CSRF_TOKEN, SAVED_COOKIE ?: "")
 
             Handler(Looper.getMainLooper()).postDelayed({
                 val intent = Intent(this, CalendarActivity::class.java)

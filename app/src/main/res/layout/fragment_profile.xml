@@ -6,6 +6,98 @@
     android:background="@color/light_gray"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <RelativeLayout
+        android:id="@+id/profile_toolbar_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/profile_toolbar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/profile"
+            android:textStyle="bold"
+            android:textSize="16sp">
+        </TextView>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/profile_user_details_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_toolbar_layout"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="20dp"
+        android:text="@string/user_details_text_view"
+        android:textSize="28sp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/profile_username_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_user_details_text_view"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/username"
+        android:textSize="16sp">
+    </TextView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profile_username_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_username_view"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/profile_username_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textSize="14sp">
+        </TextView>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/profile_password_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_username_card_view"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/password"
+        android:textSize="16sp">
+    </TextView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_password_view"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/profile_password_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textSize="14sp">
+        </TextView>
+
+    </androidx.cardview.widget.CardView>
+
     <Button
         android:id="@+id/logout_button"
         android:layout_width="match_parent"
@@ -19,10 +111,11 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:backgroundTint="@color/red"
-        android:text="Logout"
+        android:text="@string/logout"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="normal"
         app:cornerRadius="5dp">
     </Button>
+
 </RelativeLayout>
