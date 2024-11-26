@@ -3,7 +3,6 @@ package com.example.exacthealth.classes
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.provider.Settings
@@ -122,13 +121,13 @@ fun showDeletedFoodToast(context: Context)
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
-fun showFailedToLoadFoodFromServerToast(context: Context)
+fun showFailedToLoadDataFromServerToast(context: Context)
 {
     val message = "Server is not responded. Load data from Local Storage!"
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
-fun showFailedToSendFoodListToast(context: Context)
+fun showFailedToSendDataToast(context: Context)
 {
     val message = "Server is not responded. Save data to Local Storage!"
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

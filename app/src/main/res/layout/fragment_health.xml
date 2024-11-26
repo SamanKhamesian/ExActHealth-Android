@@ -1,15 +1,124 @@
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
+    android:fillViewport="true"
     android:background="@color/light_gray">
 
-    <TextView
-        android:id="@+id/health_text"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Health Screen"
-        android:textSize="24sp" />
-</LinearLayout>
+        android:background="@color/light_gray">
+
+        <RelativeLayout
+            android:id="@+id/health_toolbar_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:id="@+id/health_toolbar_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/health"
+                android:textStyle="bold"
+                android:textSize="16sp">
+            </TextView>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/health_summary_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/health_toolbar_layout"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="20dp"
+            android:text="@string/summary"
+            android:textSize="28sp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/health_heartrate_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/health_summary_text_view"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/heart_rate"
+            android:textSize="16sp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/health_date_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/health_summary_text_view"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:text="None"
+            android:textSize="16sp">
+        </TextView>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/health_heartrate_lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="175dp"
+            android:layout_below="@id/health_heartrate_view"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"/>
+
+        <TextView
+            android:id="@+id/health_step_counts_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/health_heartrate_lineChart"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Total Step Counts"
+            android:textSize="16sp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/health_step_counts_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/health_step_counts_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="0 steps"
+            android:textStyle="bold"
+            android:textColor="@color/green"
+            android:textSize="26sp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/health_sleep_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/health_step_counts_view"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Sleep Stages"
+            android:textSize="16sp">
+        </TextView>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/health_sleep_lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/health_sleep_title"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"/>
+
+    </RelativeLayout>
+
+</ScrollView>

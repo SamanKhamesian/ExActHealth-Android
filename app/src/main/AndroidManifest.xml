@@ -36,15 +36,6 @@
         android:theme="@style/Theme.ExActHealth"
         tools:targetApi="34">
         <activity
-            android:name=".activities.ProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.BaseActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.LoadingActivity"
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- FileProvider -->

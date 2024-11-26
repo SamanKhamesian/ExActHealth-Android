@@ -63,12 +63,12 @@ class FoodSharedPreferencesManager(private val context: Context)
         editor.apply()
 
         val updatedList = sharedPreferences.getString(date, "") ?: ""
-        serverRequestHandler.sendUpdatedList(date=date, jsonFoodList=updatedList, context)
+        serverRequestHandler.sendUpdatedList(date = date, jsonFoodList = updatedList, context)
     }
 
     fun loadFoodList(date: String): MutableList<FoodDetails>
     {
-        val json = serverRequestHandler.getFoodListFromDate(date=date, context)
+        val json = serverRequestHandler.getFoodListFromDate(date = date, context)
 
         if (json.isEmpty())
         {

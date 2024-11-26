@@ -10,13 +10,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class SleepSessionsViewModel(application: Application) : HealthDataViewModel(application)
+data class SleepStage(val startTime: String, val endTime: String, val duration: Long, val stageCode: Int, val stageName: String)
+
+class SleepSessionViewModel(application: Application) : HealthDataViewModel(application)
 {
     init
     {
@@ -50,19 +51,45 @@ class SleepSessionsViewModel(application: Application) : HealthDataViewModel(app
             }
             catch (e: Exception)
             {
-                Log.d("ERROR IN READING HEART RATE RECORDS: ", " " + e.localizedMessage)
+                Log.d("ERROR IN READING SLEEP Session RECORDS: ", " " + e.localizedMessage)
                 _sleepSessionRecord.postValue(emptyList())
             }
         }
     }
 
-    fun formatSleepSessionRecords(sleepSessionRecord: List<SleepSessionRecord>): List<Pair<String, Long>>
+    fun formatSleepSessionRecords(sleepSession: List<SleepSessionRecord>): List<SleepStage>
     {
-        return sleepSessionRecord.map { record ->
-            val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
-            val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-            val duration = Duration.between(record.startTime, record.endTime).toMinutes()
-            formattedTime to duration
+        return sleepSession.flatMap { session ->
+            session.stages.map { stage ->
+                val startTime = ZonedDateTime.ofInstant(stage.startTime, session.endZoneOffset)
+                val endTime = ZonedDateTime.ofInstant(stage.endTime, session.endZoneOffset)
+
+                val formattedStartTime = startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                val formattedEndTime = endTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+
+                val durationMinutes = java.time.Duration.between(stage.startTime, stage.endTime).toMinutes()
+
+                val stageCode = stage.stage
+                val stageName = mapStageToName(stage.stage)
+
+                SleepStage(startTime = formattedStartTime, endTime = formattedEndTime, duration = durationMinutes, stageCode = stageCode, stageName = stageName)
+            }
+        }
+    }
+
+    private fun mapStageToName(stage: Int): String
+    {
+        return when (stage)
+        {
+            0    -> "Unknown Stage"
+            1    -> "Awake"
+            2    -> "Sleeping"
+            3    -> "Out of Bed"
+            4    -> "Light Sleep"
+            5    -> "Deep Sleep"
+            6    -> "REM Sleep"
+            7    -> "Awake in Bed"
+            else -> "Invalid Stage"
         }
     }
 }

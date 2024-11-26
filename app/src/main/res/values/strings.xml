@@ -22,4 +22,8 @@
     <string name="user_details_text_view">User Details</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="calendar">Calendar</string>
+    <string name="health">Health</string>
+    <string name="summary">Summary</string>
+    <string name="heart_rate">Heart Rate</string>
 </resources>

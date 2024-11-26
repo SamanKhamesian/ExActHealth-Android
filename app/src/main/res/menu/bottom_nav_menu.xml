@@ -3,18 +3,18 @@
     <item
         android:id="@+id/health"
         android:icon="@drawable/ic_health"
-        android:title="Health">
+        android:title="@string/health">
     </item>
 
     <item
         android:id="@+id/calendar"
         android:icon="@drawable/ic_calendar"
-        android:title="Calendar">
+        android:title="@string/calendar">
     </item>
 
     <item
         android:id="@+id/profile"
         android:icon="@drawable/ic_profile"
-        android:title="Profile">
+        android:title="@string/profile">
     </item>
 </menu>
