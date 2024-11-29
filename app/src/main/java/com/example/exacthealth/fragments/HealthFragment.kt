@@ -1,6 +1,5 @@
 package com.example.exacthealth.fragments
 
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.os.Bundle

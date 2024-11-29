@@ -24,7 +24,7 @@ class HealthSharedPreferencesManager(private val context: Context)
         val jsonHeartRateData = sharedPreferences.getString("heartRateData", "") ?: ""
         val date = heartRateData[0].first.split(" ")[0]
 
-        serverRequestHandler.sendHeartRateData(date = "2024-11-20", jsonHeartRateData = jsonHeartRateData, context = context)
+        serverRequestHandler.sendHeartRateData(date = date, jsonHeartRateData = jsonHeartRateData, context = context)
     }
 
     fun saveStepCounts(stepCountsData: List<Pair<String, Int>>)
@@ -33,7 +33,7 @@ class HealthSharedPreferencesManager(private val context: Context)
         val jsonStepCountsData = sharedPreferences.getString("stepCountsData", "") ?: ""
         val date = stepCountsData[0].first.split(" ")[0]
 
-        serverRequestHandler.sendStepCountData(date = "2024-11-20", jsonStepCountsData = jsonStepCountsData, context = context)
+        serverRequestHandler.sendStepCountData(date = date, jsonStepCountsData = jsonStepCountsData, context = context)
     }
 
     fun saveSleepStage(sleepStageData: List<SleepStage>)
@@ -42,12 +42,12 @@ class HealthSharedPreferencesManager(private val context: Context)
         val jsonSleepStageData = sharedPreferences.getString("sleepStageData", "") ?: ""
         val date = sleepStageData[0].startTime.split(" ")[0]
 
-        serverRequestHandler.sendSleepStageData(date = "2024-11-20", jsonSleepStageData = jsonSleepStageData, context = context)
+        serverRequestHandler.sendSleepStageData(date = date, jsonSleepStageData = jsonSleepStageData, context = context)
     }
 
     fun loadHeartRate(date: String): List<Pair<String, Int>>
     {
-        val heartRateDataJson = serverRequestHandler.getHeartRateFromDate(date = "2024-11-20", context = context)
+        val heartRateDataJson = serverRequestHandler.getHeartRateFromDate(date = date, context = context)
         return if (heartRateDataJson.isEmpty()) defaultValue
         else
         {
@@ -58,7 +58,7 @@ class HealthSharedPreferencesManager(private val context: Context)
 
     fun loadStepCounts(date: String): List<Pair<String, Int>>
     {
-        val stepCountsDataJson = serverRequestHandler.getStepCountsFromDate(date = "2024-11-20", context = context)
+        val stepCountsDataJson = serverRequestHandler.getStepCountsFromDate(date = date, context = context)
         return if (stepCountsDataJson.isEmpty()) defaultValue
         else
         {
@@ -69,7 +69,7 @@ class HealthSharedPreferencesManager(private val context: Context)
 
     fun loadSleepStage(date: String): List<SleepStage>
     {
-        val sleepStageDataJson = serverRequestHandler.getSleepStageFromDate(date = "2024-11-20", context = context)
+        val sleepStageDataJson = serverRequestHandler.getSleepStageFromDate(date = date, context = context)
         return if (sleepStageDataJson.isEmpty()) defaultSleepStage
         else
         {

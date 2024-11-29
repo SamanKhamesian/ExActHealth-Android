@@ -155,7 +155,7 @@ class LoadingActivity: AppCompatActivity()
 
         val readinessMap = mutableMapOf("heartRate" to false,
                                         "stepCounts" to false,
-                                        "sleepSession" to true,
+                                        "sleepSession" to false,
                                         "distance" to true,
                                         "bodyTemperature" to true,
                                         "caloriesBurned" to true)
@@ -211,11 +211,6 @@ class LoadingActivity: AppCompatActivity()
         caloriesBurnedViewModel.caloriesBurnedRecord.observe(this, Observer {caloriesBurnedRecord ->
             val caloriesBurnedRecordPairs = caloriesBurnedViewModel.formatCaloriesBurnedRecords(caloriesBurnedRecord)
             val temp = caloriesBurnedRecordPairs.ifEmpty {listOf("Null" to 0)}
-        })
-
-        sleepSessionViewModel.sleepSessionRecord.observe(this, Observer {sleepSessionRecord ->
-            val sleepSessionRecordPairs = sleepSessionViewModel.formatSleepSessionRecords(sleepSessionRecord)
-            val temp = sleepSessionRecordPairs.ifEmpty {listOf("Null" to 0)}
         })
 
         bodyTemperatureViewModel.bodyTemp.observe(this, Observer {bodyTemp ->
