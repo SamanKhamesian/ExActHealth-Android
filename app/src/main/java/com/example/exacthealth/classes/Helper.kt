@@ -123,12 +123,18 @@ fun showDeletedFoodToast(context: Context)
 
 fun showFailedToLoadDataFromServerToast(context: Context)
 {
-    val message = "Server is not responded. Load data from Local Storage!"
+    val message = "Server is not responded. Load data from local storage!"
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
 fun showFailedToSendDataToast(context: Context)
 {
-    val message = "Server is not responded. Save data to Local Storage!"
+    val message = "Server is not responded. Save data to local storage!"
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+fun showFailedToSendImages(context: Context)
+{
+    val message = "Server is not responded. Save images to local storage!"
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

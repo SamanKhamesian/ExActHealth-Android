@@ -1,5 +1,6 @@
 package com.example.exacthealth.classes
 
+import java.io.File
 import android.content.Context
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -62,8 +63,11 @@ class FoodSharedPreferencesManager(private val context: Context)
         editor.putString(date, json)
         editor.apply()
 
+        val allPaths = foodList.flatMap { it.paths }.toCollection(ArrayList())
+
         val updatedList = sharedPreferences.getString(date, "") ?: ""
         serverRequestHandler.sendUpdatedList(date = date, jsonFoodList = updatedList, context)
+        serverRequestHandler.sendFoodImages(date = date, imagePaths = allPaths, context)
     }
 
     fun loadFoodList(date: String): MutableList<FoodDetails>
