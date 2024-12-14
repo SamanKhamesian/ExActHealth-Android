@@ -15,16 +15,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.HealthSharedPreferencesManager
-import com.example.exacthealth.models.BodyTemperatureViewModel
 import com.example.exacthealth.models.CaloriesBurnedViewModel
-import com.example.exacthealth.models.DistanceViewModel
+import com.example.exacthealth.models.ExerciseSessionViewModel
 import com.example.exacthealth.models.HeartRateViewModel
 import com.example.exacthealth.models.SleepSessionViewModel
-import com.example.exacthealth.models.SleepStage
 import com.example.exacthealth.models.StepCountsViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class LoadingActivity: AppCompatActivity()
 {
@@ -92,13 +88,11 @@ class LoadingActivity: AppCompatActivity()
     {
         val heartRateViewModel = HeartRateViewModel(application)
         val stepCountsViewModel = StepCountsViewModel(application)
-        val distanceViewModel = DistanceViewModel(application)
-        val bodyTemperatureViewModel = BodyTemperatureViewModel(application)
-        val caloriesBurnedViewModel = CaloriesBurnedViewModel(application)
         val sleepSessionViewModel = SleepSessionViewModel(application)
+        val exerciseSessionViewModel = ExerciseSessionViewModel(application)
+        val caloriesBurnedViewModel = CaloriesBurnedViewModel(application)
 
-        val healthDataViewModels =
-            arrayOf(heartRateViewModel, stepCountsViewModel, distanceViewModel, bodyTemperatureViewModel, caloriesBurnedViewModel, sleepSessionViewModel)
+        val healthDataViewModels = arrayOf(heartRateViewModel, stepCountsViewModel, sleepSessionViewModel, exerciseSessionViewModel, caloriesBurnedViewModel)
 
         val allPermissions = healthDataViewModels.flatMap {it.permissions}.distinct().map {it.toString()}.toTypedArray()
 
@@ -106,12 +100,7 @@ class LoadingActivity: AppCompatActivity()
             if (permissionsResult.values.all {it})
             {
                 // Permissions granted, observe data
-                observeDataAndProceed(heartRateViewModel,
-                                      stepCountsViewModel,
-                                      distanceViewModel,
-                                      bodyTemperatureViewModel,
-                                      caloriesBurnedViewModel,
-                                      sleepSessionViewModel)
+                observeDataAndProceed(heartRateViewModel, stepCountsViewModel, sleepSessionViewModel, exerciseSessionViewModel, caloriesBurnedViewModel)
             }
             else
             {
@@ -130,35 +119,19 @@ class LoadingActivity: AppCompatActivity()
             else
             {
                 // Permissions already granted
-                observeDataAndProceed(heartRateViewModel,
-                                      stepCountsViewModel,
-                                      distanceViewModel,
-                                      bodyTemperatureViewModel,
-                                      caloriesBurnedViewModel,
-                                      sleepSessionViewModel)
+                observeDataAndProceed(heartRateViewModel, stepCountsViewModel, sleepSessionViewModel, exerciseSessionViewModel, caloriesBurnedViewModel)
             }
         }
     }
 
     private fun observeDataAndProceed(heartRateViewModel: HeartRateViewModel,
                                       stepCountsViewModel: StepCountsViewModel,
-                                      distanceViewModel: DistanceViewModel,
-                                      bodyTemperatureViewModel: BodyTemperatureViewModel,
-                                      caloriesBurnedViewModel: CaloriesBurnedViewModel,
-                                      sleepSessionViewModel: SleepSessionViewModel)
+                                      sleepSessionViewModel: SleepSessionViewModel,
+                                      exerciseSessionViewModel: ExerciseSessionViewModel,
+                                      caloriesBurnedViewModel: CaloriesBurnedViewModel)
     {
-        // Default value with current date and time
-        val yesterdayDateTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-        val defaultValue = listOf(yesterdayDateTime to 0)
-        val defaultSleepStage =
-            listOf(SleepStage(startTime = yesterdayDateTime, endTime = yesterdayDateTime, duration = 0L, stageCode = 0, stageName = "Unknown Stage"))
-
-        val readinessMap = mutableMapOf("heartRate" to false,
-                                        "stepCounts" to false,
-                                        "sleepSession" to false,
-                                        "distance" to true,
-                                        "bodyTemperature" to true,
-                                        "caloriesBurned" to true)
+        val readinessMap =
+            mutableMapOf("heartRate" to false, "stepCounts" to false, "sleepSession" to false, "exerciseSession" to false, "caloriesBurned" to false)
 
         val checkAllReady = {
             if (readinessMap.values.all {it})
@@ -174,48 +147,40 @@ class LoadingActivity: AppCompatActivity()
         // Call readData explicitly to fetch data
         heartRateViewModel.readData()
         stepCountsViewModel.readData()
-        distanceViewModel.readData()
-        bodyTemperatureViewModel.readData()
-        caloriesBurnedViewModel.readData()
         sleepSessionViewModel.readData()
+        exerciseSessionViewModel.readData()
+        caloriesBurnedViewModel.readData()
 
         // Observe each ViewModel
         observeModelData(heartRateViewModel.heartRates, heartRateViewModel::formatHeartRateRecords) {data ->
-
-            val heartRateData = data.ifEmpty {defaultValue}
-            healthSharedPreferencesManager.saveHeartRate(heartRateData)
+            healthSharedPreferencesManager.saveHeartRate(data)
             readinessMap["heartRate"] = true
             checkAllReady()
         }
 
         observeModelData(stepCountsViewModel.stepCounts, stepCountsViewModel::formatStepCountsRecords) {data ->
-
-            val stepCountsData = data.ifEmpty {defaultValue}
-            healthSharedPreferencesManager.saveStepCounts(stepCountsData)
+            healthSharedPreferencesManager.saveStepCounts(data)
             readinessMap["stepCounts"] = true
             checkAllReady()
         }
 
         observeModelData(sleepSessionViewModel.sleepSessionRecord, sleepSessionViewModel::formatSleepSessionRecords) {data ->
-            val sleepStageData = data.ifEmpty {defaultSleepStage}
-            healthSharedPreferencesManager.saveSleepStage(sleepStageData)
+            healthSharedPreferencesManager.saveSleepStage(data)
             readinessMap["sleepSession"] = true
             checkAllReady()
         }
 
-        distanceViewModel.distanceRecord.observe(this, Observer {distanceRecord ->
-            val distanceRecordPairs = distanceViewModel.formatDistanceRecords(distanceRecord)
-            val temp = distanceRecordPairs.ifEmpty {listOf("Null" to 0)}
-        })
+        observeModelData(exerciseSessionViewModel.exerciseSessions, exerciseSessionViewModel::formatExerciseSessionRecords) {data ->
+            healthSharedPreferencesManager.saveExerciseSession(data)
+            readinessMap["exerciseSession"] = true
+            checkAllReady()
+        }
 
-        caloriesBurnedViewModel.caloriesBurnedRecord.observe(this, Observer {caloriesBurnedRecord ->
-            val caloriesBurnedRecordPairs = caloriesBurnedViewModel.formatCaloriesBurnedRecords(caloriesBurnedRecord)
-            val temp = caloriesBurnedRecordPairs.ifEmpty {listOf("Null" to 0)}
-        })
-
-        bodyTemperatureViewModel.bodyTemp.observe(this, Observer {bodyTemp ->
-            val bodyTempPairs = bodyTemp.count()
-        })
+        observeModelData(caloriesBurnedViewModel.caloriesBurned, caloriesBurnedViewModel::formatCaloriesBurnedRecords) {data ->
+            healthSharedPreferencesManager.saveCaloriesBurned(data)
+            readinessMap["caloriesBurned"] = true
+            checkAllReady()
+        }
     }
 
     private fun <T, R> observeModelData(liveData: LiveData<T>, formatFunction: (T) -> R, onDataReady: (R) -> Unit)

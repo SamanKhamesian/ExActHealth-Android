@@ -11,11 +11,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class StepCountsViewModel(application: Application) : HealthDataViewModel(application)
+class StepCountsViewModel(application: Application): HealthDataViewModel(application)
 {
     init
     {
@@ -24,6 +25,9 @@ class StepCountsViewModel(application: Application) : HealthDataViewModel(applic
 
     private val _stepCounts = MutableLiveData<List<StepsRecord>>()
     val stepCounts: LiveData<List<StepsRecord>> = _stepCounts
+
+    private val yesterdayDateTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+    private val defaultValue = listOf(yesterdayDateTime to 0)
 
     override fun readData()
     {
@@ -57,11 +61,18 @@ class StepCountsViewModel(application: Application) : HealthDataViewModel(applic
 
     fun formatStepCountsRecords(stepCounts: List<StepsRecord>): List<Pair<String, Int>>
     {
-        return stepCounts.map { record ->
-            val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
-            val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-            val steps = record.count.toInt()
-            formattedTime to steps
+        if (stepCounts.isEmpty())
+        {
+            return defaultValue
+        }
+        else
+        {
+            return stepCounts.map {record ->
+                val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
+                val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                val steps = record.count.toInt()
+                formattedTime to steps
+            }
         }
     }
 }

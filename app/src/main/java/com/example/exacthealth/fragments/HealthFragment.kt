@@ -12,9 +12,14 @@ import androidx.fragment.app.Fragment
 import com.example.exacthealth.R
 import com.example.exacthealth.classes.GsonProvider
 import com.example.exacthealth.classes.HealthSharedPreferencesManager
+import com.example.exacthealth.models.CaloriesBurned
 import com.example.exacthealth.models.SleepStage
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -44,6 +49,7 @@ class HealthFragment: Fragment()
         val heartRateData: List<Pair<String, Int>> = healthSharedPreferencesManager.loadHeartRate(date = yesterdayDate)
         val stepCountsData: List<Pair<String, Int>> = healthSharedPreferencesManager.loadStepCounts(date = yesterdayDate)
         val sleepStages: List<SleepStage> = healthSharedPreferencesManager.loadSleepStage(date = yesterdayDate)
+        val caloriesBurned: List<CaloriesBurned> = healthSharedPreferencesManager.loadCaloriesBurned(date = yesterdayDate)
 
         // Display Yesterday Date
         val healthDateView: TextView = view.findViewById(R.id.health_date_view)
@@ -60,6 +66,10 @@ class HealthFragment: Fragment()
         // Display Sleep Stage Chart
         val sleepChart: LineChart = view.findViewById(R.id.health_sleep_lineChart)
         prepareSleepStageChart(sleepChart, sleepStages)
+
+        // Display Calories Burned Chart
+        val caloriesChart: BarChart = view.findViewById(R.id.health_calories_barChart)
+        prepareCaloriesChart(caloriesChart, caloriesBurned)
     }
 
     private fun prepareHeartRateChart(chart: LineChart, heartRateData: List<Pair<String, Int>>)
@@ -178,6 +188,76 @@ class HealthFragment: Fragment()
 
         // Set data to chart
         chart.data = LineData(dataSet)
+        chart.invalidate()
+    }
+
+    private fun prepareCaloriesChart(chart: BarChart, calorieData: List<CaloriesBurned>)
+    {
+        if (calorieData.isEmpty()) return
+
+        val greenColor = ContextCompat.getColor(requireContext(), R.color.green)
+
+        // Prepare data entries
+        val entries = calorieData.mapIndexed {index, record ->
+            BarEntry(index.toFloat(), record.calories.toFloat())
+        }
+
+        // Combine start and end times as X-axis labels
+        val timeLabels = calorieData.map {record ->
+            val start = record.startTime.split(" ")[1]
+            val end = record.endTime.split(" ")[1]
+            "$start to $end"
+        }
+
+        // Create dataset
+        val dataSet = BarDataSet(entries, "Calories Burned")
+        dataSet.color = greenColor
+        dataSet.valueTextSize = 14f
+        dataSet.setValueTextColor(Color.BLACK)
+
+        // Attach a custom ValueFormatter to append " Cal"
+        dataSet.valueFormatter = object: ValueFormatter()
+        {
+            override fun getBarLabel(barEntry: BarEntry?): String
+            {
+                return "${barEntry?.y?.toInt()} Cal" // Convert value to Int and append " Cal"
+            }
+        }
+
+        // Configure BarData
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+
+        // Set data to chart
+        chart.data = barData
+
+        // X-Axis Styling
+        chart.xAxis.apply {
+            position = XAxis.XAxisPosition.BOTTOM
+            setDrawGridLines(false)
+            textColor = Color.GRAY
+            valueFormatter = IndexAxisValueFormatter(timeLabels)
+            granularity = 1f
+            isGranularityEnabled = true
+        }
+
+        // Y-Axis Styling
+        chart.axisLeft.apply {
+            setDrawGridLines(false)
+            textColor = Color.GRAY
+            axisMinimum = 0f
+        }
+        chart.axisRight.isEnabled = false
+
+        // Chart Styling
+        chart.apply {
+            setDrawGridBackground(false)
+            description.isEnabled = false
+            legend.isEnabled = true
+            setFitBars(true)
+        }
+
+        // Refresh chart
         chart.invalidate()
     }
 

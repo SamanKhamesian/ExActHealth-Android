@@ -11,13 +11,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 data class SleepStage(val startTime: String, val endTime: String, val duration: Long, val stageCode: Int, val stageName: String)
 
-class SleepSessionViewModel(application: Application) : HealthDataViewModel(application)
+class SleepSessionViewModel(application: Application): HealthDataViewModel(application)
 {
     init
     {
@@ -26,6 +27,10 @@ class SleepSessionViewModel(application: Application) : HealthDataViewModel(appl
 
     private val _sleepSessionRecord = MutableLiveData<List<SleepSessionRecord>>()
     val sleepSessionRecord: LiveData<List<SleepSessionRecord>> = _sleepSessionRecord
+
+    private val yesterdayDateTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+    private val defaultSleepStage =
+        listOf(SleepStage(startTime = yesterdayDateTime, endTime = yesterdayDateTime, duration = 0L, stageCode = 0, stageName = "Unknown Stage"))
 
     override fun readData()
     {
@@ -51,7 +56,7 @@ class SleepSessionViewModel(application: Application) : HealthDataViewModel(appl
             }
             catch (e: Exception)
             {
-                Log.d("ERROR IN READING SLEEP Session RECORDS: ", " " + e.localizedMessage)
+                Log.d("ERROR IN READING SLEEP SESSION RECORDS: ", " " + e.localizedMessage)
                 _sleepSessionRecord.postValue(emptyList())
             }
         }
@@ -59,20 +64,31 @@ class SleepSessionViewModel(application: Application) : HealthDataViewModel(appl
 
     fun formatSleepSessionRecords(sleepSession: List<SleepSessionRecord>): List<SleepStage>
     {
-        return sleepSession.flatMap { session ->
-            session.stages.map { stage ->
-                val startTime = ZonedDateTime.ofInstant(stage.startTime, session.endZoneOffset)
-                val endTime = ZonedDateTime.ofInstant(stage.endTime, session.endZoneOffset)
+        if (sleepSession.isEmpty())
+        {
+            return defaultSleepStage
+        }
+        else
+        {
+            return sleepSession.flatMap {session ->
+                session.stages.map {stage ->
+                    val startTime = ZonedDateTime.ofInstant(stage.startTime, session.endZoneOffset)
+                    val endTime = ZonedDateTime.ofInstant(stage.endTime, session.endZoneOffset)
 
-                val formattedStartTime = startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-                val formattedEndTime = endTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                    val formattedStartTime = startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                    val formattedEndTime = endTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
 
-                val durationMinutes = java.time.Duration.between(stage.startTime, stage.endTime).toMinutes()
+                    val durationMinutes = java.time.Duration.between(stage.startTime, stage.endTime).toMinutes()
 
-                val stageCode = stage.stage
-                val stageName = mapStageToName(stage.stage)
+                    val stageCode = stage.stage
+                    val stageName = mapStageToName(stage.stage)
 
-                SleepStage(startTime = formattedStartTime, endTime = formattedEndTime, duration = durationMinutes, stageCode = stageCode, stageName = stageName)
+                    SleepStage(startTime = formattedStartTime,
+                               endTime = formattedEndTime,
+                               duration = durationMinutes,
+                               stageCode = stageCode,
+                               stageName = stageName)
+                }
             }
         }
     }

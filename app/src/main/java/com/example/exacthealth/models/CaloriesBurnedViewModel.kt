@@ -1,5 +1,6 @@
 package com.example.exacthealth.models
 
+
 import android.app.Application
 import android.util.Log
 import androidx.health.connect.client.permission.HealthPermission
@@ -11,19 +12,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.floor
 
-class CaloriesBurnedViewModel(application: Application) : HealthDataViewModel(application)
+
+data class CaloriesBurned(val startTime: String, val endTime: String, val duration: Long, val calories: Int)
+
+class CaloriesBurnedViewModel(application: Application): HealthDataViewModel(application)
 {
     init
     {
         permissions = setOf(HealthPermission.getReadPermission(TotalCaloriesBurnedRecord::class))
     }
 
-    private val _caloriesBurnedRecord = MutableLiveData<List<TotalCaloriesBurnedRecord>>()
-    val caloriesBurnedRecord: LiveData<List<TotalCaloriesBurnedRecord>> = _caloriesBurnedRecord
+    private val _caloriesBurned = MutableLiveData<List<TotalCaloriesBurnedRecord>>()
+    val caloriesBurned: LiveData<List<TotalCaloriesBurnedRecord>> = _caloriesBurned
+
+    private val yesterdayDateTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+    private val defaultValue = listOf(CaloriesBurned(startTime = yesterdayDateTime, endTime = yesterdayDateTime, duration = 0, calories = 0))
 
     override fun readData()
     {
@@ -40,28 +49,43 @@ class CaloriesBurnedViewModel(application: Application) : HealthDataViewModel(ap
 
                 if (response.records.isEmpty())
                 {
-                    _caloriesBurnedRecord.postValue(emptyList())
+                    _caloriesBurned.postValue(emptyList())
                 }
                 else
                 {
-                    _caloriesBurnedRecord.postValue(response.records)
+                    _caloriesBurned.postValue(response.records)
                 }
+
             }
             catch (e: Exception)
             {
-                Log.d("ERROR IN READING HEART RATE RECORDS: ", " " + e.localizedMessage)
-                _caloriesBurnedRecord.postValue(emptyList())
+                Log.d("ERROR IN READING CALORIES BURNED RECORDS: ", " " + e.localizedMessage)
+                _caloriesBurned.postValue(emptyList())
             }
         }
     }
 
-    fun formatCaloriesBurnedRecords(caloriesBurnedRecord: List<TotalCaloriesBurnedRecord>): List<Pair<String, Double>>
+    fun formatCaloriesBurnedRecords(caloriesBurned: List<TotalCaloriesBurnedRecord>): List<CaloriesBurned>
     {
-        return caloriesBurnedRecord.map { record ->
-            val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
-            val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-            val caloriesBurned = record.energy.inCalories
-            formattedTime to caloriesBurned
+        if (caloriesBurned.isEmpty())
+        {
+            return defaultValue
+        }
+        else
+        {
+            return caloriesBurned.map {record ->
+                val startTime = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
+                val endTime = ZonedDateTime.ofInstant(record.endTime, record.endZoneOffset)
+
+                val formattedStartTime = startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                val formattedEndTime = endTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+
+                val durationMinutes = java.time.Duration.between(record.startTime, record.endTime).toMinutes()
+
+                val calories = floor(record.energy.inKilocalories).toInt()
+
+                CaloriesBurned(startTime = formattedStartTime, endTime = formattedEndTime, duration = durationMinutes, calories = calories)
+            }
         }
     }
 }

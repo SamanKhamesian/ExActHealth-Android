@@ -11,11 +11,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class HeartRateViewModel(application: Application) : HealthDataViewModel(application)
+class HeartRateViewModel(application: Application): HealthDataViewModel(application)
 {
     init
     {
@@ -24,6 +25,9 @@ class HeartRateViewModel(application: Application) : HealthDataViewModel(applica
 
     private val _heartRates = MutableLiveData<List<HeartRateRecord>>()
     val heartRates: LiveData<List<HeartRateRecord>> = _heartRates
+
+    private val yesterdayDateTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+    private val defaultValue = listOf(yesterdayDateTime to 0)
 
     override fun readData()
     {
@@ -57,12 +61,19 @@ class HeartRateViewModel(application: Application) : HealthDataViewModel(applica
 
     fun formatHeartRateRecords(heartRates: List<HeartRateRecord>): List<Pair<String, Int>>
     {
-        return heartRates.mapNotNull { record ->
-            val sample = record.samples.lastOrNull() ?: return@mapNotNull null
-            val beatsPerMinute = sample.beatsPerMinute
-            val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
-            val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-            formattedTime to beatsPerMinute.toInt()
+        if (heartRates.isEmpty())
+        {
+            return defaultValue
+        }
+        else
+        {
+            return heartRates.mapNotNull {record ->
+                val sample = record.samples.lastOrNull() ?: return@mapNotNull null
+                val beatsPerMinute = sample.beatsPerMinute
+                val startTimeWithOffset = ZonedDateTime.ofInstant(record.startTime, record.startZoneOffset)
+                val formattedTime = startTimeWithOffset.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                formattedTime to beatsPerMinute.toInt()
+            }
         }
     }
 }

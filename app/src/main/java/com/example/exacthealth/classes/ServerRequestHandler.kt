@@ -37,8 +37,13 @@ class ServerRequestHandler(context: Context)
         const val SEND_STEPCOUNTS_LIST_URL = "https://mayo.abdullah-mamun.com/t1d/send_stepcounts_data/"
         const val GET_STEPCOUNTS_LIST_FROM_DATE_URL = "https://mayo.abdullah-mamun.com/t1d/get-stepcounts-list-from-date/"
 
-        const val GET_SLEEPSTAGE_LIST_FROM_DATE_URL = "https://mayo.abdullah-mamun.com/t1d/get-sleepstage-list-from-date/"
         const val SEND_SLEEPSTAGE_LIST_URL = "https://mayo.abdullah-mamun.com/t1d/send-sleepstage-data/"
+        const val GET_SLEEPSTAGE_LIST_FROM_DATE_URL = "https://mayo.abdullah-mamun.com/t1d/get-sleepstage-list-from-date/"
+
+        const val SEND_EXERCISE_SESSION_URL = "https://mayo.abdullah-mamun.com/t1d/send-exercise-data/"
+
+        const val SEND_CALORIES_BURNED_URL = "https://mayo.abdullah-mamun.com/t1d/send-calories-data/"
+        const val GET_CALORIES_BURNED_URL = "https://mayo.abdullah-mamun.com/t1d/get-calories-list-from-date/"
     }
 
     fun sendUpdatedList(date: String, jsonFoodList: String, context: Context)
@@ -162,6 +167,54 @@ class ServerRequestHandler(context: Context)
         }
     }
 
+    fun sendExerciseSession(date: String, jsonExerciseSession: String, context: Context)
+    {
+        // Prepare POST parameters
+        val params = ArrayList<Pair<String, String>>()
+        params.add(Pair("username", savedUsername))
+        params.add(Pair("csrfmiddlewaretoken", csrfToken))
+        params.add(Pair("exercise_date", date))
+        params.add(Pair("exercise_list", jsonExerciseSession))
+
+        // Make the HTTP POST request
+        val (responseCode, responseText) = sendRequest(URL(SEND_EXERCISE_SESSION_URL), params)
+
+        // Handle the server's response
+        if (responseCode == 200)
+        {
+            Log.d("ServerRequestHandler", "Exercise session list is uploaded successfully!")
+        }
+        else
+        {
+            Log.e("ServerRequestHandler", "Failed to upload exercise session list: $responseText")
+            showFailedToSendDataToast(context)
+        }
+    }
+
+    fun sendCaloriesBurned(date: String, jsonCaloriesBurned: String, context: Context)
+    {
+        // Prepare POST parameters
+        val params = ArrayList<Pair<String, String>>()
+        params.add(Pair("username", savedUsername))
+        params.add(Pair("csrfmiddlewaretoken", csrfToken))
+        params.add(Pair("calories_date", date))
+        params.add(Pair("calories_list", jsonCaloriesBurned))
+
+        // Make the HTTP POST request
+        val (responseCode, responseText) = sendRequest(URL(SEND_CALORIES_BURNED_URL), params)
+
+        // Handle the server's response
+        if (responseCode == 200)
+        {
+            Log.d("ServerRequestHandler", "Calories burned list is uploaded successfully!")
+        }
+        else
+        {
+            Log.e("ServerRequestHandler", "Failed to upload calories burned list: $responseText")
+            showFailedToSendDataToast(context)
+        }
+    }
+
     fun getFoodListFromDate(date: String, context: Context): String
     {
         // Prepare POST parameters
@@ -262,6 +315,32 @@ class ServerRequestHandler(context: Context)
             Log.e("ServerRequestHandler", "Failed to load sleep stage: $responseText")
             showFailedToLoadDataFromServerToast(context)
             val json = localHealthDatabase.getString("sleepStageData", "") ?: ""
+            json
+        }
+    }
+
+    fun getCaloriesBurnedFromDate(date: String, context: Context): String
+    {
+        // Prepare POST parameters
+        val params = ArrayList<Pair<String, String>>()
+        params.add(Pair("username", savedUsername))
+        params.add(Pair("csrfmiddlewaretoken", csrfToken))
+        params.add(Pair("calories_date", date))
+
+        // Make the HTTP POST request
+        val (responseCode, responseText) = sendRequest(URL(GET_CALORIES_BURNED_URL), params)
+
+        return if (responseCode == 200)
+        {
+            val json = responseText.replace(Regex("Calories entries for .+?: "), "")
+            Log.d("ServerRequestHandler", "Calories burned list is loaded successfully!")
+            json
+        }
+        else
+        {
+            Log.e("ServerRequestHandler", "Failed to load sleep stage: $responseText")
+            showFailedToLoadDataFromServerToast(context)
+            val json = localHealthDatabase.getString("caloriesBurnedData", "") ?: ""
             json
         }
     }

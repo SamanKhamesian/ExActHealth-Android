@@ -1,6 +1,5 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -76,10 +75,30 @@
             android:layout_marginEnd="20dp"/>
 
         <TextView
-            android:id="@+id/health_step_counts_title"
+            android:id="@+id/health_sleep_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/health_heartrate_lineChart"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Sleep Stages"
+            android:textSize="16sp">
+        </TextView>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/health_sleep_lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/health_sleep_title"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"/>
+
+        <TextView
+            android:id="@+id/health_step_counts_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/health_sleep_lineChart"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:text="Total Step Counts"
@@ -100,25 +119,24 @@
         </TextView>
 
         <TextView
-            android:id="@+id/health_sleep_title"
+            android:id="@+id/health_exercise_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/health_step_counts_view"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:text="Sleep Stages"
+            android:text="Exercise Sessions"
             android:textSize="16sp">
         </TextView>
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/health_sleep_lineChart"
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/health_calories_barChart"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_below="@id/health_sleep_title"
+            android:layout_height="200dp"
+            android:layout_below="@id/health_exercise_title"
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"/>
-
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"/>
     </RelativeLayout>
-
 </ScrollView>

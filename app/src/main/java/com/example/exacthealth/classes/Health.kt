@@ -1,6 +1,8 @@
 package com.example.exacthealth.classes
 
 import android.content.Context
+import com.example.exacthealth.models.CaloriesBurned
+import com.example.exacthealth.models.ExerciseSessionDetails
 import com.example.exacthealth.models.SleepStage
 import com.google.gson.reflect.TypeToken
 import java.time.LocalDateTime
@@ -16,6 +18,7 @@ class HealthSharedPreferencesManager(private val context: Context)
     private val defaultValue = listOf(yesterdayDateTime to 0)
     private val defaultSleepStage =
         listOf(SleepStage(startTime = yesterdayDateTime, endTime = yesterdayDateTime, duration = 0L, stageCode = 0, stageName = "Unknown Stage"))
+    private val defaultCaloriesBurned = listOf(CaloriesBurned(startTime = yesterdayDateTime, endTime = yesterdayDateTime, duration = 0L, calories = 0))
 
     fun saveHeartRate(heartRateData: List<Pair<String, Int>>)
     {
@@ -43,6 +46,24 @@ class HealthSharedPreferencesManager(private val context: Context)
         val date = sleepStageData[0].startTime.split(" ")[0]
 
         serverRequestHandler.sendSleepStageData(date = date, jsonSleepStageData = jsonSleepStageData, context = context)
+    }
+
+    fun saveExerciseSession(exerciseSessionData: List<ExerciseSessionDetails>)
+    {
+        saveDataToSharedPreferences("exerciseSessionData", exerciseSessionData)
+        val jsonExerciseSessionData = sharedPreferences.getString("exerciseSessionData", "") ?: ""
+        val date = exerciseSessionData[0].startTime.split(" ")[0]
+
+        serverRequestHandler.sendExerciseSession(date = date, jsonExerciseSession = jsonExerciseSessionData, context = context)
+    }
+
+    fun saveCaloriesBurned(caloriesBurnedData: List<CaloriesBurned>)
+    {
+        saveDataToSharedPreferences("caloriesBurnedData", caloriesBurnedData)
+        val jsonCaloriesBurned = sharedPreferences.getString("caloriesBurnedData", "") ?: ""
+        val date = caloriesBurnedData[0].startTime.split(" ")[0]
+
+        serverRequestHandler.sendCaloriesBurned(date = date, jsonCaloriesBurned = jsonCaloriesBurned, context = context)
     }
 
     fun loadHeartRate(date: String): List<Pair<String, Int>>
@@ -75,6 +96,17 @@ class HealthSharedPreferencesManager(private val context: Context)
         {
             val sleepStageData: List<SleepStage> = parseHealthJsonData<List<SleepStage>>(sleepStageDataJson)
             sleepStageData
+        }
+    }
+
+    fun loadCaloriesBurned(date: String): List<CaloriesBurned>
+    {
+        val caloriesBurnedJson = serverRequestHandler.getCaloriesBurnedFromDate(date = date, context = context)
+        return if (caloriesBurnedJson.isEmpty()) defaultCaloriesBurned
+        else
+        {
+            val caloriesBurned: List<CaloriesBurned> = parseHealthJsonData<List<CaloriesBurned>>(caloriesBurnedJson)
+            caloriesBurned
         }
     }
 
