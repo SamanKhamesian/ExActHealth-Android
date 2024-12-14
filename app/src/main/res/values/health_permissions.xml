@@ -6,5 +6,6 @@
         <item>androidx.health.permission.Sleep.READ</item>
         <item>androidx.health.permission.ExerciseSession.READ</item>
         <item>androidx.health.permission.TotalCaloriesBurned.READ</item>
+        <item>androidx.health.permission.ActiveCaloriesBurned.READ</item>
     </array>
 </resources>
