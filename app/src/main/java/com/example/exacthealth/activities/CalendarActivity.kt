@@ -9,7 +9,7 @@ import com.example.exacthealth.fragments.HealthFragment
 import com.example.exacthealth.fragments.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class CalendarActivity : AppCompatActivity()
+class CalendarActivity : BaseActivity()
 {
 
     override fun onCreate(savedInstanceState: Bundle?)

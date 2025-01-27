@@ -241,24 +241,16 @@ class AddFoodActivity : AppCompatActivity()
                     foodSharedPreferencesManager.addFoodItem(newFoodDate, foodDetails)
 
                     showEditFoodToast(this)
-
-                    val intent = Intent(this, CalendarActivity::class.java)
-                    startActivity(intent)
                 }
                 else
                 {
                     foodSharedPreferencesManager.addFoodItem(foodDetails.date, foodDetails)
 
                     showSaveFoodToast(this)
-
-                    foodName.text.clear()
-                    foodProtein.text.clear()
-                    foodCarbs.text.clear()
-                    foodFats.text.clear()
-                    setDefaultDateTime(from, foodDateInput, foodTimeInput)
-                    selectedImagesButton.isEnabled = false
-                    selectedImagesButton.setTextColor(ContextCompat.getColor(this, R.color.light_red))
                 }
+
+                val intent = Intent(this, CalendarActivity::class.java)
+                startActivity(intent)
             }
         }
     }

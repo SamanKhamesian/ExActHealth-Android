@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity()
         if (isLoggedIn)
         {
             val intent = Intent(this, LoadingActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }
@@ -257,7 +258,7 @@ class LoginActivity : AppCompatActivity()
             saveLoginState(username, password, CSRF_TOKEN, SAVED_COOKIE ?: "")
 
             Handler(Looper.getMainLooper()).postDelayed({
-                val intent = Intent(this, CalendarActivity::class.java)
+                val intent = Intent(this, LoadingActivity::class.java)
                 startActivity(intent)
                 finish() }, 2000)
         }
