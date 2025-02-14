@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ExActHealth</string>
-    <string name="food_details_title">Food Details</string>
+    <string name="food_details_title">Food Details *</string>
     <string name="enter_food_name_hint">Enter Food Name</string>
     <string name="select_date_and_time_title"><![CDATA[Select Date & Time of Meal]]></string>
     <string name="date_hint">Feb 12, 2024</string>
@@ -10,7 +10,7 @@
     <string name="fats">Fats (g)</string>
     <string name="carbs">Carbs (g)</string>
     <string name="protein">Protein (g)</string>
-    <string name="macros">Macros (gm)</string>
+    <string name="macros">Macros (gm) *</string>
     <string name="view_selected_images">View selected images</string>
     <string name="pick_images">Pick Images</string>
     <string name="add_to_favorite">Add to Favorites</string>
@@ -26,4 +26,5 @@
     <string name="health">Health</string>
     <string name="summary">Summary</string>
     <string name="heart_rate">Heart Rate</string>
+    <string name="required">(* Required)</string>
 </resources>

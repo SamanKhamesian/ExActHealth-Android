@@ -64,7 +64,7 @@
 
     <TextView
         android:id="@+id/favorite_food_details_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/favorite_foods_toolbar_layout_2"
         android:layout_marginTop="30dp"
@@ -72,6 +72,19 @@
         android:layout_marginEnd="20dp"
         android:textSize="16sp"
         android:text="@string/food_details_title">
+    </TextView>
+
+    <TextView
+        android:id="@+id/favorite_food_required_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/favorite_foods_toolbar_layout_2"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="16sp"
+        android:text="@string/required">
     </TextView>
 
     <androidx.cardview.widget.CardView

@@ -14,7 +14,6 @@ import android.widget.RelativeLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -26,7 +25,7 @@ import com.example.exacthealth.classes.convertDisplayDateToDashFormat
 import com.example.exacthealth.classes.getDefaultValue
 import com.example.exacthealth.classes.showSaveFoodToast
 import com.example.exacthealth.classes.showEditFoodToast
-import com.example.exacthealth.classes.showFoodNameErrorToast
+import com.example.exacthealth.classes.showFieldErrorToast
 import com.example.exacthealth.classes.showAddFavoriteFoodToast
 import com.google.android.material.textfield.TextInputEditText
 import java.io.File
@@ -37,7 +36,7 @@ import java.util.Date
 import java.util.Locale
 
 
-class AddFoodActivity : AppCompatActivity()
+class AddFoodActivity : BaseActivity()
 {
     private lateinit var foodSharedPreferencesManager: FoodSharedPreferencesManager
     private lateinit var selectedDatePreferencesManager: SelectedDatePreferencesManager
@@ -214,9 +213,9 @@ class AddFoodActivity : AppCompatActivity()
 
         saveEntryButton.setOnClickListener {
 
-            if (foodName.text.isNullOrEmpty())
+            if (foodName.text.isNullOrEmpty() || foodProtein.text.isNullOrEmpty() || foodCarbs.text.isNullOrEmpty() || foodFats.text.isNullOrEmpty())
             {
-                showFoodNameErrorToast(this)
+                showFieldErrorToast(this)
             }
             else
             {

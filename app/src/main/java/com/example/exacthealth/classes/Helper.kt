@@ -85,9 +85,9 @@ fun showSaveFoodToast(context: Context)
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
-fun showFoodNameErrorToast(context: Context)
+fun showFieldErrorToast(context: Context)
 {
-    val message = "Food name cannot be empty!"
+    val message = "All fields need to be filled."
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 

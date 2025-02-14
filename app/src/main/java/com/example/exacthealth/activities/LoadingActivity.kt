@@ -1,12 +1,15 @@
 package com.example.exacthealth.activities
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.StrictMode
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +23,10 @@ import com.example.exacthealth.models.ExerciseSessionViewModel
 import com.example.exacthealth.models.HeartRateViewModel
 import com.example.exacthealth.models.SleepSessionViewModel
 import com.example.exacthealth.models.StepCountsViewModel
+import com.example.exacthealth.classes.isInternetAvailable
 import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
+import java.net.URL
 
 class LoadingActivity: AppCompatActivity()
 {
@@ -31,6 +37,7 @@ class LoadingActivity: AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)
 
+        testConnection()
         healthSharedPreferencesManager = HealthSharedPreferencesManager(this)
 
         // Check if Health Connect is installed
@@ -42,6 +49,83 @@ class LoadingActivity: AppCompatActivity()
 
         // Check permissions and proceed
         checkPermissionsAndObserveData()
+    }
+
+    private fun testConnection()
+    {
+        val sharedPreferences = getSharedPreferences("user_session", MODE_PRIVATE)
+        val url = URL(LoginActivity.TEST_CONNECTION_URL)
+        val (responseCode, responseText) = testRequest(url, this)
+
+        Log.d("Response Code: ", "$responseCode")
+        Log.d("Response Text: ", responseText)
+
+        when (responseCode)
+        {
+            200  ->
+            {
+                val csrfToken = responseText.substringAfter("name=\"csrfmiddlewaretoken\" value=\"").substringBefore("\">")
+                val editor = sharedPreferences.edit()
+                editor.putString("CSRF_TOKEN", csrfToken)
+                editor.apply()
+            }
+        }
+    }
+
+    private fun testRequest(url: URL, context: Context): Pair<Int, String>
+    {
+        val sharedPreferences = getSharedPreferences("user_session", MODE_PRIVATE)
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
+        if (!isInternetAvailable(context))
+        {
+            return Pair(503, "Service Unavailable: Unable to connect to the server. Please check your internet connection.")
+        }
+
+        return try
+        {
+            // Use the main request to check for connectivity and server availability
+            with(url.openConnection() as HttpURLConnection) {
+                requestMethod = "GET"
+
+                // Retrieve cookies from the response header
+                val cookieHeader = getHeaderField("Set-Cookie") ?: throw Exception("Failed to retrieve cookies")
+
+                val editor = sharedPreferences.edit()
+                editor.putString("SAVED_COOKIE", cookieHeader)
+                editor.apply()
+
+                val responseText = buildString {
+                    append("Successful Connection\n")
+                    inputStream.bufferedReader().forEachLine { append(it).append("\n") }
+                }
+
+                // If the request is successful, return the server's response
+                Pair(responseCode, responseText)
+            }
+        }
+        catch (e: java.net.UnknownHostException)
+        {
+            // This exception indicates that the URL could not be resolved, likely due to no internet
+            Pair(404, "Unknown Host: Unable to resolve the server's hostname. Please check your internet connection.")
+        }
+        catch (e: java.net.SocketTimeoutException)
+        {
+            // This exception indicates that the server did not respond within the expected time frame
+            Pair(408, "Request Timeout: The server took too long to respond. Please try again later.")
+        }
+        catch (e: java.net.ConnectException)
+        {
+            // This exception indicates that there was a problem connecting to the server, possibly due to no internet
+            Pair(503, "Service Unavailable: Unable to connect to the server. Please check your internet connection.")
+        }
+        catch (e: Exception)
+        {
+            // Handle any other exceptions that might occur
+            e.printStackTrace()
+            Pair(500, "Connection Failed: Please try again later.")
+        }
     }
 
     private fun isHealthConnectAvailable(): Boolean

@@ -18,7 +18,7 @@ import com.example.exacthealth.R
 import com.example.exacthealth.classes.FoodDetails
 import com.example.exacthealth.classes.FoodSharedPreferencesManager
 import com.example.exacthealth.classes.getDefaultValue
-import com.example.exacthealth.classes.showFoodNameErrorToast
+import com.example.exacthealth.classes.showFieldErrorToast
 import com.example.exacthealth.classes.showAddFavoriteFoodToast
 import java.io.File
 import java.io.FileOutputStream
@@ -156,9 +156,9 @@ class AddFavoriteFoodActivity : AppCompatActivity()
 
         saveEntryButton.setOnClickListener {
 
-            if (foodName.text.isNullOrEmpty())
+            if (foodName.text.isNullOrEmpty() || foodProtein.text.isNullOrEmpty() || foodCarbs.text.isNullOrEmpty() || foodFats.text.isNullOrEmpty())
             {
-                showFoodNameErrorToast(this)
+                showFieldErrorToast(this)
             }
             else
             {
