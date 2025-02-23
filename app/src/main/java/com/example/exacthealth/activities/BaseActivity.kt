@@ -8,14 +8,22 @@ open class BaseActivity: AppCompatActivity()
 
     companion object
     {
-        var wasAppMinimized = false // Track if app was minimized
-        var lastOpenedActivity: String? = null // Track last opened activity
+        var wasAppMinimized = false
+        var lastOpenedActivity: String? = null
     }
 
     override fun onUserLeaveHint()
     {
         super.onUserLeaveHint()
         wasAppMinimized = true
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
+            wasAppMinimized = true
+        }
     }
 
     override fun onPause()

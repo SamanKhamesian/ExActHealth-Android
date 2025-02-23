@@ -127,7 +127,7 @@ class HealthFragment: Fragment()
         if (sleepStages.isEmpty()) return
 
         // Map unique stages to specific Y-axis positions
-        val stageMap = mapOf("Deep Sleep" to 0f, "Light Sleep" to 1f, "REM Sleep" to 2f, "Awake" to 3f)
+        val stageMap = mapOf("Deep Sleep" to 0f, "Light Sleep" to 1f, "REM Sleep" to 2f, "Awake" to 3f, "Unknown" to 4f)
 
         // Filter out short-duration stages (e.g., <3 minutes)
         val filteredStages = sleepStages.filter {it.duration >= 3}
@@ -144,7 +144,7 @@ class HealthFragment: Fragment()
             val endMinute = stage.endTime.split(" ")[1].split(":")[1].toFloat()
             val endTimeInHours = endHour + endMinute / 60
 
-            val yValue = stageMap[stage.stageName] ?: 0f
+            val yValue = stageMap[stage.stageName] ?: 4f
 
             entries.add(Entry(startTimeInHours, yValue))
             entries.add(Entry(endTimeInHours, yValue))
@@ -220,7 +220,7 @@ class HealthFragment: Fragment()
         {
             override fun getBarLabel(barEntry: BarEntry?): String
             {
-                return "${barEntry?.y?.toInt()} Cal" // Convert value to Int and append " Cal"
+                return "${barEntry?.y?.toInt()} Cal"
             }
         }
 
@@ -249,12 +249,19 @@ class HealthFragment: Fragment()
         }
         chart.axisRight.isEnabled = false
 
-        // Chart Styling
         chart.apply {
             setDrawGridBackground(false)
             description.isEnabled = false
             legend.isEnabled = true
             setFitBars(true)
+
+            // Disable interactions
+            isHighlightPerTapEnabled = false
+            isHighlightPerDragEnabled = false
+            setTouchEnabled(false)
+            setScaleEnabled(false)
+            setPinchZoom(false)
+            setDragEnabled(false)
         }
 
         // Refresh chart

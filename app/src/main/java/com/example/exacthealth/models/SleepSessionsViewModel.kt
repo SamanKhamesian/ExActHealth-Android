@@ -29,8 +29,7 @@ class SleepSessionViewModel(application: Application): HealthDataViewModel(appli
     val sleepSessionRecord: LiveData<List<SleepSessionRecord>> = _sleepSessionRecord
 
     private val yesterdayDateTime = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-    private val defaultSleepStage =
-        listOf(SleepStage(startTime = yesterdayDateTime, endTime = yesterdayDateTime, duration = 0L, stageCode = 0, stageName = "Unknown Stage"))
+    private val defaultSleepStage = listOf(SleepStage(startTime = yesterdayDateTime, endTime = yesterdayDateTime, duration = 0L, stageCode = 0, stageName = "Unknown Stage"))
 
     override fun readData()
     {
@@ -71,41 +70,63 @@ class SleepSessionViewModel(application: Application): HealthDataViewModel(appli
         else
         {
             return sleepSession.flatMap {session ->
-                session.stages.map {stage ->
-                    val startTime = ZonedDateTime.ofInstant(stage.startTime, session.endZoneOffset)
-                    val endTime = ZonedDateTime.ofInstant(stage.endTime, session.endZoneOffset)
+                if (session.stages.isNotEmpty())
+                {
+                    session.stages.map {stage ->
+                        val startTime = ZonedDateTime.ofInstant(stage.startTime, session.endZoneOffset)
+                        val endTime = ZonedDateTime.ofInstant(stage.endTime, session.endZoneOffset)
+
+                        val formattedStartTime = startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                        val formattedEndTime = endTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+
+                        val durationMinutes = java.time.Duration.between(stage.startTime, stage.endTime).toMinutes()
+
+                        val stageCode = stage.stage
+                        val stageName = mapStageToName(stage.stage)
+
+                        SleepStage(startTime = formattedStartTime,
+                                   endTime = formattedEndTime,
+                                   duration = durationMinutes,
+                                   stageCode = stageCode,
+                                   stageName = stageName)
+                    }
+                }
+                else
+                {
+                    val startTime = ZonedDateTime.ofInstant(session.startTime, session.endZoneOffset)
+                    val endTime = ZonedDateTime.ofInstant(session.endTime, session.endZoneOffset)
 
                     val formattedStartTime = startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                     val formattedEndTime = endTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
 
-                    val durationMinutes = java.time.Duration.between(stage.startTime, stage.endTime).toMinutes()
+                    val durationMinutes = java.time.Duration.between(session.startTime, session.endTime).toMinutes()
 
-                    val stageCode = stage.stage
-                    val stageName = mapStageToName(stage.stage)
+                    val stageCode = 0
+                    val stageName = mapStageToName(stageCode)
 
-                    SleepStage(startTime = formattedStartTime,
-                               endTime = formattedEndTime,
-                               duration = durationMinutes,
-                               stageCode = stageCode,
-                               stageName = stageName)
+                    listOf(SleepStage(startTime = formattedStartTime,
+                                      endTime = formattedEndTime,
+                                      duration = durationMinutes,
+                                      stageCode = stageCode,
+                                      stageName = stageName))
                 }
             }
         }
     }
+}
 
-    private fun mapStageToName(stage: Int): String
+private fun mapStageToName(stage: Int): String
+{
+    return when (stage)
     {
-        return when (stage)
-        {
-            0    -> "Unknown Stage"
-            1    -> "Awake"
-            2    -> "Sleeping"
-            3    -> "Out of Bed"
-            4    -> "Light Sleep"
-            5    -> "Deep Sleep"
-            6    -> "REM Sleep"
-            7    -> "Awake in Bed"
-            else -> "Invalid Stage"
-        }
+        0    -> "Unknown Stage"
+        1    -> "Awake"
+        2    -> "Sleeping"
+        3    -> "Out of Bed"
+        4    -> "Light Sleep"
+        5    -> "Deep Sleep"
+        6    -> "REM Sleep"
+        7    -> "Awake in Bed"
+        else -> "Invalid Stage"
     }
 }
