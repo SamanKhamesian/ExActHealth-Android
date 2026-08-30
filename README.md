@@ -18,13 +18,14 @@ released here; the server it talked to is not public.
 
 ## Screenshots
 
-| Login                                  | Health summary                                                             |
-|----------------------------------------|----------------------------------------------------------------------------|
-| ![Login screen](screenshots/login.jpg) | ![Health summary with heart rate and sleep charts](screenshots/health.jpg) |
+<p align="center">
+  <img src="screenshots/login.jpg" width="210" alt="Login screen">
+  <img src="screenshots/health.jpg" width="210" alt="Health summary">
+  <img src="screenshots/add_food.jpg" width="210" alt="Add food entry">
+  <img src="screenshots/calendar.jpg" width="210" alt="Calendar">
+</p>
 
-| Add food entry                                   | Calendar                                                |
-|--------------------------------------------------|---------------------------------------------------------|
-| ![Add food entry form](screenshots/add_food.jpg) | ![Calendar with logged meals](screenshots/calendar.jpg) |
+<p align="center"><em>Login &nbsp;·&nbsp; Health summary &nbsp;·&nbsp; Add food entry &nbsp;·&nbsp; Calendar</em></p>
 
 ---
 
