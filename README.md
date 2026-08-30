@@ -247,4 +247,9 @@ elsewhere.
 
 ## License
 
-See [LICENSE](LICENSE).
+Licensed under [AGPL-3.0](LICENSE). Free to use and modify — but if you
+distribute it or run it as a service, you must release your source under the
+same license.
+
+For a commercial license without that requirement, contact
+Saman Khamesian — s.khamesian@gmail.com
