@@ -19,10 +19,10 @@ released here; the server it talked to is not public.
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/login.jpg" width="210" alt="Login screen">
-  <img src="screenshots/health.jpg" width="210" alt="Health summary">
-  <img src="screenshots/add_food.jpg" width="210" alt="Add food entry">
-  <img src="screenshots/calendar.jpg" width="210" alt="Calendar">
+  <img src="screenshots/login.jpg" width="180" alt="Login screen">
+  <img src="screenshots/health.jpg" width="180" alt="Health summary">
+  <img src="screenshots/add_food.jpg" width="180" alt="Add food entry">
+  <img src="screenshots/calendar.jpg" width="180" alt="Calendar">
 </p>
 
 <p align="center"><em>Login &nbsp;·&nbsp; Health summary &nbsp;·&nbsp; Add food entry &nbsp;·&nbsp; Calendar</em></p>
